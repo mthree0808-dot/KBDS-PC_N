@@ -98,3 +98,189 @@ PlaintextTitle / Contents
 │  └─ InputField
 └─ Button Area
    └─ BoxButton
+
+```
+
+---
+
+## 6. 삭제 예정 참조 화면의 재사용 패턴
+
+다음 기록은 2026-11-10 Figma 원본의 구조·서체·스크린샷을 직접 확인한 결과다. 원본 화면이 삭제되어도 패턴을 재사용할 수 있도록 실측값과 컴포넌트 참조를 보존한다. 향후 전달되는 참조 화면도 이 절에 누적한다.
+
+- 기존 필수 디자인 규칙과 원본 기획안을 우선한다. 참조 화면의 미정리 명칭·중첩은 복제하지 않는다.
+- px 값은 실측 설명이며 생성 시 디자인 시스템 토큰을 사용한다. 바인딩 확인값과 적용 제안을 구분한다.
+- 조건부 노출의 업무 조건은 기획안에 따르며, 아래에서는 확인된 현재 상태와 향후 구성 원칙을 구분한다.
+
+### P01. 목록 상단 총 건수·도구 / 목록 하단 텍스트 버튼·일괄 변경
+
+#### 원본과 기록 범위
+
+- 확인일: 2026-11-10
+- 파일: `03. 고객정보 관리` / fileKey `2MavuzZhNpHpqer5fk3ML4`
+- 페이지: `01. 고객정보조회/수정(기획 v0.81)` / `2:278`
+- 화면: `Case_관리_2` / `88:23627` / 표시 제목 `자주쓰는 계좌관리`
+- 사용자 지정 출발점: `Container 3` / `88:23650`
+- 원본 링크: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-23650
+- 원본 화면은 1440×1667, 본문은 1440×1158. 본문의 콘텐츠 폭은 1360이다.
+- 구조·서체를 Plugin API로 확인하고 화면 스크린샷과 대조했다. Figma 원본은 수정하거나 삭제하지 않았다.
+- 보존 범위는 그룹 관계, 간격, 상·하단 도구 패턴이다. 전체 표의 모든 데이터/셀, 헤더·푸터를 복원하는 명세는 아니다.
+
+#### 1. 원본 계층
+
+```text
+Case_관리_2
+├─ ## HEADER (기업용헤더 X)              1440×157
+├─ ## BODY                              V / gap 48 / padding 48 40
+│  ├─ Container 5                       Title / Page
+│  ├─ Container 2                       Infobox / FullWidth
+│  ├─ Container 3                       V / gap 20
+│  │  ├─ Tab                            1depth / 높이 60
+│  │  └─ Amount / Contents [외부]         V / gap 20
+│  │     ├─ Amount / Contents [상단 행]   H / gap 20 / 아래 정렬
+│  │     │  ├─ Amount                   Fill W / Hug H
+│  │     │  │  ├─ Left                  총 건수
+│  │     │  │  └─ Right                 23 + 건
+│  │     │  └─ BoxButton Group / InputField
+│  │     │     ├─ BoxButton Group       H / gap 8
+│  │     │     │  ├─ BoxButton          계좌순서변경
+│  │     │     │  └─ BoxButton          계좌그룹관리
+│  │     │     └─ InputField            그룹 전체
+│  │     └─ Table [외부 래퍼]            V / gap 16
+│  │        ├─ Table [실제 표]           GRID / 1360×540
+│  │        └─ TextButton Group / Contents
+│  │           ├─ TextButton Group      필터 / 검색 / 편집
+│  │           └─ Text / Contents       H / gap 8
+│  │              ├─ Text               다중선택 그룹변경
+│  │              │  └─ Title
+│  │              ├─ InputField         전체
+│  │              └─ BoxButton          이동
+│  └─ Container 4                       ButtonGroup: 삭제 / 수정
+└─ ## FOOTER (기업용푸터 X)              1440×352
+```
+
+`H`는 가로, `V`는 세로 Auto Layout이다. `[외부]` 같은 대괄호 설명은 문서상 구분용이며 실제 레이어 이름이 아니다.
+
+#### 2. 그룹 간 간격과 배치
+
+| 관계/영역 | 실측 | 토큰/상태 | 적용 의미 |
+|---|---:|---|---|
+| BODY 상하 패딩 | 48 | `spacing/7xl`, 바인딩 확인 | 본문 시작·끝 여백 |
+| BODY 좌우 패딩 | 40 | `spacing/6xl`, 바인딩 확인 | 1440 중 콘텐츠 1360 |
+| 제목 ↔ Infobox | 48 | BODY gap, `spacing/7xl` | 형제 Container 간격 |
+| Infobox ↔ Container 3 | 48 | BODY gap, `spacing/7xl` | 안내와 목록의 구분 |
+| Container 3 ↔ 하단 CTA | 48 | BODY gap, `spacing/7xl` | 목록·도구 전체 다음 CTA |
+| Tab ↔ 상단 총 건수/도구 행 | 20 | `spacing/2xl`, 바인딩 확인 | Container 3 gap |
+| 상단 총 건수/도구 행 ↔ 표 | 20 | 외부 `Amount / Contents` gap, `spacing/2xl` | 목록 요약과 실제 표 간격 |
+| 상단 행 Amount ↔ 오른쪽 도구 | 20 | 원본에 직접 바인딩 없음 | 재구성 시 20 토큰 `spacing/2xl` 사용 |
+| 상단 BoxButton 상호 간격 | 8 | `spacing/md`, 바인딩 확인 | 두 버튼을 실제 Auto Layout 그룹으로 묶음 |
+| 상단 BoxButton Group ↔ InputField | 8 | 원본에 직접 바인딩 없음 | 재구성 시 `spacing/md` 사용 |
+| Amount의 Left ↔ Right | 4 | `spacing/xs`, 바인딩 확인 | 문구와 수량 사이 |
+| Amount의 숫자 ↔ 단위 | 2 | `spacing/2xs`, 바인딩 확인 | `23`과 `건`을 분리 |
+| 표 ↔ 하단 도구 행 | 16 | `spacing/xl`, 바인딩 확인 | Table 외부 래퍼 gap |
+| 하단 TextButton 상호 간격 | 16 | `spacing/xl`, 바인딩 확인 | 필터·검색·편집 간격 |
+| 하단 왼쪽 그룹 ↔ 오른쪽 그룹 | 자동 분배 | `SPACE_BETWEEN`, itemSpacing 값 20 | 실제 양쪽 사이 빈 폭은 20 고정이 아님 |
+| 하단 오른쪽 Text ↔ InputField ↔ BoxButton | 8 | `spacing/md`, 바인딩 확인 | 안내문·선택·실행의 결합 |
+| CTA 삭제 ↔ 수정 | 12 | ButtonGroup의 `Slot-Button` 실측 | 그룹 바깥 gap 0과 혼동하지 않음 |
+
+본문 자식의 BODY 상대 y는 제목 48, Infobox 132, 목록 270, CTA 1054이다. 목록 높이 736, CTA 높이 56이며 내용 변경 시 고정 복제하지 않고 Hug로 재계산한다.
+
+참고: Infobox는 padding 상하 20/좌우 24, gap 12. 원본에서 제목·CTA를 감싼 Container의 gap 10은 자식이 하나라 시각적 간격에 영향을 주지 않는다. 이를 공통 간격 규칙으로 학습하지 않는다.
+
+#### 3. Amount / Contents: 총 건수 + 오른쪽 버튼/필드
+
+이 패턴의 핵심은 **왼쪽 Amount가 Fill로 남는 폭을 차지하고, 오른쪽 도구는 Hug로 오른쪽 끝에 붙는 것**이다. 상단 행 자체는 `SPACE_BETWEEN`이 아니라 `primaryAxisAlignItems=MIN`, `counterAxisAlignItems=MAX`이다.
+
+- 상단 행: 가로 Auto Layout, 가로 Fill·세로 Hug, padding 0, gap 20, 세로 아래 정렬.
+- 실측 1360×40: Amount 952×24 + gap 20 + 오른쪽 도구 388×40.
+- Amount는 y=16에 배치되어 40 높이의 버튼·필드 하단과 맞는다. 임의 y 오프셋으로 재현하지 않고 아래 정렬을 사용한다.
+- Amount 내부: 가로, gap 4, 세로 중앙 정렬. Left/Right는 모두 Hug.
+- Right 내부: 가로, gap 2, 세로 중앙 정렬. 숫자와 단위를 별도 텍스트로 둔다.
+- 오른쪽 `BoxButton Group / InputField`: 가로, gap 8, 가로·세로 Hug, 세로 중앙 정렬.
+- `BoxButton Group`: 가로, gap 8, Hug. 버튼 variant는 `secondary`, size는 `small`, 높이 40.
+- `계좌순서변경`: 폭 120 고정, 선행 `line-reorder01` 아이콘 16×16.
+- `계좌그룹관리`: 폭 100 실측, Hug.
+- 상단 InputField는 폭 152 고정, 높이 40/Hug. 표시 문구 `그룹 전체`, 오른쪽 `line-chevron-down` 20×20인 선택형 구성이다.
+- 필드 내부 인스턴스 계층: `InputField > Item / Input > Item / FilledStyle > text + Item / Affix`. 기본 InputField 인스턴스만 가져오는 것으로 선택형 구성이 완성되는 것은 아니므로 해당 하위 구성도 유지한다.
+
+#### 4. TextButton Group / Contents: 표 하단 양쪽 도구
+
+- 전체 행: 가로 Auto Layout, 가로 Fill·세로 Hug, padding 0, **가로 SPACE_BETWEEN / 세로 MIN(위 정렬)**.
+- 실측 1360×40. 왼쪽 161×20, 오른쪽 289×40. 왼쪽 버튼은 오른쪽 필드와 세로 중앙이 아니라 윗선이 맞는다.
+- 원본 itemSpacing 속성은 20이지만 양끝 정렬로 실제 사이 빈 공간은 `1360 - 161 - 289 = 910`이다. 910을 고정 gap으로 저장하거나 만들지 않는다.
+- 왼쪽 `TextButton Group`: H, gap 16, Hug/Hug, 세로 중앙 정렬.
+- 순서: `필터`, `검색`, `편집`. 각각 TextButton `variant=primary, size=small`, 43×20 실측. 16×16 선행 아이콘이 표시되며 버튼 내부 아이콘·라벨 gap은 2이다. 필터 아이콘의 실제 이름은 `line-filter`; 검색·편집의 정확한 아이콘 key는 수집하지 않았다.
+- 오른쪽 `Text / Contents`: H, gap 8, Hug/Hug, 세로 중앙 정렬.
+- 구성: 안내 Text `다중선택 그룹변경` 103×20 + InputField `전체` 120×40 + BoxButton `이동` 50×40.
+- 오른쪽 InputField 역시 선택형이며 오른쪽 chevron 20×20을 포함한다. 이동 버튼은 `secondary/small`이다.
+- 표와 이 행을 같은 세로 래퍼에 넣고 gap 16으로 결합한다. 하단 CTA와는 구별되는 표 조작 도구 영역이다.
+
+#### 5. 서체·색상
+
+| 요소 | 폰트 | 크기/행높이 | 텍스트 토큰 또는 확인 스타일 |
+|---|---|---|---|
+| 총 건수 | KBFG Text Medium | 14/20 | `text/neutral/quaternary` |
+| 숫자 23 | Pretendard SemiBold | 17/24 | `text/neutral/secondary` |
+| 단위 건 | KBFG Text Bold | 14/20 | `text/neutral/secondary` |
+| 소형 BoxButton·선택 필드 라벨 | KBFG Text Bold | 14/20 | 원본 텍스트 스타일 ID는 아래 참조 |
+| 필터·검색·편집 | KBFG Text Medium | 14/20 | 원본 텍스트 스타일 ID는 아래 참조 |
+| 다중선택 그룹변경 | KBFG Text Medium | 14/20 | `text/neutral/tertiary` |
+| 페이지 제목 | KBFG Text Bold | 26 / 미수집 | 실제 Title / Page 인스턴스 유지 |
+| 활성 / 비활성 탭 | KBFG Text Bold / Medium | 20 / 미수집 | 실제 Tab 인스턴스 유지 |
+| 하단 삭제·수정 | KBFG Text Bold | 18/25 | 실제 ButtonGroup 인스턴스 유지 |
+
+직접 확인한 본문/수량 텍스트의 자간은 0px이다. 숫자에 `font-size/title/lg-numeric`, `line-height/title/lg`, `font-family/numeric`, `font-weight/semibold`가 바인딩되어 있다. 일반 14px 문구는 `font-size/body/md`, `line-height/body/md`, `font-family/base`를 사용한다.
+
+원본 스타일 참조(발행 최신본에서 다시 확인; ID만 믿고 하드코딩하지 않음):
+
+- Medium 14/20: `S:f5f81baf6718bb904b4793a0ecf70ff694044489,15632:416`
+- Bold 14/20: `S:fd29c6c3e60f91d214e519fc9a48bdb7bca2741a,15632:415`
+- 숫자 SemiBold 17/24: `S:8b7acf18fb401cac008995792d7e76e36b2a9a5a,18494:103`
+
+#### 6. 조건부 노출 시 재사용 규칙
+
+**관찰 사실:** 현재 Container 3 아래는 숨김 노드가 없으며, 총 건수·상단 버튼·상단 필드·하단 텍스트 버튼·하단 일괄 변경 영역이 모두 표시되어 있다. 사용자 설명에 따라 이 요소들은 향후 화면에서 조건부로 표시될 수 있다. 실제 노출 조건, 권한, 선택 건수와의 연결은 아직 제공되지 않았다.
+
+**향후 제작에 적용할 구성 원칙(원본에서 다른 상태까지 검증한 것은 아님):**
+
+| 가변 영역 | 구성 처리 |
+|---|---|
+| 상단 개별 BoxButton | 필요한 버튼만 표시하고 나머지는 레이아웃에서 제외한다. 남은 버튼 사이 gap 8 유지 |
+| 상단 버튼 전부 | 빈 BoxButton Group을 숨기거나 제거하여 빈 그룹의 gap을 남기지 않는다 |
+| 상단 선택 필드 | 필드만 비노출 가능. 버튼 그룹이 남으면 오른쪽 Hug를 유지 |
+| 상단 오른쪽 도구 전부 | 빈 오른쪽 래퍼도 제외. Amount가 전체 폭을 채우고 행 높이는 내용에 맞게 감소 |
+| 총 건수만 비노출 | 오른쪽 도구의 오른쪽 정렬을 명시적으로 보장한다. Fill 역할까지 없어지면 기존 MIN 정렬만으로는 도구가 왼쪽으로 이동하므로 재배치 필요 |
+| 하단 개별 TextButton | 필요한 버튼만 표시하고 나머지는 레이아웃에서 제외. gap 16 유지 |
+| 하단 일괄 변경 | Text / Contents 전체를 하나의 의미 단위로 노출·비노출하는 것을 기본으로 하되, 기획안에서 세부 요소별 조건을 주면 그에 따름 |
+| 하단 오른쪽만 비노출 | 왼쪽 TextButton Group은 왼쪽 정렬 유지. 행 높이는 남은 콘텐츠에 맞게 Hug |
+| 하단 왼쪽만 비노출 | 오른쪽 영역의 오른쪽 정렬을 명시적으로 보장. SPACE_BETWEEN에 자식 하나만 남겼을 때 자동으로 우측 정렬될 것이라 가정하지 않음 |
+| 하단 양쪽 모두 비노출 | 전체 하단 도구 행도 제외하여 표 아래 gap 16이 빈 행 때문에 남지 않도록 함 |
+
+- 비노출을 opacity=0으로 처리해 빈 공간을 유지하지 않는다. 화면에서 제외되는 요소는 `visible=false` 또는 해당 생성 분기에서 생략하고, 빈 래퍼도 함께 처리한다.
+- 부모는 Hug, 콘텐츠는 적절한 Fill/Hug로 구성하며 현재 실측 높이 40/656/736 등을 통째로 고정하지 않는다.
+- `0건`, 조회 결과 없음, 선택 항목 없음일 때의 노출·비활성 정책은 미정이다. 권한이나 데이터 조건을 임의로 만들지 말고 원본 기획안을 따른다.
+- 향후 실제 조건이 제공되면 이 절에 확정 정책을 추가한다.
+
+#### 7. 신규 생성 시 명명 적용
+
+- 원본 Container 순서는 `Container 5 → Container 2 → Container 3 → Container 4`이다. 원본을 정리할 때 부모·순서·역할을 임의로 바꾸지 않는다. 신규 화면은 최신 규칙에 맞게 위에서부터 Container 1…로 명명한다.
+- 원본에는 `Amount / Contents`가 상하위에 중복된다. 이 중첩 명칭 자체를 재사용 기준으로 삼지 않는다. 총 건수+도구의 **상단 행**은 `Amount / Contents`, 이를 표까지 감싸는 래퍼는 `Container [N]` 등 실제 역할에 맞게 구성하여 동일 조합 명칭의 중첩을 피한다.
+- `BoxButton Group`, `TextButton Group`은 이름만 Group으로 바꾸는 것이 아니라 실제 가로 Auto Layout이다. 자식 버튼은 `BoxButton 1`처럼 순번을 붙이지 않는다.
+- `Text / Contents`의 일반 본문 래퍼는 신규 화면에서 최신 규칙의 `Text > Content`를 따른다. 원본 내부 텍스트 이름 `Title`은 복제 의무가 아니다.
+- 실제 디자인 시스템 인스턴스의 원형 이름과 고유 내부 계층은 유지한다.
+- 이 참조 화면의 BODY는 **세로 Auto Layout**이다. 기본 디자인 규칙의 가로 BODY와 차이가 있으므로, 같은 시각적 세로 목록 구성을 만들더라도 최신 BODY 규칙을 따르고 내부 Container에서 세로 흐름을 구성한다. 차이를 숨기거나 원본 속성을 무조건 전역 규칙으로 승격하지 않는다.
+
+#### 8. 컴포넌트 재연결 참조
+
+화면 노드 ID는 삭제 후 사용할 수 없다. 아래는 당시 실제 인스턴스가 참조한 main component key다. 컴포넌트/라이브러리까지 삭제되면 key도 복원을 보장하지 않으므로 최신 KBDS 라이브러리에서 이름·variant를 확인한다. 슬롯 및 아이콘 오버라이드는 별도로 적용해야 한다.
+
+| 컴포넌트 | 원본 variant | component key |
+|---|---|---|
+| Title / Page | align=left | `366007b354df25708d9dce4a7788c2b44e30dba3` |
+| Infobox / FullWidth | 단일 컴포넌트 | `5fb7ce75dbc07c0aeca6e8cd5bfb876c0d0f7892` |
+| Tab | variant=1depth, extendable=true | `53915edb5ada4215a859be5fca8d36a7e113c881` |
+| ButtonGroup | count=multi, size=large | `f6fbbaad278bc5dc3e0568efdc16711894a01e47` |
+| BoxButton | variant=secondary, size=small | `b20b82eee273f930c668788109e73de668023c03` |
+| TextButton | variant=primary, size=small | `95687195c8b0873f0e13393cf059964ecfde2604` |
+| InputField | hover/focused/disabled/entered/error=false | `6a180f941f7bc12168489ec44f9203d0f3a4e7cc` |
+
+BoxButton/TextButton의 hover/disabled/pressed는 모두 false인 기본 상태였다. CTA는 중앙 320×56, 슬롯 gap 12, 각 버튼 154×56 실측이며 문구는 삭제/수정이다. CTA의 좌측 tertiary·우측 primary 사용은 기본 디자인 규칙에 따른다.
