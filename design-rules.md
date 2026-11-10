@@ -46,7 +46,7 @@
 3.2 ## BODY 기본 레이아웃 속성Width: 1440px (고정)Height: Hug contentsAuto Layout Flow: HorizontalPadding: 48px 40px (상하 48px, 좌우 40px)Gap: 기본 48px (LNB 배치 시 32px)3.3 LNB 및 2단 본문 레이아웃 구조LNB가 포함된 화면 구조는 ## BODY 하위에 Container 1과 Container 2로 나누어 가로 배치합니다.## BODY Gap: 32pxLNB 영역: Container 1 (Width: 316px)메인 콘텐츠 영역: Container 2 (Width: 664px)Plaintext## BODY (flow: horizontal, gap: 32px, padding: 48px 40px, width: 1440)
 ├─ Container 1 (LNB, width: 316)
 └─ Container 2 (Main Contents, width: 664)
-4. 컴포넌트 조합 및 패턴별 세부 규칙4.1 상단 타이틀 및 인포박스 간격## HEADER 다음: Title / Page 배치Title / Page + Infobox / FullWidth 조합:Title / Page와 Infobox / FullWidth 사이 간격: 48pxInfobox / FullWidth와 그 다음 하단 콘텐츠 사이 간격: 48pxPagination / Basic 배치: 상단 콘텐츠와의 간격 16px4.2 Table 컴포넌트 규칙Title / Section + Table 조합: 제목과 Table 사이 gap은 20px (spacing/2xl)입니다. 데이터 없음은 Feedback small과 바깥 래퍼 상하 padding 32px, Feedback 아이콘·문구 간격 16px를 적용하며 상세 상태 구성은 6장 P08을 따릅니다.Table 제작 기본: Table이라는 Auto Layout 프레임을 생성하고 Grid로 설정합니다. 열별로 고정 폭과 Fill을 조합하며 실제 Grid의 row/column gap을 사용합니다. 트랙 HUG/FLEX와 자식 셀 FIXED/FILL을 구별하고, 상세 실측과 제작 기준은 6장 P06을 따릅니다.반응형 높이 맞춤 (Fill):Table / Header 또는 Table / Cell이 수평으로 배치될 때, 한쪽 셀의 콘텐츠 증가로 높이가 커지면 상대적으로 작은 쪽의 높이 값을 fill로 설정합니다.Title / Headline + Table 조합:Title / Headline과 Table 사이 간격: gap: 20px동일한 [Title / Headline + Table] 그룹이 하단에 반복될 경우 그룹 간 간격: 48px테이블 하단 설명 텍스트 (TextList / Unordered):테이블 하단에 단일 또는 복수의 TextList / Unordered가 조합될 경우 간격: gap: 16px이때 사용되는 TextList / Unordered의 폰트 사이즈: size: 144.3 콘텐츠 박스 3종 (Card / Surface, Data Block, Text Box) 분류 및 제작 기준구분Card / SurfaceData BlockText Box주된 목적정보와 사용자 동작의 결합사실 데이터 조회·대조설명·안내·주의·상태 전달사용 예시계좌·상품 선택, 상세 이동, 이체이름, 전화번호, 계좌정보, 금액유의사항, 상담센터 안내, 상태 설명사용자 동작박스 전체 또는 내부 요소에 동작 있음박스 자체에는 동작 없음정보 전달이 주목적 (동작 없음)제작 방식실제 디자인 시스템 컴포넌트 인스턴스Auto Layout 프레임으로 직접 구성Auto Layout 프레임으로 직접 구성주요 콘텐츠원형 Slot·Card 하위 컴포넌트Title, DataListTitle, Text, TextList, Divider1) Card / Surface최신 디자인 시스템의 실제 Card / Surface 인스턴스를 유지하며 절대 Detach하지 않습니다.내부 패딩: 32px (사방)제목/설명 구성: 제목은 Card / Body / Group-A, 설명·목록은 Card / Body / Group-C의 해당 variant 사용간격: Groups 간격 16px, 설명 목록용 Group 내부 간격 12px라디오 선택형 Card:Card / Header / Affix — variant=radio (24×24px) 사용Body: 가로 Auto Layout, 가로 Fill, 세로 Hug, gap: 12pxGroups: 가로 Fill카드당 Affix는 1개만 노출하며 카드와 라디오의 선택/비활성 상태를 일치시킵니다.2) Data Block사실 데이터 조회 목적의 Auto Layout 프레임입니다.PlaintextData Block
+4. 컴포넌트 조합 및 패턴별 세부 규칙Tab(1depth) 우측 버튼 조합: Slot > tabs 안에 Tab과 BoxButton을 배치할 수 있습니다. Tab(1depth)과 [Tab(2depth) / SummaryBox] 묶음 사이 gap은 20px, Tab(2depth)과 SummaryBox 사이 gap은 24px입니다. 상세는 6장 P09를 따릅니다.4.1 상단 타이틀 및 인포박스 간격## HEADER 다음: Title / Page 배치Title / Page + Infobox / FullWidth 조합:Title / Page와 Infobox / FullWidth 사이 간격: 48pxInfobox / FullWidth와 그 다음 하단 콘텐츠 사이 간격: 48pxPagination / Basic 배치: 상단 콘텐츠와의 간격 16px4.2 Table 컴포넌트 규칙Title / Section + Table 조합: 제목과 Table 사이 gap은 20px (spacing/2xl)입니다. 데이터 없음은 Feedback small과 바깥 래퍼 상하 padding 32px, Feedback 아이콘·문구 간격 16px를 적용하며 상세 상태 구성은 6장 P08을 따릅니다.Table 제작 기본: Table이라는 Auto Layout 프레임을 생성하고 Grid로 설정합니다. 열별로 고정 폭과 Fill을 조합하며 실제 Grid의 row/column gap을 사용합니다. 트랙 HUG/FLEX와 자식 셀 FIXED/FILL을 구별하고, 상세 실측과 제작 기준은 6장 P06을 따릅니다.반응형 높이 맞춤 (Fill):Table / Header 또는 Table / Cell이 수평으로 배치될 때, 한쪽 셀의 콘텐츠 증가로 높이가 커지면 상대적으로 작은 쪽의 높이 값을 fill로 설정합니다.Title / Headline + Table 조합:Title / Headline과 Table 사이 간격: gap: 20px동일한 [Title / Headline + Table] 그룹이 하단에 반복될 경우 그룹 간 간격: 48px테이블 하단 설명 텍스트 (TextList / Unordered):테이블 하단에 단일 또는 복수의 TextList / Unordered가 조합될 경우 간격: gap: 16px이때 사용되는 TextList / Unordered의 폰트 사이즈: size: 144.3 콘텐츠 박스 3종 (Card / Surface, Data Block, Text Box) 분류 및 제작 기준구분Card / SurfaceData BlockText Box주된 목적정보와 사용자 동작의 결합사실 데이터 조회·대조설명·안내·주의·상태 전달사용 예시계좌·상품 선택, 상세 이동, 이체이름, 전화번호, 계좌정보, 금액유의사항, 상담센터 안내, 상태 설명사용자 동작박스 전체 또는 내부 요소에 동작 있음박스 자체에는 동작 없음정보 전달이 주목적 (동작 없음)제작 방식실제 디자인 시스템 컴포넌트 인스턴스Auto Layout 프레임으로 직접 구성Auto Layout 프레임으로 직접 구성주요 콘텐츠원형 Slot·Card 하위 컴포넌트Title, DataListTitle, Text, TextList, Divider1) Card / Surface최신 디자인 시스템의 실제 Card / Surface 인스턴스를 유지하며 절대 Detach하지 않습니다.기본 내부 패딩: 32px (사방). 단, 6장 P11의 Body/Footer 분리형 조회 카드는 Card / Surface 자체 padding을 0으로 설정하고 Slot 내부 Body에 위32·좌우32·아래16, Footer에 상하16·좌우20을 적용합니다. 바깥 기본 padding 32와 중복하지 않습니다.제목/설명 구성: 제목은 Card / Body / Group-A, 설명·목록은 Card / Body / Group-C의 해당 variant 사용간격: Groups 간격 16px, 설명 목록용 Group 내부 간격 12px라디오 선택형 Card:Card / Header / Affix — variant=radio (24×24px) 사용Body: 가로 Auto Layout, 가로 Fill, 세로 Hug, gap: 12pxGroups: 가로 Fill카드당 Affix는 1개만 노출하며 카드와 라디오의 선택/비활성 상태를 일치시킵니다.2) Data Block사실 데이터 조회 목적의 Auto Layout 프레임입니다.PlaintextData Block
 ├─ Title — 필요한 경우
 └─ DataList Group — gap: 12px
    ├─ DataList
@@ -929,3 +929,156 @@ Title / Table                        V / gap 20
 - 데이터 없음은 small Feedback, 래퍼 상하 32, 아이콘·문구 gap 16이다.
 - 데이터 있음은 실제 Grid Table, 고정·Fill 열, 셀 상하 12/좌우 16이다.
 - 현재 두 화면의 제목 인스턴스 스펙을 복제하지 않으며 원본 전체 높이를 고정하지 않는다.
+
+
+### P09. 1depth 탭 우측 버튼 및 2depth 탭·SummaryBox 조합
+
+- 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`, 화면 `Case_조회`.
+- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25539
+- 지정 노드는 2depth Tab + SummaryBox를 묶은 원본 `Frame 2147246246`이다. 부모 `Tab` / `88:25530`에서 1depth 탭과 오른쪽 버튼까지 함께 확인했다.
+
+```text
+Tab / Contents                         V / gap 20 / Fill W·Hug H
+├─ Tab                                 1depth, extendable=false
+│  └─ Slot
+│     └─ tabs                          H / SPACE_BETWEEN / CENTER
+│        ├─ Tab                        1depth / 좌측 탭 묶음
+│        │  └─ Slot
+│        │     └─ Item / Tab × N
+│        └─ BoxButton                  우측 보조 액션 / secondary·small
+└─ Tab / SummaryBox                    V / gap 24 / Fill W·Hug H
+   ├─ Tab                              2depth, extendable=true
+   └─ SummaryBox                       실제 인스턴스
+```
+
+- **Tab(1depth) ↔ [Tab(2depth) / SummaryBox] 묶음 사이 gap: 20 (`spacing/2xl`).**
+- **Tab(2depth) ↔ SummaryBox 사이 gap: 24 (`spacing/3xl`).** 두 gap의 적용 레벨을 바꾸거나 전체를 동일 간격으로 평탄화하지 않는다.
+- 우측 버튼은 Tab 컴포넌트를 Detach하거나 바깥에 절대배치하지 않고 **원본 Tab의 Slot 안 `tabs`에 `Tab`과 `BoxButton`을 넣는 조합**을 사용한다. 버튼은 필요한 화면에만 표시한다.
+- `tabs`는 가로 Fill·세로 Hug, SPACE_BETWEEN/CENTER이며 itemSpacing 속성은 4다. 실제 양쪽 콘텐츠 사이 빈 폭은 자동 분배되므로 4px 고정 간격으로 해석하지 않는다.
+- 원본 전체 1depth Tab은 1360×60, 좌측 안쪽 Tab은 폭 690 고정·높이 60, 오른쪽 BoxButton은 116×40 Hug 실측이다. 버튼은 세로 가운데(y=10)에 놓인다. 이 좌표·690 폭을 모든 화면에 고정하지 않고 기획에 맞는 탭 폭과 Fill/Hug·양끝 정렬로 구성한다.
+- 원본 1depth 항목은 각 폭 160·높이 60, 항목 사이 gap 4, 상하 padding 16이다. 예시 문구는 `KB국민은행`/`다른금융`, 우측 버튼은 `다른금융연결`이다.
+- 원본 2depth Tab 높이는 40이며 Slot에서 Item / Tab들이 H/gap 8 (`spacing/md`)로 배치된다. Item / Tab은 Hug W·H, padding 상하 6/좌우 12, 내부 gap 2, radius 8이다. 실제 탭 컴포넌트 variant를 유지한다.
+- 원본 2depth Tab 40 + gap 24 + SummaryBox 96 = 하위 묶음 160, 1depth Tab 60 + gap 20 + 하위 묶음 160 = 전체 240이다. 내용·줄바꿈이 바뀌면 Hug로 계산한다.
+- SummaryBox 원본은 4개 Item / Surface를 H/gap 8로 배치하며 각 폭 334 Fill, 높이 96 실측이다. 각 Surface padding은 상하 20/좌우 32, radius 12, Fill `surface/neutral/tertiary-muted`다. 내부 설명/수치 영역 간격은 8, 높이는 20+8+28=56이다.
+- 신규 사용자 정의 조합 이름은 위 예시처럼 역할을 반영한다. 실제 Tab/Slot/Item / Tab 및 SummaryBox 내부 고유 계층은 유지한다.
+
+| 실제 컴포넌트 | variant | component key |
+|---|---|---|
+| Tab | 1depth, extendable=false | `0d5c704c817e7bdf6c3fca0c7fcfca8d39898e63` |
+| Tab | 2depth, extendable=true | `2b1f0b805e6233fcf9436143ddd9b676a8f4c6c1` |
+| BoxButton | secondary/small | `b20b82eee273f930c668788109e73de668023c03` |
+| SummaryBox | 단일 컴포넌트 | `ac8b7b22c4ce82ef89da0d169d5e1cb4bb62fe19` |
+| Item / Surface | variant=solid | `f5a63d3d0715c038047d7617618f3a634029c74c` |
+
+### P10. 목적에 맞게 감싼 단일 InputField의 명명과 배치
+
+- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25528
+- 원본 래퍼 `InputField box` / `88:25528` 안에 실제 `InputField` 인스턴스 `88:25529` 하나가 들어 있다.
+- **신규 생성 시 래퍼는 `InputField`로 명명한다.** 단일 항목을 특정 배치·표면 목적으로 감싼 구조이므로 `InputField box`나 `InputField Group`으로 부르지 않는다. 기존 단일 항목 래퍼 규칙과 동일하다.
+
+```text
+InputField                            사용자 정의 Auto Layout 래퍼
+└─ InputField                         실제 컴포넌트 인스턴스
+   └─ Item / Input
+      └─ Item / FilledStyle
+         ├─ text
+         └─ Item / Affix
+            └─ line-chevron-down
+```
+
+- 래퍼: H, Fill W·Hug H, padding 사방 **20 (`spacing/2xl`)**, radius **12 (`radius/md`)**, Fill `surface/neutral/tertiary-muted`.
+- 원본 래퍼 폭 1360/높이 80, 실제 필드 폭 **400 고정**/높이 **40 Hug**, 왼쪽 정렬이다. `20+40+20=80`이며 필드의 시작 위치는 padding으로 만든다.
+- 원본 래퍼 primary SPACE_BETWEEN / counter MIN, gap 0이다. 자식 하나이므로 빈 반대쪽 요소나 가짜 공간을 만들지 않는다.
+- 내부 필드는 선택형이며 예시 문구 `A사업자명`, 우측 chevron 20×20이다. 기본 InputField 인스턴스 key는 `6a180f941f7bc12168489ec44f9203d0f3a4e7cc`; 선택형 하위 구성도 유지한다.
+- 주변 원본 `Select` 묶음에서 선행 제목/액션 영역과 이 래퍼 사이 gap은 **20**이다. Select 묶음 전체와 아래 탭 조합 사이 gap은 **24**다. 서로 다른 부모의 간격을 래퍼 padding에 중복 적용하지 않는다.
+
+### P11. Body·Footer 별도 padding을 갖는 Card / Surface
+
+#### 사용자 확정 제작 원칙
+
+- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25631
+- 현재 원본 `Container` / `88:25631`은 FRAME이나 **재사용·신규 생성에서는 실제 `Card / Surface` 인스턴스로 감싼다.** 이 조회 카드에는 내부 액션과 이동 요소가 있으므로 일반 데이터 박스로 대체하지 않는다.
+- **Card / Surface 자체 padding은 사방 0**이다. Slot 안의 **Body와 Footer에 각각 원본의 padding을 적용**하여 흰색 본문과 회색 하단 영역이 카드 경계까지 이어지게 한다.
+- 이 패턴은 기존 Card / Surface 기본 padding 32의 **명시적 예외**다. 기본 32를 바깥 카드에 유지한 채 내부 Body/Footer padding을 추가해 여백을 이중으로 만들지 않는다.
+- 문서의 아래 Body/Footer는 카드 Slot 내부의 역할별 영역이다. List 컴포넌트 Slot-Middle 안에 있는 원본 `Body`와는 적용 범위가 다르다.
+
+```text
+Card Group                            반복 시 V / gap 12
+└─ Card / Surface                     실제 인스턴스 / padding 0 / V gap 0
+   └─ Slot                            V / gap 0 / padding 0
+      ├─ Body                         padding 위32·우32·아래16·좌32
+      │  └─ List / Contents           V / gap 8
+      │     ├─ List                   계좌 주요 정보 / suffix 포함
+      │     └─ Infobox / Button Area  H / 양끝·중앙 정렬
+      │        ├─ Infobox / Basic
+      │        └─ Button Area         H / gap 16
+      │           ├─ BoxButton Group  H / gap 8
+      │           │  ├─ BoxButton      이체 / secondary·small
+      │           │  └─ BoxButton      조회 / secondary·small
+      │           └─ Item / Suffix    reactionButton
+      └─ Footer                       padding 위16·우20·아래16·좌20
+         ├─ Left                      H / gap 8
+         │  ├─ IconButton / Text      링크 아이콘 + 금고명
+         │  ├─ Divider / Vertical
+         │  └─ Text                   계좌번호
+         └─ Right                     H / gap 16
+            ├─ Amount / BoxButton Group  H / gap 8
+            │  ├─ Amount              금액 + 단위 / gap 4
+            │  └─ BoxButton Group     H / gap 4
+            │     ├─ BoxButton        채우기 / secondary·xsmall
+            │     └─ BoxButton        꺼내기 / secondary·xsmall
+            └─ IconButton             더보기 / 24
+```
+
+위 조합/그룹 이름은 신규 생성의 역할별 명명 예시다. 원본은 바깥 Container, 안쪽 Container, vStack, hStack, PlusContainer 등의 FRAME 조합이며 Card / Surface로 이미 만들어진 상태는 아니다. **문서 기록을 위해 원본을 수정하지 않았으며**, 원본 Card / Surface component key를 확인한 것처럼 임의의 key를 부여하지 않는다. 생성 시 최신 KBDS의 실제 Card / Surface를 선택하고 고유 슬롯 계층을 유지한다.
+
+#### 영역별 padding·크기·간격
+
+| 영역/관계 | 적용값 | 토큰/원본 관찰 |
+|---|---|---|
+| Card / Surface 바깥 padding | **0** | 사용자 확정 예외 |
+| Slot의 Body ↔ Footer | gap **0** | 두 표면을 밀착 |
+| Body padding | 위32 / 우32 / 아래16 / 좌32 | `spacing/5xl` / 아래 `spacing/xl` |
+| Body 내부 List ↔ 보조 행 | **8** | `spacing/md` |
+| Footer padding | 상하16 / 좌우20 | `spacing/xl` / `spacing/2xl` |
+| 카드 반복 간격 | **12** | 원본 List Box Group gap 12 → 신규 Card Group |
+| Body 정보 행(List) | 높이 60 실측 | 가로 Fill, List 내부 gap 16 |
+| Body 보조 행 | 높이 40 실측 | SPACE_BETWEEN/CENTER |
+| Body 보조 행 오른쪽 버튼 영역 | gap **16** | 버튼 그룹 ↔ reaction suffix |
+| 이체 ↔ 조회 | gap **8** | 각 버튼 120×40, secondary/small |
+| Footer Left 자식 간격 | **8** | 링크·명칭 조합 / 세로 Divider / 계좌번호 |
+| 링크 아이콘 ↔ 명칭 | **8** | IconButton 20×20 |
+| Footer Right 자식 간격 | **16** | 금액·버튼 묶음 ↔ 더보기 |
+| 금액 ↔ xsmall 버튼 그룹 | **8** | `spacing/md` |
+| 금액 숫자 ↔ 원 | **4** | `spacing/xs` |
+| 채우기 ↔ 꺼내기 | **4** | 각 49×28 실측, secondary/xsmall |
+| 더보기 IconButton | 24×24 | secondary/24 |
+
+- Body는 Fill W·Hug H, 원본 안쪽 높이 **156 = 위32 + [List60 + gap8 + 보조행40] + 아래16**이다.
+- Footer는 H, SPACE_BETWEEN/CENTER, Fill W·Hug H, 원본 높이 **60 = 상16 + 가장 높은 자식28 + 하16**이다. 좌우 배치의 원본 itemSpacing 값 20은 실제 양쪽 사이 고정 빈 폭이 아니다.
+- 원본 바깥 폭 1360, 높이 220이며 테두리 2가 사방 레이아웃에 포함되어 내부 폭은 1356이다. 높이는 `상단선2 + Body156 + Footer60 + 하단선2 = 220`이다. 테두리를 다시 외부 padding 2로 중복 재현하지 않는다.
+- 원본 외곽 radius 12 (`radius/md`), border는 `stroke/xl` 2px + `border/neutral/tertiary`다. 실제 Card / Surface의 대응 상태·토큰으로 같은 외관을 맞춘다. 내부 Body의 흰색은 `surface/neutral/quaternary-muted`, Footer의 회색은 `surface/neutral/tertiary-muted`다.
+- 원본 Body의 stroke paint는 visible=false, Footer strokes는 빈 배열이다. 남아 있는 strokeWeight 바인딩만 보고 내부 테두리나 분리선을 추가하지 않는다.
+- Body 원본의 별도 gap 12는 직접 자식 vStack 하나라 현재 시각 간격을 만들지 않는다. 실제 List와 보조 행 사이 간격은 vStack의 **8**이다.
+- Footer의 왼쪽은 계좌 연결/명칭/계좌번호, 오른쪽은 금액/채우기·꺼내기/더보기 조합이다. 숫자 전용 금액·계좌번호는 기존 Pretendard 규칙을 따른다. 문구·금액은 원본 기획으로 교체한다.
+
+#### List 내부 정보 구조
+
+- 실제 List는 `Slot-Middle` + `Slot-Suffix`를 H/gap **16**으로 배치한다. Suffix는 iconButton 타입이며 원본 24×24다.
+- Slot-Middle 안 정보 행은 은행 아이콘 영역(24)과 정보 영역을 H/gap **12**로 결합한다.
+- 정보 영역은 V/gap **2**로 First/Second 행을 배치한다.
+- First 행은 상품명·은행·계좌번호 묶음과 잔액을 양끝 정렬한다. 상품명·Divider·계좌 정보의 내부 간격은 8, 은행명↔계좌번호는 4다.
+- Second 행은 수정 가능한 표시명과 최근 거래/잔액 등 보조 데이터를 양끝 정렬한다. 원본 hStack itemSpacing 16과 실제 양끝 빈 폭을 구별한다.
+- 이 내부 구조는 List의 실제 인스턴스·슬롯을 재사용하며 Card의 Body를 대신하는 임의 절대좌표 텍스트로 재구성하지 않는다.
+
+| 실제 하위 컴포넌트 | 원본 variant | component key |
+|---|---|---|
+| List | 단일 컴포넌트 | `efc578a125431c008569ed3affe51759bb11531b` |
+| Infobox / Basic | size=medium, status=info | `74e62192ed17356a3e353cc17754cce4d921c383` |
+| BoxButton | secondary/small | `b20b82eee273f930c668788109e73de668023c03` |
+| BoxButton | secondary/xsmall | `9d292f00e41cb996e999ff0f9f25faa2994eedd6` |
+| Item / Suffix | variant=iconButton | `648fdb7c47d14666faa86ece4766fd639f8d4356` |
+| Item / Suffix | variant=reactionButton | `850edb79385d21e34f15bb08a927a2e7509eb067` |
+| IconButton | secondary/24 | `d9a1a69acb340ca57be86e75cc6f8ab508d3b1c3` |
+
+구조·padding·간격을 유지하되 콘텐츠 변화에는 Hug/Fill로 대응한다. 신규 카드는 실제 Card / Surface 인스턴스이며 Detach를 금지한다.
