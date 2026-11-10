@@ -42,7 +42,7 @@
 3.2 ## BODY 기본 레이아웃 속성Width: 1440px (고정)Height: Hug contentsAuto Layout Flow: HorizontalPadding: 48px 40px (상하 48px, 좌우 40px)Gap: 기본 48px (LNB 배치 시 32px)3.3 LNB 및 2단 본문 레이아웃 구조LNB가 포함된 화면 구조는 ## BODY 하위에 Container 1과 Container 2로 나누어 가로 배치합니다.## BODY Gap: 32pxLNB 영역: Container 1 (Width: 316px)메인 콘텐츠 영역: Container 2 (Width: 664px)Plaintext## BODY (flow: horizontal, gap: 32px, padding: 48px 40px, width: 1440)
 ├─ Container 1 (LNB, width: 316)
 └─ Container 2 (Main Contents, width: 664)
-4. 컴포넌트 조합 및 패턴별 세부 규칙4.1 상단 타이틀 및 인포박스 간격## HEADER 다음: Title / Page 배치Title / Page + Infobox / FullWidth 조합:Title / Page와 Infobox / FullWidth 사이 간격: 48pxInfobox / FullWidth와 그 다음 하단 콘텐츠 사이 간격: 48pxPagination / Basic 배치: 상단 콘텐츠와의 간격 16px4.2 Table 컴포넌트 규칙반응형 높이 맞춤 (Fill):Table / Header 또는 Table / Cell이 수평으로 배치될 때, 한쪽 셀의 콘텐츠 증가로 높이가 커지면 상대적으로 작은 쪽의 높이 값을 fill로 설정합니다.Title / Headline + Table 조합:Title / Headline과 Table 사이 간격: gap: 20px동일한 [Title / Headline + Table] 그룹이 하단에 반복될 경우 그룹 간 간격: 48px테이블 하단 설명 텍스트 (TextList / Unordered):테이블 하단에 단일 또는 복수의 TextList / Unordered가 조합될 경우 간격: gap: 16px이때 사용되는 TextList / Unordered의 폰트 사이즈: size: 144.3 콘텐츠 박스 3종 (Card / Surface, Data Block, Text Box) 분류 및 제작 기준구분Card / SurfaceData BlockText Box주된 목적정보와 사용자 동작의 결합사실 데이터 조회·대조설명·안내·주의·상태 전달사용 예시계좌·상품 선택, 상세 이동, 이체이름, 전화번호, 계좌정보, 금액유의사항, 상담센터 안내, 상태 설명사용자 동작박스 전체 또는 내부 요소에 동작 있음박스 자체에는 동작 없음정보 전달이 주목적 (동작 없음)제작 방식실제 디자인 시스템 컴포넌트 인스턴스Auto Layout 프레임으로 직접 구성Auto Layout 프레임으로 직접 구성주요 콘텐츠원형 Slot·Card 하위 컴포넌트Title, DataListTitle, Text, TextList, Divider1) Card / Surface최신 디자인 시스템의 실제 Card / Surface 인스턴스를 유지하며 절대 Detach하지 않습니다.내부 패딩: 32px (사방)제목/설명 구성: 제목은 Card / Body / Group-A, 설명·목록은 Card / Body / Group-C의 해당 variant 사용간격: Groups 간격 16px, 설명 목록용 Group 내부 간격 12px라디오 선택형 Card:Card / Header / Affix — variant=radio (24×24px) 사용Body: 가로 Auto Layout, 가로 Fill, 세로 Hug, gap: 12pxGroups: 가로 Fill카드당 Affix는 1개만 노출하며 카드와 라디오의 선택/비활성 상태를 일치시킵니다.2) Data Block사실 데이터 조회 목적의 Auto Layout 프레임입니다.PlaintextData Block
+4. 컴포넌트 조합 및 패턴별 세부 규칙4.1 상단 타이틀 및 인포박스 간격## HEADER 다음: Title / Page 배치Title / Page + Infobox / FullWidth 조합:Title / Page와 Infobox / FullWidth 사이 간격: 48pxInfobox / FullWidth와 그 다음 하단 콘텐츠 사이 간격: 48pxPagination / Basic 배치: 상단 콘텐츠와의 간격 16px4.2 Table 컴포넌트 규칙Table 제작 기본: Table이라는 Auto Layout 프레임을 생성하고 Grid로 설정합니다. 열별로 고정 폭과 Fill을 조합하며 실제 Grid의 row/column gap을 사용합니다. 트랙 HUG/FLEX와 자식 셀 FIXED/FILL을 구별하고, 상세 실측과 제작 기준은 6장 P06을 따릅니다.반응형 높이 맞춤 (Fill):Table / Header 또는 Table / Cell이 수평으로 배치될 때, 한쪽 셀의 콘텐츠 증가로 높이가 커지면 상대적으로 작은 쪽의 높이 값을 fill로 설정합니다.Title / Headline + Table 조합:Title / Headline과 Table 사이 간격: gap: 20px동일한 [Title / Headline + Table] 그룹이 하단에 반복될 경우 그룹 간 간격: 48px테이블 하단 설명 텍스트 (TextList / Unordered):테이블 하단에 단일 또는 복수의 TextList / Unordered가 조합될 경우 간격: gap: 16px이때 사용되는 TextList / Unordered의 폰트 사이즈: size: 144.3 콘텐츠 박스 3종 (Card / Surface, Data Block, Text Box) 분류 및 제작 기준구분Card / SurfaceData BlockText Box주된 목적정보와 사용자 동작의 결합사실 데이터 조회·대조설명·안내·주의·상태 전달사용 예시계좌·상품 선택, 상세 이동, 이체이름, 전화번호, 계좌정보, 금액유의사항, 상담센터 안내, 상태 설명사용자 동작박스 전체 또는 내부 요소에 동작 있음박스 자체에는 동작 없음정보 전달이 주목적 (동작 없음)제작 방식실제 디자인 시스템 컴포넌트 인스턴스Auto Layout 프레임으로 직접 구성Auto Layout 프레임으로 직접 구성주요 콘텐츠원형 Slot·Card 하위 컴포넌트Title, DataListTitle, Text, TextList, Divider1) Card / Surface최신 디자인 시스템의 실제 Card / Surface 인스턴스를 유지하며 절대 Detach하지 않습니다.내부 패딩: 32px (사방)제목/설명 구성: 제목은 Card / Body / Group-A, 설명·목록은 Card / Body / Group-C의 해당 variant 사용간격: Groups 간격 16px, 설명 목록용 Group 내부 간격 12px라디오 선택형 Card:Card / Header / Affix — variant=radio (24×24px) 사용Body: 가로 Auto Layout, 가로 Fill, 세로 Hug, gap: 12pxGroups: 가로 Fill카드당 Affix는 1개만 노출하며 카드와 라디오의 선택/비활성 상태를 일치시킵니다.2) Data Block사실 데이터 조회 목적의 Auto Layout 프레임입니다.PlaintextData Block
 ├─ Title — 필요한 경우
 └─ DataList Group — gap: 12px
    ├─ DataList
@@ -579,3 +579,119 @@ Title / Table                       V / gap 20
 | Item / Vertical | inProgress / depth=2 / hover=false | `372b1d67bb72ac32649528121eab56461e3819e3` |
 
 화면 삭제 후에도 이 구조·variant·폭·토큰 기록을 기준으로 재구성한다. component key는 당시 연결 기록이며 최신 발행 라이브러리에서 확인한다. 인스턴스를 Detach하지 않는다.
+
+
+### P05. 완료 화면의 BODY 구성과 간격
+
+#### 출처와 범위
+
+- 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
+- 사용자 링크: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24680
+- 링크 노드는 해당 완료 화면의 HEADER다. 부모 `Case_완료` / `88:24679`에서 실제 BODY `88:24684`를 찾아 **BODY 안 구성과 간격만** 기록했다. 헤더·푸터와 완료 이후 업무 동작은 기록 범위에서 제외한다.
+- Figma 원본은 수정하지 않았다.
+
+#### 구조
+
+```text
+## BODY                           V / gap 48 / padding 48 40
+├─ Container 1                    V / 가로 Fill·세로 Hug / padding 20 0
+│  └─ Feedback                    large / 내부 V gap 20 / 중앙 정렬
+│     ├─ Item / Feedback
+│     │  └─ status-circleCheck     64×64
+│     └─ Title+error_text
+│        └─ title                 완료 메시지
+├─ Container 2                    V / gap 20 / 가로 Fill·세로 Hug
+│  ├─ Title / Headline
+│  └─ Table                       GRID / 요약 결과 2행
+├─ Container 3                    V / gap 20 / 가로 Fill·세로 Hug
+│  ├─ Title / Section
+│  └─ Table                       GRID / 상세 결과 3행
+└─ Container 4                    V / 가로 Fill·세로 Hug / 중앙 정렬
+   └─ ButtonGroup                 count=multi, size=large
+      └─ Slot-Button              H / gap 12
+         ├─ BoxButton
+         └─ BoxButton
+```
+
+원본 두 표의 프레임 이름은 `Table Grid`다. 위 구조에서는 사용자 확정 테이블 제작 규칙에 따라 신규 프레임 이름을 `Table`로 표기했다. 인스턴스 내부 `Title+error_text` 등 고유 계층은 유지한다.
+
+| 요소/관계 | 실측 | 토큰·배치 |
+|---|---:|---|
+| BODY | 폭 1440 / 높이 771 | 폭 Fixed·높이 Hug, 원본 V, primary MIN / counter MIN |
+| BODY padding | 상하 48 / 좌우 40 | `spacing/7xl` / `spacing/6xl` |
+| 콘텐츠 폭 | 1360 | BODY 내부 전체 폭 |
+| 각 Container 사이 | 48 | `spacing/7xl` |
+| Container 1 padding | 상하 20 / 좌우 0 | `spacing/2xl`, Feedback 중앙 정렬 |
+| Feedback | 1360×112 | Fill W·Hug H |
+| Feedback 아이콘 ↔ 메시지 | 20 | `spacing/2xl` |
+| Feedback 아이콘 | 64×64 | 실제 status-circleCheck 인스턴스 |
+| 완료 메시지 | 높이 28 | 원본 문구 `자동이체 등록이 완료되었어요` |
+| 제목 ↔ 각 표 | 20 | `spacing/2xl` |
+| 첫 제목 / 첫 표 | 28 / 91 높이 | Container 2 전체 139 |
+| 둘째 제목 / 둘째 표 | 28 / 136 높이 | Container 3 전체 184 |
+| 결과 표의 제목 열 | 폭 240 고정 | Table / Header |
+| 결과 표의 값 열 | 남은 폭 1120 Fill | Table / Cell |
+| CTA | 320×56 / 중앙 | 각 버튼 154×56, 슬롯 gap 12 |
+
+- BODY 상대 y는 Container 1=48, Container 2=248, Container 3=435, Container 4=667이다. 각 높이는 152/139/184/56이며 상하 padding과 Container gap이 반영된 결과다. 재사용 시 이 좌표·전체 높이를 고정하지 않고 Auto Layout과 Hug로 계산한다.
+- Container 1은 `20 + Feedback 112 + 20 = 152`, Feedback은 `아이콘 64 + gap 20 + 메시지 28 = 112`다.
+- Feedback 내부 `Title+error_text`의 gap 8, Container 1/4의 gap 10은 원본 속성이다. 현재 직접 자식이 하나라 추가 시각 간격을 만들지 않으므로 새 공통 간격으로 적용하지 않는다.
+- 결과 표는 두 열 Grid다. 첫 표 2행, 둘째 표 3행, 실제 row/column gap 모두 0. 행 콘텐츠 높이는 45, 표 상단선 1이 포함되어 전체가 91/136으로 관찰된다. 셀 padding은 상하 12 (`spacing/lg`)·좌우 16 (`spacing/xl`)다.
+- 원본 결과 표 트랙은 `[HUG, FLEX]`이며 Header의 고정 폭 240이 첫 열을 결정하고 값 셀이 남는 폭을 채운다. 표 설정은 P06 방식으로 적용한다.
+- 본문 예시 제목 `타이틀입니다`, 버튼 `버튼명`은 기획 문구로 교체한다. 화면에서 확인한 두 결과 영역과 두 버튼을 모든 완료 업무의 필수 개수로 고정하지 않는다.
+- Feedback 원본 variant 표기는 `varient=large`이며 component key는 `d421043c19670294d67d1a724db0c2d35a5feb14`다. 기존 4.7의 Container 1 상하 padding 20 규칙과 동일하다.
+- BODY 세로 흐름은 이 원본의 관찰값이다. 신규 화면의 최상위 BODY는 기존 필수 레이아웃 규칙을 따르며 필요하면 내부 세로 Container에 이 순서를 구성한다.
+
+### P06. Table Auto Layout의 Grid 및 고정 폭·Fill 열 구성
+
+#### 확정 제작 원칙
+
+- **표는 `Table`이라는 Auto Layout 프레임을 만든 뒤 레이아웃을 Grid로 설정하고, 열 역할에 따라 고정 폭과 Fill을 조합한다.** 가로·세로 프레임을 반복하거나 셀의 x/y만 지정해 표 모양을 흉내 내지 않는다.
+- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-23672
+- 실제 노드 `88:23672`는 이름 `Table`, type `FRAME`, `layoutMode=GRID`다. 가이드용 Layout Grid 오버레이 또는 별도의 네이티브 TABLE 노드를 뜻하지 않는다.
+- 표 바깥에 설명/도구를 결합하는 세로 래퍼와 **실제 Grid Table**을 구별한다. 표 하단 도구/안내는 Grid 셀로 끼워 넣지 않고 바깥 Auto Layout에서 간격을 적용한다.
+
+#### 참조 표의 실제 설정
+
+| 항목 | 값 |
+|---|---|
+| Table 프레임 크기 | 1360×540 실측 |
+| Table 가로/세로 sizing | Fill / Hug |
+| 내부 padding | 0 |
+| Grid 열 / 행 | 8열 / 11행 (Header 1행 + 데이터 10행) |
+| 실제 Grid column gap / row gap | 0 / 0 |
+| 원본 열 트랙 | HUG, HUG, FLEX, FLEX, FLEX, FLEX, FLEX, FLEX |
+| 원본 행 트랙 | 모두 HUG |
+| gridItemsPositioning | ROW_AUTO_FLOW |
+| gridAutoTracks | NONE |
+| 자식 | Table / Header 8개 + Table / Cell 80개 = 88개 |
+| 행·열 span | 모두 1 |
+| 셀 높이 | 모든 행 49 실측 |
+| 표 상단선 | 1, 표 하단 외부선 속성 0 |
+
+| 열 | 역할 | 폭 정책 | 원본 셀 속성 |
+|---|---|---|---|
+| 1 | 체크박스 | 80 고정 영역 | Header FIXED 80, 데이터 Cell은 FILL |
+| 2 | 기관명 | 120 고정 영역 | Header 및 데이터 Cell 모두 FIXED 120 |
+| 3 | 그룹명 | Fill | Header/Cell FILL |
+| 4 | 금융기관명 | Fill | Header/Cell FILL |
+| 5 | 계좌번호 | Fill | Header/Cell FILL |
+| 6 | 출금등록/해제 | Fill | Header/Cell FILL |
+| 7 | 휴대폰 번호 | Fill | Header/Cell FILL |
+| 8 | 작성한 내용 노출 | Fill | Header/Cell FILL |
+
+- 남는 폭은 `1360 − 80 − 120 = 1160`이고 동일 가중치 FLEX 6개 열이 약 `193.333`씩 나눈다. **이 실측 소수 폭을 개별 셀의 고정 폭으로 하드코딩하지 않는다.** Table 폭이 달라지면 Fill 열이 함께 변한다.
+- 원본 첫 두 트랙의 type은 FIXED가 아니라 **HUG**다. 고정 폭 Header/Cell이 열의 기준 폭 80/120을 결정하고 해당 열의 Fill 자식은 그 기준을 채운다. 트랙의 `HUG/FLEX`와 셀의 `FIXED/FILL`은 서로 다른 속성이므로 구별한다.
+- 고정 폭은 해당 업무의 열 역할에 따라 정한다. 80/120은 이 참조 목록의 기준이며 다른 표의 모든 열에 복사하지 않는다. 완료 상세 표 P05의 240 + Fill 구성도 같은 원리다.
+- 해당 열 안 Header와 모든 Cell의 실제 폭이 동일하도록 구성한다. 한 행만 별도 프레임으로 만들어 열 정렬이 달라지지 않게 한다.
+- 높이는 행 콘텐츠에 맞게 Hug로 결정하고 같은 행의 나머지 Header/Cell은 세로 Fill로 맞춘다. 원본은 첫 체크박스 Header만 세로 HUG, 나머지 Header/Cell은 세로 FILL이다.
+- 현재 전체 높이 540은 `49×11 + 상단선 1`이다. 데이터 행 개수·줄바꿈·입력 UI에 따라 높이를 다시 계산하며 540 또는 행 높이 49를 전역 고정값으로 쓰지 않는다.
+- 위에서부터 행 순서대로 셀을 넣고 동일한 열 순서를 유지한다. 원본 ROW_AUTO_FLOW는 자식 순서로 행·열을 결정한다. 병합이 필요한 표는 기획에 따라 span을 설정하되 이 참조에는 병합이 없다.
+- `itemSpacing`에 남은 값을 Grid row/column gap으로 해석하지 않는다. Grid에서는 `gridRowGap`과 `gridColumnGap`을 확인한다.
+- Table / Header와 Table / Cell은 실제 KBDS 인스턴스를 유지하고 Detach하지 않는다. 테두리·Fill·padding·숫자 전용 variant 등은 라이브러리 규격을 따른다. 숫자 전용 데이터는 기존 Pretendard 규칙을 따른다.
+
+#### 검수 기준
+
+- 실제 Table 프레임이 Grid인지, 고정 열 폭과 Fill 분배가 맞는지, 모든 행의 세로 열 경계가 일치하는지 확인한다.
+- row/column gap 0으로 셀 경계가 맞닿고, 내용 증가 시 같은 행 높이가 맞는지 확인한다.
+- Table 전체는 부모의 콘텐츠 폭을 채우고 세로는 Hug인지 확인한다. 상단선 두께가 포함된 높이를 콘텐츠 높이와 혼동하지 않는다.
