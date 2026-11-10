@@ -16,6 +16,7 @@
 
 - **한글 및 일반 UI 텍스트**: `KBFG Text`
 - **숫자 전용 표현 (금액, 날짜, 수치 등)**: `Pretendard`
+- **Title / Section 원본 스펙**: `Title/xl∙18∙Bold`를 사용합니다. P08의 데이터 없음·있음 참조에 잘못 적용된 Title / Section 스펙은 무시합니다. 이전 참조의 제목 높이나 서체 관찰값보다 이 사용자 확정 스펙을 우선합니다.
 
 ---
 
@@ -45,7 +46,7 @@
 3.2 ## BODY 기본 레이아웃 속성Width: 1440px (고정)Height: Hug contentsAuto Layout Flow: HorizontalPadding: 48px 40px (상하 48px, 좌우 40px)Gap: 기본 48px (LNB 배치 시 32px)3.3 LNB 및 2단 본문 레이아웃 구조LNB가 포함된 화면 구조는 ## BODY 하위에 Container 1과 Container 2로 나누어 가로 배치합니다.## BODY Gap: 32pxLNB 영역: Container 1 (Width: 316px)메인 콘텐츠 영역: Container 2 (Width: 664px)Plaintext## BODY (flow: horizontal, gap: 32px, padding: 48px 40px, width: 1440)
 ├─ Container 1 (LNB, width: 316)
 └─ Container 2 (Main Contents, width: 664)
-4. 컴포넌트 조합 및 패턴별 세부 규칙4.1 상단 타이틀 및 인포박스 간격## HEADER 다음: Title / Page 배치Title / Page + Infobox / FullWidth 조합:Title / Page와 Infobox / FullWidth 사이 간격: 48pxInfobox / FullWidth와 그 다음 하단 콘텐츠 사이 간격: 48pxPagination / Basic 배치: 상단 콘텐츠와의 간격 16px4.2 Table 컴포넌트 규칙Table 제작 기본: Table이라는 Auto Layout 프레임을 생성하고 Grid로 설정합니다. 열별로 고정 폭과 Fill을 조합하며 실제 Grid의 row/column gap을 사용합니다. 트랙 HUG/FLEX와 자식 셀 FIXED/FILL을 구별하고, 상세 실측과 제작 기준은 6장 P06을 따릅니다.반응형 높이 맞춤 (Fill):Table / Header 또는 Table / Cell이 수평으로 배치될 때, 한쪽 셀의 콘텐츠 증가로 높이가 커지면 상대적으로 작은 쪽의 높이 값을 fill로 설정합니다.Title / Headline + Table 조합:Title / Headline과 Table 사이 간격: gap: 20px동일한 [Title / Headline + Table] 그룹이 하단에 반복될 경우 그룹 간 간격: 48px테이블 하단 설명 텍스트 (TextList / Unordered):테이블 하단에 단일 또는 복수의 TextList / Unordered가 조합될 경우 간격: gap: 16px이때 사용되는 TextList / Unordered의 폰트 사이즈: size: 144.3 콘텐츠 박스 3종 (Card / Surface, Data Block, Text Box) 분류 및 제작 기준구분Card / SurfaceData BlockText Box주된 목적정보와 사용자 동작의 결합사실 데이터 조회·대조설명·안내·주의·상태 전달사용 예시계좌·상품 선택, 상세 이동, 이체이름, 전화번호, 계좌정보, 금액유의사항, 상담센터 안내, 상태 설명사용자 동작박스 전체 또는 내부 요소에 동작 있음박스 자체에는 동작 없음정보 전달이 주목적 (동작 없음)제작 방식실제 디자인 시스템 컴포넌트 인스턴스Auto Layout 프레임으로 직접 구성Auto Layout 프레임으로 직접 구성주요 콘텐츠원형 Slot·Card 하위 컴포넌트Title, DataListTitle, Text, TextList, Divider1) Card / Surface최신 디자인 시스템의 실제 Card / Surface 인스턴스를 유지하며 절대 Detach하지 않습니다.내부 패딩: 32px (사방)제목/설명 구성: 제목은 Card / Body / Group-A, 설명·목록은 Card / Body / Group-C의 해당 variant 사용간격: Groups 간격 16px, 설명 목록용 Group 내부 간격 12px라디오 선택형 Card:Card / Header / Affix — variant=radio (24×24px) 사용Body: 가로 Auto Layout, 가로 Fill, 세로 Hug, gap: 12pxGroups: 가로 Fill카드당 Affix는 1개만 노출하며 카드와 라디오의 선택/비활성 상태를 일치시킵니다.2) Data Block사실 데이터 조회 목적의 Auto Layout 프레임입니다.PlaintextData Block
+4. 컴포넌트 조합 및 패턴별 세부 규칙4.1 상단 타이틀 및 인포박스 간격## HEADER 다음: Title / Page 배치Title / Page + Infobox / FullWidth 조합:Title / Page와 Infobox / FullWidth 사이 간격: 48pxInfobox / FullWidth와 그 다음 하단 콘텐츠 사이 간격: 48pxPagination / Basic 배치: 상단 콘텐츠와의 간격 16px4.2 Table 컴포넌트 규칙Title / Section + Table 조합: 제목과 Table 사이 gap은 20px (spacing/2xl)입니다. 데이터 없음은 Feedback small과 바깥 래퍼 상하 padding 32px, Feedback 아이콘·문구 간격 16px를 적용하며 상세 상태 구성은 6장 P08을 따릅니다.Table 제작 기본: Table이라는 Auto Layout 프레임을 생성하고 Grid로 설정합니다. 열별로 고정 폭과 Fill을 조합하며 실제 Grid의 row/column gap을 사용합니다. 트랙 HUG/FLEX와 자식 셀 FIXED/FILL을 구별하고, 상세 실측과 제작 기준은 6장 P06을 따릅니다.반응형 높이 맞춤 (Fill):Table / Header 또는 Table / Cell이 수평으로 배치될 때, 한쪽 셀의 콘텐츠 증가로 높이가 커지면 상대적으로 작은 쪽의 높이 값을 fill로 설정합니다.Title / Headline + Table 조합:Title / Headline과 Table 사이 간격: gap: 20px동일한 [Title / Headline + Table] 그룹이 하단에 반복될 경우 그룹 간 간격: 48px테이블 하단 설명 텍스트 (TextList / Unordered):테이블 하단에 단일 또는 복수의 TextList / Unordered가 조합될 경우 간격: gap: 16px이때 사용되는 TextList / Unordered의 폰트 사이즈: size: 144.3 콘텐츠 박스 3종 (Card / Surface, Data Block, Text Box) 분류 및 제작 기준구분Card / SurfaceData BlockText Box주된 목적정보와 사용자 동작의 결합사실 데이터 조회·대조설명·안내·주의·상태 전달사용 예시계좌·상품 선택, 상세 이동, 이체이름, 전화번호, 계좌정보, 금액유의사항, 상담센터 안내, 상태 설명사용자 동작박스 전체 또는 내부 요소에 동작 있음박스 자체에는 동작 없음정보 전달이 주목적 (동작 없음)제작 방식실제 디자인 시스템 컴포넌트 인스턴스Auto Layout 프레임으로 직접 구성Auto Layout 프레임으로 직접 구성주요 콘텐츠원형 Slot·Card 하위 컴포넌트Title, DataListTitle, Text, TextList, Divider1) Card / Surface최신 디자인 시스템의 실제 Card / Surface 인스턴스를 유지하며 절대 Detach하지 않습니다.내부 패딩: 32px (사방)제목/설명 구성: 제목은 Card / Body / Group-A, 설명·목록은 Card / Body / Group-C의 해당 variant 사용간격: Groups 간격 16px, 설명 목록용 Group 내부 간격 12px라디오 선택형 Card:Card / Header / Affix — variant=radio (24×24px) 사용Body: 가로 Auto Layout, 가로 Fill, 세로 Hug, gap: 12pxGroups: 가로 Fill카드당 Affix는 1개만 노출하며 카드와 라디오의 선택/비활성 상태를 일치시킵니다.2) Data Block사실 데이터 조회 목적의 Auto Layout 프레임입니다.PlaintextData Block
 ├─ Title — 필요한 경우
 └─ DataList Group — gap: 12px
    ├─ DataList
@@ -834,3 +835,97 @@ Popup                             400×320 / Fixed W·H
 | Divider / Horizontal | secondary/thickness=1px | `b154a5e09047df6dcbf02775b74e664260c48b01` |
 
 원본 속성의 `vatiant`/`varient` 표기는 실제 관찰값이다. 최신 라이브러리 속성명을 확인해서 사용한다. 슬롯에 실제 인스턴스를 조합하며 Popup을 Detach해서 임의 프레임으로 재현하지 않는다.
+
+
+### P08. Title / Section + Table의 데이터 없음·있음 상태와 간격
+
+#### 출처 및 제목 스펙 예외
+
+- 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
+- 데이터 없음: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=99-47875
+  - 화면 `Case_금융거래한도계좌 해제_대상없음`, 지정 영역 `Container 3` / `99:47875`.
+- 데이터 있음: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25364
+  - 화면 `Case_금융거래한도계좌 해제_대상있음`, 지정 영역 `Container 3` / `88:25364`.
+- **두 참조의 현재 Title / Section은 잘못 적용되어 있으므로 현재 인스턴스의 서체·크기·높이·부가 설명 구성을 제목 원본 스펙으로 학습하지 않는다.** 원본 스펙은 사용자 확정값 **`Title/xl∙18∙Bold`**다. 신규 생성은 이 원본 스타일을 사용하고 기존 일반 UI 서체 규칙을 따른다.
+- 제목의 정확한 행높이·내부 간격은 위 원본 스타일/컴포넌트로 확인하며 현재 화면의 제목 높이를 근거로 추정하지 않는다. 다른 패턴에 적힌 Title / Section의 과거 관찰 높이 역시 이 원본 서체 스펙을 덮어쓰지 않는다.
+- 이 절은 제목·Table 조합과 상태별 간격 기록이다. Figma 원본은 수정하지 않았다.
+
+#### 공통 조합
+
+```text
+Title / Table                        V / Fill W·Hug H / gap 20
+├─ Title / Section                   원본 Title/xl∙18∙Bold 적용
+└─ Table 또는 Table / Contents       데이터 유무에 따라 본문 전환
+```
+
+- **Title / Section ↔ Table 사이 gap: 20 / `spacing/2xl`.** 데이터가 없을 때와 있을 때 동일하게 유지한다.
+- 관련 요소는 실제 세로 Auto Layout으로 묶는다. 원본 `Title + Table`은 신규 생성 시 대표 명칭 기준 `Title / Table`로 정리한다.
+- 원본 콘텐츠 폭은 1360이며 가로 Fill·세로 Hug를 기본으로 한다. BODY padding 상하 48/좌우 40, 다른 BODY Container와의 간격 48은 기존 규칙을 유지한다.
+- 두 참조에 별도로 남아 있는 숨김 일반 설명 Text는 `visible=false`다. 숨김 요소 때문에 빈 gap을 남기거나 임의로 설명을 표시하지 않는다. 제목 인스턴스 안에 잘못 포함된 설명 역시 필수 콘텐츠로 복제하지 않는다.
+
+#### A. 데이터 없음: small Feedback
+
+```text
+Title / Table                        V / gap 20
+├─ Title / Section
+└─ Table / Contents                  V / gap 0 / padding 0
+   ├─ 상단 경계선                    1px
+   ├─ Feedback                       Auto Layout 래퍼 / padding 32 0
+   │  └─ Feedback                    실제 인스턴스 / small
+   │     ├─ Item / Feedback          48×48
+   │     └─ 완료·결과 문구 영역        현재 문구 높이 24
+   └─ Divider / Horizontal           secondary / 1px
+```
+
+| 관계/영역 | 간격·규격 | 토큰/해석 |
+|---|---|---|
+| 제목 ↔ 빈 결과 Table 영역 | 20 | `spacing/2xl` |
+| 빈 결과 래퍼 padding | 상하 32 / 좌우 0 | `spacing/5xl` |
+| Feedback 아이콘 ↔ 문구 | 16 | `spacing/xl` |
+| Feedback 아이콘 영역 | 48×48 | small 타입의 Item / Feedback |
+| 실제 Feedback 높이 | 88 | 아이콘 48 + gap 16 + 문구 24 |
+| Feedback 바깥 래퍼 높이 | 152 | padding 32 + Feedback 88 + padding 32 |
+| 하단 Divider | 1 | secondary / thickness=1px |
+| Table / Contents 자식 gap | 0 | 경계선과 Feedback 영역을 이어 붙임 |
+
+- **데이터가 없는 결과 안내는 Feedback small을 사용한다.** 완료 화면의 large Feedback으로 바꾸지 않는다.
+- 원본 Feedback은 `varient=small`, component key `5043fce90aa14ec77b4a1ca9816dc0b3f746d0ea`다. 가로 Fill·세로 Hug, 내부 세로 배치·가로 중앙 정렬이다.
+- 원본 안내 문구는 `금융거래한도제한 계좌가 없습니다`. 실제 문구는 해당 기획안에 따른다.
+- 원본 상단선은 높이 0의 LINE에 stroke 1이 적용되어 레이아웃 높이를 차지하지 않는다. Feedback 래퍼 152와 하단 Divider 1이 합쳐져 외부 Table 영역 높이는 153이다. 상단선의 보이는 두께와 Auto Layout이 차지하는 높이를 구별한다.
+- 이 상태는 상단 경계선 + 빈 결과 Feedback + 하단 Divider이며 **데이터 표의 Header 행을 표시하지 않는다.** P07의 팝업 빈 결과는 Header 행을 유지한 별도 패턴이므로 모든 no-data 화면에 동일하게 강제하지 않는다.
+- 원본은 Table 이름의 **세로 Auto Layout 래퍼**이며 데이터 셀이 없는 상태다. P06의 실제 데이터용 Grid Table과 역할을 구별한다. 신규 명명은 `Table / Contents` 등 역할에 맞게 정리하고, 실제 데이터 표는 P06의 Grid 방식으로 구성한다.
+- 제목 스펙이 잘못된 원본의 전체 Container 높이와 Table 시작 y는 재사용하지 않는다. 올바른 제목 스타일을 적용한 뒤 간격 20과 Hug로 배치를 다시 계산한다.
+
+#### B. 데이터 있음: Grid Table
+
+```text
+Title / Table                        V / gap 20
+├─ Title / Section                   원본 Title/xl∙18∙Bold 적용
+└─ Table                             GRID / 2열·2행
+   ├─ Table / Header                 계좌번호 / 폭 240 고정
+   ├─ Table / Cell                   값 / 남은 폭 Fill
+   ├─ Table / Header                 상품명 / 폭 240 고정
+   └─ Table / Cell                   값 / 남은 폭 Fill
+```
+
+| 관계/영역 | 간격·규격 | 적용 |
+|---|---|---|
+| 제목 ↔ Grid Table | 20 | `spacing/2xl` |
+| Grid row gap / column gap | 0 / 0 | 셀 경계를 맞닿게 구성 |
+| 셀 padding | 상하 12 / 좌우 16 | `spacing/lg` / `spacing/xl` |
+| 제목 열 / 값 열 | 240 고정 / 1120 Fill 실측 | 전체 1360에서 남는 폭을 채움 |
+| 표 행 높이 | 45 실측 | 같은 행의 Header·Cell 세로 Fill |
+| 표 전체 높이 | 91 실측 | 두 행 45×2 + 상단선 1 |
+
+- 원본 `Table Grid`는 실제 GRID이고 열 트랙은 `[HUG, FLEX]`다. 고정 240 Header가 첫 열을 결정하고 데이터 셀이 나머지 폭을 채운다. 신규 프레임 이름은 `Table`로 하고 P06 규칙을 따른다.
+- 이 데이터 있음 상태에서는 해당 Grid를 표시하며 데이터 없음용 Feedback을 함께 노출하지 않는다. 콘텐츠 변화에 따라 표·부모 높이를 Hug로 재계산한다.
+- 바깥 원본 Container 3의 gap은 24이나 직접 자식이 `Title + Table` 하나뿐이라 현재 시각적 간격을 만들지 않는다. **제목↔표 사이에 24를 적용하지 않고 내부 조합의 20을 적용한다.**
+- 원본 제목 래퍼의 gap 16 역시 추가 설명이 숨겨진 현재 상태에서는 별도 간격을 만들지 않는다. 원본의 잘못된 제목 높이 31·전체 조합 높이 142를 올바른 스타일의 기준으로 쓰지 않는다.
+
+#### 재사용 시 핵심
+
+- `Title / Section`의 원본 스타일 `Title/xl∙18∙Bold`를 적용한다.
+- 제목·표 조합 gap은 상태와 관계없이 20이다.
+- 데이터 없음은 small Feedback, 래퍼 상하 32, 아이콘·문구 gap 16이다.
+- 데이터 있음은 실제 Grid Table, 고정·Fill 열, 셀 상하 12/좌우 16이다.
+- 현재 두 화면의 제목 인스턴스 스펙을 복제하지 않으며 원본 전체 높이를 고정하지 않는다.
