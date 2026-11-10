@@ -28,6 +28,9 @@
 
 ## 3. 화면 레이아웃 및 영역 규격
 
+- **집중형 입력 프로세스의 우측 단계 패널:** 해당 UI를 사용하는 화면에서는 `StepIndicator / Vertical` 패널을 `## BODY` 내부의 오른쪽 열에 둡니다. 참조 3열 구성은 LNB 316px / 본문 664px / 단계 패널 316px, 열 간격 32px (`spacing/5xl`), BODY padding 상하 48px·좌우 40px입니다. 상세 구조와 상태는 6장 P04를 따릅니다.
+
+
 ### 3.1 화면의 기본 3단 구조
 일반 화면은 최상위에서 다음 3개 기본 영역 프레임으로 분할합니다. (Popup 컴포넌트 내부 영역명은 대소문자를 구분하여 `Header`, `Body`, `Footer` 사용)
 
@@ -471,3 +474,108 @@ Title / Table                       V / gap 20
 | BoxButton | primary/large, 기본 상태 | `d206f834d8d80e5bd6ab306b8033f3c0e5214bc5` |
 
 참조 화면이 삭제되면 화면 노드 ID는 재사용할 수 없다. component key는 당시 연결 기록이며 라이브러리 최신 이름·variant·토큰을 확인한 뒤 사용한다. Text Box와 사용자 정의 Auto Layout 래퍼는 실제 컴포넌트 인스턴스로 오인하지 않는다.
+
+
+### P04. 집중형 입력 프로세스의 BODY 우측 세로 진행 단계 패널
+
+#### 출처와 확정 적용 원칙
+
+- 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
+- 원본: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24576
+- 화면 `Case_가입_집중형` / `88:24429`, BODY `88:24434`, 지정 UI `Container 3` / `88:24576`.
+- **해당 UI를 사용하는 특정 입력 프로세스에서는 `StepIndicator / Vertical` 진행 단계 패널을 BODY 내부의 오른쪽 열에 배치한다.** 헤더의 가로 단계 표시와 구별한다.
+- 패널은 BODY의 자식으로 본문과 가로 Auto Layout에 참여한다. 원본은 `layoutPositioning=AUTO`이며 절대 좌표로 띄운 오버레이가 아니다. 스크롤 고정/sticky 여부는 확인되지 않았으므로 이 기록만으로 고정 동작을 추가하지 않는다.
+- BODY·패널 구조·서체를 Plugin API로 확인하고 BODY 스크린샷과 대조했다. Figma 원본은 수정하지 않았다.
+
+#### BODY 3열 구조와 우측 배치
+
+```text
+## BODY                              H / gap 32 / padding 48 40
+├─ Container 1                       LNB / 폭 316
+├─ Container 2                       본문 / 폭 664 / V / gap 48
+└─ Container 3                       우측 단계 패널 / 폭 316 / Hug H
+   └─ StepIndicator Group            V / gap 20
+      ├─ StepIndicator / Vertical     완료: 사업자 정보 확인
+      ├─ StepIndicator / Vertical     완료: 가입범위 선택
+      ├─ StepIndicator / Vertical     진행 중: 고객정보 확인
+      │  └─ StepIndicatorVertical
+      │     ├─ Item / Vertical        depth=1, state=inProgress
+      │     └─ verticalList
+      │        ├─ lineContainer       세로 연결선
+      │        └─ Slot-Step           V / gap 0
+      │           ├─ Item / Vertical  depth=2, state=completed
+      │           └─ Item / Vertical  depth=2, state=inProgress
+      ├─ StepIndicator / Vertical     미시작: 뱅킹가입정보 입력
+      └─ StepIndicator / Vertical     미시작: 가입완료
+```
+
+- 위 Container 2와 StepIndicator Group은 **신규 생성 명명 예시**다. 원본 본문 이름은 `Container 4`, 반복 단계 래퍼는 `stepIndicatorVertical inner`다. 신규 화면은 역할과 순서에 맞게 Container 1/2/3으로 명명하고, 반복 단계는 실제 세로 Auto Layout의 `StepIndicator Group`으로 묶는다. 기존 원본 정리 시 부모·순서·역할을 임의로 바꾸지 않는다.
+- `StepIndicatorVertical`, `verticalList`, `Slot-Step` 등 실제 인스턴스 내부 고유 계층은 유지한다. 원본 외부 패널은 사용자 정의 FRAME이며 Card / Surface 인스턴스로 확인된 것이 아니다.
+
+| 영역/관계 | 원본 실측·속성 | 토큰/적용 |
+|---|---|---|
+| BODY | 1440×828, H, Fixed W·Hug H | 모든 열 위쪽 정렬: primary MIN / counter MIN |
+| BODY padding | 상하 48 / 좌우 40 | `spacing/7xl` / `spacing/6xl` |
+| 열 사이 간격 | LNB↔본문 32, 본문↔우측 패널 32 | `spacing/5xl` 바인딩 확인 |
+| LNB | 폭 316, BODY 상대 x=40 / y=48 | 원본 Hug W·H, 현 콘텐츠 폭 316 |
+| 본문 | 폭 664, x=388 / y=48 | Fixed W·Hug H, 내부 V gap 48 (`spacing/7xl`) |
+| 우측 패널 | 폭 316, x=1084 / y=48 | Fixed W·Hug H, 본문 시작과 윗선 정렬 |
+| 패널 오른쪽 끝 | x=1400 | BODY 오른쪽 가장자리에서 40 안쪽 |
+| 패널 내부 padding | 사방 20 | `spacing/2xl` |
+| 패널 내부 콘텐츠 폭 | 276 = 316−20−20 | 원본 내부 래퍼 Fixed W·Hug H; 각 단계는 Fill W·Hug H |
+| 최상위 단계 상호 간격 | 20 | 내부 세로 래퍼 gap, `spacing/2xl` |
+| 일반 최상위 단계 | 276×32 | Item / Vertical depth=1의 행 높이 32 |
+| 하위 단계를 펼친 현재 단계 | 276×154 | 32 + gap 4 + 하위 영역 118 |
+| 현재 예시의 전체 내부 높이 | 362 | 32+32+154+32+32 + 20×4 |
+| 현재 패널 전체 높이 | 402 | 내부 높이 362 + 상하 padding 40, 고정하지 않고 Hug |
+
+전체 가로 관계는 `40 + 316 + 32 + 664 + 32 + 316 + 40 = 1440`이다. 현재 좌표를 하드코딩하는 대신 BODY의 가로 Auto Layout과 열 폭·토큰 간격으로 우측 정렬을 재현한다. 원본 패널 외부 프레임은 H/gap 20이나 직접 자식이 하나이므로 **여러 단계의 세로 간격을 결정하는 것은 내부 V 래퍼의 gap 20**이다.
+
+#### 패널 표면과 그림자
+
+- 외부 패널 radius: 20 / `radius/2xl`.
+- Fill: `surface/neutral/quaternary-muted`, 실제 visible=true이며 원본에서는 흰색으로 표시된다.
+- `strokes: []`: 실제 외곽 테두리는 없다. stroke/md 바인딩이나 strokeWeight=1 속성이 남아 있어도 테두리를 추가하지 않는다. `strokesIncludedInLayout=false`다.
+- DROP_SHADOW: x=0, y=4, blur=6, spread=0. 색상은 `opacity/gray/950/gray950-a10`에 바인딩되어 있고 alpha 0.1이다.
+- 원본 effect style ID: `S:c23a7e54401721798477ca6b26b4a6b471b2147f,14749:403`. 최신 라이브러리의 해당 스타일을 확인해 재사용하고 임의 그림자를 만들지 않는다.
+
+#### 단계 상태와 하위 구조
+
+- 각 최상위 항목은 실제 `StepIndicator / Vertical` 인스턴스다. 하나의 인스턴스에 전체 5단계를 억지로 넣지 않고 원본처럼 단계별 인스턴스를 반복한다.
+- 최상위 내부 구조: `StepIndicator / Vertical > StepIndicatorVertical > Item / Vertical`, 필요 시 `verticalList`를 추가로 표시한다. 최상위 Item과 하위 목록 사이 gap은 **4 / spacing/xs**다.
+- 원본 상태: 1 사업자 정보 확인=completed, 2 가입범위 선택=completed, 3 고객정보 확인=inProgress, 4 뱅킹가입정보 입력=notStarted, 5 가입완료=notStarted. 순서·문구·상태·단계 수는 해당 기획에 맞게 바꾼다.
+- 완료 단계는 체크 표시와 단계명 우측 chevron, 진행 단계는 현재 번호와 단계명 강조, 미시작 단계는 번호와 약한 텍스트로 표시된다. 원본 인스턴스의 상태 variant로 표현하며 개별 색상만 바꿔 상태를 흉내 내지 않는다.
+- 최상위 Item의 내부 `step`은 H/gap 8 (`spacing/md`)로 상태 표시와 문구를 결합한다. hStack padding은 completed 상하 6/좌 4/우 8, inProgress·notStarted 상하 6/좌우 4 실측이다. 내부 인스턴스 규격을 유지한다.
+- 현재 단계의 `verticalList`: H, padding 좌 16 (`spacing/xl`) / 우 12 (`spacing/lg`), 폭 276, 세로 Hug.
+- `lineContainer`: 폭 2, 높이 118, 내부 absolute 연결선이다. **컴포넌트 내부 연결선의 absolute와 BODY 패널의 일반 Auto Layout 배치를 혼동하지 않는다.** 원본 연결선 토큰은 `icon/neutral/tertiary-muted`다.
+- `Slot-Step`: 폭 248, V/gap 0, Fill W·Hug H. 하위 Item / Vertical 2개가 59 높이씩 맞닿아 세로선을 이어간다. 하위 항목 사이에 최상위 gap 20을 적용하지 않는다.
+- 하위 Item / Vertical: depth=2, H, gap 12 (`spacing/lg`), Fill W·Hug H. 연결선 영역 폭 2 + gap 12 + hStack 폭 234 = 248.
+- 하위 hStack padding: 상하 8 / 좌 12 / 우 16. 내부 텍스트 묶음은 V/gap 6. 제목 20 + gap 6 + 보조 설명 17 + 상하 padding 16 = 원본 하위 행 높이 59다.
+- 하위 단계 문구 `Step`과 `국민 000000-00-000000`은 예시다. 실제 업무 문구로 교체하며 줄바꿈·하위 단계 수 변경 시 패널 높이를 Hug로 재계산한다.
+- 하위 목록이 필요하지 않은 단계는 목록을 노출하지 않는다. 원본의 1/2/4/5 단계에는 하위 목록이 표시되지 않는다. 실제 표시 조건은 기획안에 따르며 빈 래퍼·빈 간격을 남기지 않는다.
+
+#### 서체
+
+| 요소 | 원본 폰트 | 크기/행높이 |
+|---|---|---|
+| 최상위 완료·현재 단계명 | KBFG Text Bold | 16/24 |
+| 최상위 미시작 단계명 | KBFG Text Medium | 16/24 |
+| 현재 단계 번호 | Pretendard SemiBold | 16/24 |
+| 미시작 단계 번호 | Pretendard Light | 16/24 |
+| 하위 완료 제목 / 설명 | KBFG Text Medium / Light | 14/20, 12/17 |
+| 하위 현재 제목 / 설명 | KBFG Text Bold / Medium | 14/20, 12/17 |
+
+원본 하위 설명은 한글과 숫자를 포함한 하나의 KBFG Text 문자열이다. 신규 화면의 숫자 전용 표현은 기존 Pretendard 규칙을 따른다.
+
+#### 재연결용 component key
+
+| 컴포넌트 | variant | key |
+|---|---|---|
+| StepIndicator / Vertical | 단일 컴포넌트 | `6d64a53e165cf7f9d92e29637bba2a700ef84253` |
+| Item / Vertical | completed / depth=1 / hover=false | `a987f53a4b28ffad5c754c7007263c2464f91c25` |
+| Item / Vertical | inProgress / depth=1 / hover=false | `2232dc849bc42a252539f67b545d887f61a3b523` |
+| Item / Vertical | notStarted / depth=1 / hover=false | `50fca46a7172d923a82d0dba23c767a5313e7501` |
+| Item / Vertical | completed / depth=2 / hover=false | `a45c78a3d618cfadbef50a7a27e509f0af3f3169` |
+| Item / Vertical | inProgress / depth=2 / hover=false | `372b1d67bb72ac32649528121eab56461e3819e3` |
+
+화면 삭제 후에도 이 구조·variant·폭·토큰 기록을 기준으로 재구성한다. component key는 당시 연결 기록이며 최신 발행 라이브러리에서 확인한다. 인스턴스를 Detach하지 않는다.
