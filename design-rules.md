@@ -30,6 +30,9 @@
 
 ## 3. 화면 레이아웃 및 영역 규격
 
+- **추가 조합 간격:** 최하단 CTA↔Accordion은 48px (`spacing/7xl`). 계좌 Accordion은 `variant=boxData`, 슬롯 내부 Container 간격32px, Title / Section↔다음 콘텐츠16px을 적용합니다. Title / Page 아래 Infobox / Solid↔박스 UI와 ConsentGroup 상호 간격은20px입니다. 상세는 P12~P15를 따릅니다.
+
+
 - **팝업 너비:** 일반 Popup은 1200px을 기본으로 사용하며, 자동 로그아웃 안내처럼 짧은 안내형은 400px 소형 구성을 사용할 수 있습니다. 실제 Popup 인스턴스와 Header/Body/Footer 슬롯을 유지하고, 내부 간격·medium CTA 규격은 6장 P07을 따릅니다.
 
 
@@ -1097,3 +1100,207 @@ BoxButton Group                     H / gap 8
 | IconButton | secondary/24 | `d9a1a69acb340ca57be86e75cc6f8ab508d3b1c3` |
 
 구조·padding·간격을 유지하되 콘텐츠 변화에는 Hug/Fill로 대응한다. 신규 카드는 실제 Card / Surface 인스턴스이며 Detach를 금지한다.
+
+
+### P12. 최하단 CTA와 Accordion, 안내형·계좌형 Accordion
+
+- **최하단 CTA 영역과 Accordion 영역 사이 간격은 48 (`spacing/7xl`)**이다. 영역 순서는 기획을 따르며 버튼 자체 padding이나 Accordion 내부 gap에 48을 중복 적용하지 않는다.
+- 실제 Accordion 인스턴스와 확장 슬롯을 유지하며 Detach하지 않는다. 아래 값은 펼친 상태의 실측이다. 전체 높이는 콘텐츠와 열림·닫힘 상태에 따라 계산한다.
+
+#### 일반 안내 Accordion 스펙
+
+```text
+Accordion                            standard / basic / medium
+├─ Title Area                        H / gap 8 / padding 16 0
+│  ├─ Item / Prefix                  info 아이콘 24
+│  ├─ Content / Start                Fill W / 내부 gap 4
+│  └─ IconButton                     펼침·접힘 / 24
+├─ Expand Area                       V / gap 0 / padding 위8·아래16·좌우0
+│  └─ Slot-contents
+│     └─ TextList Group              복수 안내 시 V / gap 4
+│        └─ TextList / Unordered × N
+└─ Divider / Horizontal              secondary / 1px
+```
+
+- 원본 Accordion: 폭 1360, Fill W·Hug H, V/gap 0/padding 0, `variant=standard, type=basic, size=medium, expanded=true`.
+- Title Area: 높이 56, 가로·세로 MIN/CENTER, 상하 padding 16 (`spacing/xl`), 아이콘·제목·우측 아이콘 사이 gap 8 (`spacing/md`). 제목은 KBFG Text Bold 14/20이다.
+- 본문 Expand Area: 위 8 (`spacing/md`) / 아래 16 (`spacing/xl`), 좌우 0. 본문 슬롯은 Fill W·Hug H다.
+- 원본 Slot-contents에는 높이 20인 TextList 4개가 gap 8로 직접 들어 있다. **신규 생성은 사용자 확정 공통 규칙에 따라 실제 TextList Group으로 묶고 항목 간 gap 4 (`spacing/xs`)를 적용한다.** 원본 gap 8을 새 기본값으로 사용하지 않는다.
+- 원본 TextList는 bullet/size=14/depth=1, 왼쪽 padding 12다. 그룹 gap 4는 마커↔본문 간격과 별개다.
+- 원본 전체 높이 185는 `Title56 + [위8 + 슬롯104 + 아래16] + Divider1`이다. 4개 한 줄 항목에 최신 gap 4를 적용하면 슬롯은 92, 전체는 173으로 계산된다. 줄바꿈 시에는 Hug로 증가한다.
+- Accordion component key: `d14342b496bd3aa5d2e707cf26a183daf5d401ce`.
+
+#### 계좌 관련 Accordion: boxData
+
+- **계좌 관련 데이터를 묶는 Accordion은 `variant=boxData`를 사용한다.** 확인된 원본은 `type=basic, size=large, expanded=true`, component key `15a36367e1935a1a4ace29356ec692971d820bdf`다.
+- root는 V/gap 0/padding 0, Fill W·Hug H, radius 12다. 원본 외부 폭 1360, 테두리 안 콘텐츠 폭 1358이다.
+- Title Area는 상하 padding 24 (`spacing/3xl`)·좌우 32 (`spacing/5xl`), H/gap 12 (`spacing/lg`), 높이 76 실측이다. 계좌 식별 정보와 이체건수·금액, 삭제·펼침 버튼을 실제 컴포넌트 구조로 유지한다.
+- Expand Area는 V/gap 0/padding 0이며 Divider / Horizontal 다음 Slot-contents가 온다.
+
+```text
+Accordion                            variant=boxData
+├─ Title Area                        계좌 정보·건수·금액·액션
+└─ Expand Area
+   ├─ Divider / Horizontal
+   └─ Slot-contents                  padding 0 / gap 0
+      └─ Container                   V / padding 32 / gap 32
+         ├─ Container 1              출금계좌 입력 / V gap 16
+         │  ├─ Title / Section
+         │  └─ Table
+         ├─ Container 2              입금계좌 입력 / V gap 16
+         │  ├─ Title / Section
+         │  └─ Table
+         └─ Container 3              입금계좌 목록 / V gap 16
+            ├─ Title / Section 및 버튼 영역
+            ├─ Table
+            └─ 표 하단 도구 영역
+```
+
+- **Slot 안 전체 콘텐츠 Container는 사방 padding 32, Container 1/2/3 사이 gap 32 (`spacing/5xl`)**다. 이 32는 외부 Accordion 반복 간격이나 제목↔표 간격이 아니다.
+- **각 내부 제목은 Title / Section, 다음 콘텐츠와 gap 16 (`spacing/xl`)**을 사용한다. 원본 서체 스펙 `Title/xl∙18∙Bold`를 적용한다.
+- 계좌 boxData 안의 Title / Section↔Table 간격 **16은 P08 일반 제목·표 조합 gap 20의 명시적 예외**다. 일반 패턴의 20을 이 슬롯에 일괄 덮어쓰지 않는다.
+- 원본 Container 높이 314/284/207과 전체 1012는 현재 내용의 관찰값이다. 실제 서체·데이터·줄바꿈·펼침 상태에 맞게 Hug로 재계산한다.
+
+### P13. 제목이 표시된 InputField 열거와 SegmentedControl / Contents
+
+#### 제목 노출 InputField Group
+
+```text
+InputField Group                       V / gap 16
+├─ InputField                          Title 노출 / 폭 400
+│  ├─ Title / Element                  높이 20
+│  └─ Item / Input                     높이 40
+└─ InputField / BoxButton Group         H / gap 8 / 아래 정렬
+   ├─ InputField                       Title 노출 / 폭 400
+   └─ BoxButton Group                  H / gap 8
+```
+
+- **제목이 표시된 InputField를 세로로 열거할 때 항목 간 gap 16 (`spacing/xl`)**을 적용한다. 원본은 첫 필드 68 + gap16 + 두 번째 필드/버튼행 68 = 전체 152다.
+- 필드 내부 Title / Element↔입력 영역 gap은 **8 (`spacing/md`)**이며, 현재 `20+8+40=68`이다. 필드 내부 gap 8과 필드 상호 gap 16을 구별한다.
+- 원본 첫 라벨은 `내 통장 표시`, 둘째는 `받는 분 통장 표시`다. 제목은 필드 자체의 Title을 표시하며 임의 별도 페이지 제목으로 교체하지 않는다.
+- 두 번째 행은 H, primary MIN / counter MAX: **입력 필드의 아래쪽과 버튼 아래쪽을 맞춘다.** Title을 포함한 필드 전체 높이 68 가운데에 버튼을 놓지 않는다.
+- 입력 필드↔버튼 그룹 gap 8, 버튼 상호 gap 8이다. 원본 버튼은 추가(50×40)와 자주쓰는 메모(104×40), 그룹 폭162, 행 전체 `400+8+162=570` 실측이다. 단독 첫 필드는 폭400, 각 필드의 높이는 Hug다.
+- 원본 `InputField / Button`, `btn`은 신규 생성 시 실제 구성에 맞게 `InputField / BoxButton Group`, `BoxButton Group` 등으로 명명한다. 컴포넌트 내부 고유 이름은 유지한다.
+
+#### SegmentedControl / Contents와 InputField / Contents
+
+```text
+SegmentedControl / Contents            V / gap 16
+├─ SegmentedControl                   medium / 높이 40
+├─ InputField / Contents              V / gap 8
+│  ├─ InputField / BoxButton          H / gap 8
+│  │  ├─ InputField                   폭 400 / 높이 40
+│  │  └─ BoxButton                    출금가능금액 및 한도조회
+│  └─ Text Group                      안내문 묶음 / V gap 4
+│     ├─ Text Group                   가로 안내 1행 / H gap 8
+│     └─ Text Group                   가로 안내 2행 / H gap 8
+└─ CheckBox                           다음이체 시 출금계좌 동일하게 저장
+```
+
+- **SegmentedControl↔InputField / Contents 사이 gap 16 (`spacing/xl`)**.
+- **SegmentedControl / Contents 자체는 V/gap 16**으로 SegmentedControl, 입력·설명 묶음, CheckBox를 배치한다. 입력·설명 묶음↔CheckBox도 16이다.
+- **InputField / Contents 자체는 V/gap 8 (`spacing/md`)**으로 입력/버튼행과 안내문 묶음을 결합한다.
+- 입력/버튼행은 H/gap8. 원본 필드400 + gap8 + 조회버튼172 = 폭580, 높이40이다.
+- 안내문 두 행은 V/gap4 (`spacing/xs`), 각 행의 Text·Divider 조합은 H/gap8이다. 각 안내 행 높이17, 두 행 묶음 높이38, InputField / Contents 높이는 `40+8+38=86`이다. 일반 Text 조합이므로 TextList Group으로 잘못 명명하지 않는다.
+- 전체 원본 높이는 `SegmentedControl40 +16 + 입력설명86 +16 + CheckBox24 =182`다. 폭·높이는 내용 변화에 맞게 Hug/Fill로 계산한다.
+- SegmentedControl은 실제 `size=medium, disabled=false` 인스턴스이며 component key `0913c191bc17e51c03c037c519dcc4149ac4ac23`다. 출금계좌 예시는 국민은행/다른금융(165×40), 입금방식 예시는 직접입력/파일등록/자주쓰는거래(271×40)다.
+
+### P14. 테이블 col width의 원본 구조 기준
+
+- **퍼블리싱 관점의 col width는 해당 화면의 실제 Table 구조에서 열별 폭과 고정·Hug·Fill 정책을 확인해 적용한다.** P06 목록의 80/120이나 P05 상세의 240을 모든 표의 전역 기본 열 너비로 복사하지 않는다.
+- 열별 실제 폭을 기준으로 헤더·모든 행을 동일하게 맞추고, 고정/내용 기준 열과 남은 폭을 채우는 열을 구별한다. 서로 다른 열을 임의로 균등 분배하지 않는다.
+- 현재 계좌 boxData 안에서 확인한 2열 입력형과 7열 목록형의 기준은 다음과 같다. 화면 링크는 저장하지 않는다.
+
+| 표 종류 | 전체 실측 폭 | 열별 기준 폭·정책 | Grid 트랙 |
+|---|---:|---|---|
+| 출금계좌 입력 | 1294 | 라벨 200 고정 / 값 1094 Fill | HUG / FLEX |
+| 입금계좌 입력 | 1300 | 라벨 200 고정 / 값 1100 Fill | HUG / FLEX |
+| 입금계좌 목록 | 1294 | 80 / 80 / 156 / 180 / 172 / 242 / 나머지 Fill 384 | HUG×6 / FLEX |
+
+| 입금계좌 목록 열 | 기준 폭 | 적용 의미 |
+|---|---:|---|
+| 선택 | 80 | 고정 기준 영역 |
+| NO | 80 | 고정 기준 영역 |
+| 입금기관 | 156 | 해당 열의 내용·입력 필드 기준 실측 |
+| 계좌번호 | 180 | 해당 열의 내용·입력 필드 기준 실측 |
+| 이체금액(원) | 172 | 해당 열의 내용·입력 필드 기준 실측 |
+| 계좌명 | 242 | 해당 열의 내용·입력 필드 기준 실측 |
+| 작성한 내용 노출 | 384 (현재 폭에서) | 남는 폭을 채우는 Fill |
+
+- 목록의 앞 6열 합은 910, 전체1294에서 남은384가 마지막 열이다. 마지막384를 모든 화면에서 고정하지 않는다. HUG 열도 임의로 균등 Fill로 바꾸지 않고 원본의 기준 폭을 확보한다.
+- 원본 목록 3~6열 Header는 Fill, 데이터 Cell은 Hug로 조회되었으며 트랙은 HUG다. 자식 sizing과 트랙 sizing을 구별한다. 퍼블리싱에서는 원본 기준 열 폭을 유지하면서 마지막 열이 남는 영역을 채우도록 구현한다.
+- 세 표 모두 실제 Grid row/column gap은 0이며 Header/Cell을 동일한 열 구조에 배치한다. 기존 P06 Grid 제작 규칙은 유지한다.
+- **입금계좌 입력 표는 부모 Container 폭1294보다 표 폭1300이 6 크게 설정된 원본 불일치가 있다.** 기록된 실측1300/1100을 무조건 다른 화면에도 고정 복제하지 않는다. 제작 시 부모 가용 폭과 기획을 확인해 표 전체를 정렬하되 라벨200 고정·값 Fill 정책을 유지한다. 부모1294에 맞추면 값 열은1094가 된다.
+
+### P15. Infobox / Solid 다음 박스 UI와 약관 동의 템플릿
+
+#### 공통 간격 규칙
+
+- **Title / Page 아래 Infobox / Solid, 그 아래 박스형 UI가 이어질 때 Infobox / Solid↔박스 UI 사이 gap은 20 (`spacing/2xl`)**이다.
+- 이 규칙은 Solid 안내와 그 다음 박스 사이에 적용한다. 기존 Title / Page↔Infobox 간격을 임의 변경하지 않으며, Infobox / FullWidth 다음 일반 콘텐츠 gap48을 이 특정 조합에 덮어쓰지 않는다.
+- **복수 ConsentGroup 사이 간격은 20 (`spacing/2xl`)**이다. 약관 템플릿은 Infobox / Solid, ConsentGroup들, 최종동의·안내 묶음을 V/gap20으로 배치한다.
+
+```text
+약관 본문                             V / Fill W·Hug H / gap 20
+├─ Infobox / Solid                    medium / info
+├─ ConsentGroup
+├─ ConsentGroup
+├─ ConsentGroup …
+└─ 최종동의 / 안내 묶음                V / gap 12
+   ├─ ConsentFinal                    variant=muted
+   └─ TextList / Unordered            star / size14 / depth1
+```
+
+- 템플릿 전체 실측 폭1012·높이1776과 그룹 개수4는 예시다. 실제 화면의 가용 폭과 약관 수에 맞게 Fill/Hug로 구성한다.
+- Infobox / Solid: 실제 `size=medium, status=info`, padding 상하12/좌우16, radius12, 높이44 실측. Title Area 내부 아이콘·문구 gap6이다. component key `18356a16cb958afdf54f8fe4da07401b6412640d`.
+
+#### ConsentGroup의 내부 구성과 간격
+
+```text
+ConsentGroup                         실제 인스턴스
+└─ Container                         V / gap 0 / padding 20 32 / radius12
+   ├─ Item / Consent                 variant=1d / 그룹 전체동의
+   └─ Slot                           V / gap 0 / bottom padding4
+      ├─ Divider 래퍼                위8 / 아래12 / 내부 선1
+      ├─ Item / Consent              variant=2d
+      ├─ Item / Consent              variant=2d
+      └─ Item / Consent              필요한 경우 variant=3d-group
+         ├─ Top                      상하 padding8
+         └─ Slot-Depth-3
+            └─ Item / Consent × N    variant=3d / V gap0
+```
+
+| 영역/관계 | 값 | 주의 |
+|---|---|---|
+| ConsentGroup ↔ ConsentGroup | **20** | 부모의 반복 간격 |
+| 그룹 내부 Container padding | 상하20 / 좌우32 | 그룹 바깥 gap20과 별개 |
+| 그룹 Container gap | 0 | 그룹 전체동의와 슬롯 사이 |
+| 전체동의 1d | 상하 padding12 / 좌우0 / 내부 gap8 | 현재 24 높이 콘텐츠를 포함해 행48 |
+| 개별동의 2d | 상하 padding8 / 좌우0 / 내부 gap8 | 현재 행40 |
+| Slot | gap0 / bottom padding4 | 개별 항목은 자신의 padding으로 간격 확보 |
+| Divider 래퍼 | 위8 / 선1 / 아래12 =21 | 임의 gap21로 대체하지 않음 |
+| 3d-group | 좌 padding32 / 아래12 / gap0 | 제목행 Top40 + 하위 항목들 |
+| 3d 항목 | 상하 padding4 / 내부 gap8 | 현재 행32, 항목 상호 gap0 |
+
+- 부모 gap20은 **여러 ConsentGroup 사이**에만 적용한다. Item / Consent 상호 간격을 모두20으로 바꾸지 않는다.
+- 원본 ConsentGroup 바깥 인스턴스의 itemSpacing12는 직접 자식 Container 하나라 현재 그룹 간 여백을 만들지 않는다. 실제 그룹 반복은 부모 V/gap20이 담당한다.
+- 1d는 Prefix24 + Fill Label + 선택적 Suffix20 조합이며 요소 사이 gap8이다. 2d·3d·3d-group은 해당 실제 variant를 사용하여 계층과 들여쓰기를 유지한다.
+- 템플릿에는 전체동의, 개별동의, 접히는 3depth 동의 항목이 조합된다. suffix/전문 이동/열림 상태/필수·선택 문구는 기획안에 맞게 설정한다. 그룹·항목·체크 상태를 예시 그대로 모든 화면에 고정하지 않는다.
+- 신규 반복 래퍼가 필요하면 실제 Auto Layout으로 묶고 `ConsentGroup Group` 등 반복 역할이 드러나는 이름을 사용한다. 인스턴스 내부 고유 명칭과 슬롯은 유지하며 Detach하지 않는다.
+
+#### 최종 동의와 하단 안내
+
+- ConsentFinal은 실제 `variant=muted`, 내부 Container padding 상하4/좌우28, radius12, Item / Consent 1d(행48)를 포함하여 전체 높이56 실측이다.
+- ConsentFinal↔아래 주의 안내 묶음 gap은 **12 (`spacing/lg`)**이다. 하단 안내 래퍼는 padding 사방8, 원본 TextList는 star/size14/depth1이며 현재 두 줄 높이40이다.
+- 복수 TextList를 반복하는 경우 기존 공통 `TextList Group gap4` 규칙을 따른다. 단일 TextList 인스턴스의 고유 내부 구조와 혼동하지 않는다.
+
+| 실제 컴포넌트 | variant | component key |
+|---|---|---|
+| ConsentGroup | 단일 컴포넌트 | `57c6f66085338e360c0c8cff4da4c8881842ad49` |
+| Item / Consent | 1d | `ebac2930b3bb7662d3b37ef88d01213c7785aa81` |
+| Item / Consent | 2d | `8295a350882644017a887db15ec7c69aef378086` |
+| Item / Consent | 3d-group | `8109cc712d77c5ed727737b7f6f55fcc73d986c2` |
+| Item / Consent | 3d | `5b52e206cba5f7c61b58dd02c98de74f41013ce6` |
+| ConsentFinal | muted | `d711b66277395b32eb043de1549c940dfa195b0d` |
+
+위 기록은 원본 확인과 사용자 확정값에 따른다. Figma 원본은 수정하지 않았으며 화면 링크는 기록하지 않는다.
