@@ -48,6 +48,14 @@
 - 화면과 BODY 높이는 실제 콘텐츠에 따라 계산한다. 기존 참조 기록의 전체 화면 폭1440은 당시 관찰값이며, 신규 제작·수정에는 **화면1920 / BODY1440**을 우선 적용한다.
 - Popup 등 별도 규격을 가진 컴포넌트에는 해당 규격을 적용한다.
 
+#### LNB 옆 메인 콘텐츠의 조건부 너비
+
+- `## BODY`의 `Container 1`(LNB)은 폭316px 고정이며, LNB와 `Container 2`의 간격은32px이다.
+- **`Container 2` 우측에 단계 패널 등 별도 영역이 배치되지 않으면 `Container 2`의 Width는 Fill container로 설정한다.** 664px로 고정하거나 우측에 빈 열·숨김 영역의 폭을 남기지 않는다.
+- BODY1440·좌우 padding40·LNB316·gap32인 2열 구성에서 메인 콘텐츠의 계산 폭은 **1012px**이다. 1012는 결과값이며 Fixed로 입력하지 않고 실제 Fill로 설정한다.
+- 우측에 폭316px의 별도 패널이 노출되는 3열 구성에서는 메인 콘텐츠의 계산 폭이664px이다. 기존 본문664 기록은 이러한 3열 구성에 한정하며, 2열 화면의 기본 고정 폭으로 적용하지 않는다.
+- `Container 2` 하위의 제목·Table·콘텐츠 래퍼는 가용 폭을 따라 Fill을 유지한다. 표는 라벨 열의 기준 고정 폭을 유지하고 값 열이 남은 폭을 Fill로 채우도록 한다. 높이는 Hug contents를 유지한다.
+
 ### 3.1 화면의 기본 3단 구조
 일반 화면은 최상위에서 다음 3개 기본 영역 프레임으로 분할합니다. (Popup 컴포넌트 내부 영역명은 대소문자를 구분하여 `Header`, `Body`, `Footer` 사용)
 
@@ -56,9 +64,9 @@
 ├─ ## HEADER
 ├─ ## BODY
 └─ ## FOOTER
-3.2 ## BODY 기본 레이아웃 속성Width: 1440px (고정)Height: Hug contentsAuto Layout Flow: HorizontalPadding: 48px 40px (상하 48px, 좌우 40px)Gap: 기본 48px (LNB 배치 시 32px)3.3 LNB 및 2단 본문 레이아웃 구조LNB가 포함된 화면 구조는 ## BODY 하위에 Container 1과 Container 2로 나누어 가로 배치합니다.## BODY Gap: 32pxLNB 영역: Container 1 (Width: 316px)메인 콘텐츠 영역: Container 2 (Width: 664px)Plaintext## BODY (flow: horizontal, gap: 32px, padding: 48px 40px, width: 1440)
+3.2 ## BODY 기본 레이아웃 속성Width: 1440px (고정)Height: Hug contentsAuto Layout Flow: HorizontalPadding: 48px 40px (상하 48px, 좌우 40px)Gap: 기본 48px (LNB 배치 시 32px)3.3 LNB 및 2단 본문 레이아웃 구조LNB가 포함된 화면 구조는 ## BODY 하위에 Container 1과 Container 2로 나누어 가로 배치합니다.## BODY Gap: 32pxLNB 영역: Container 1 (Width: 316px)메인 콘텐츠 영역: Container 2 (Width: Fill container, 우측 별도 영역이 없는 2열 구성에서는 계산 폭1012px)Plaintext## BODY (flow: horizontal, gap: 32px, padding: 48px 40px, width: 1440)
 ├─ Container 1 (LNB, width: 316)
-└─ Container 2 (Main Contents, width: 664)
+└─ Container 2 (Main Contents, width: Fill → 현재 2열 계산 폭1012)
 4. 컴포넌트 조합 및 패턴별 세부 규칙Tab(1depth) 우측 버튼 조합: Slot > tabs 안에 Tab과 BoxButton을 배치할 수 있습니다. Tab(1depth)과 [Tab(2depth) / SummaryBox] 묶음 사이 gap은 20px, Tab(2depth)과 SummaryBox 사이 gap은 24px입니다. 상세는 6장 P09를 따릅니다.4.1 상단 타이틀 및 인포박스 간격## HEADER 다음: Title / Page 배치Title / Page + Infobox / FullWidth 조합:Title / Page와 Infobox / FullWidth 사이 간격: 48pxInfobox / FullWidth와 그 다음 하단 콘텐츠 사이 간격: 48pxPagination / Basic 배치: 상단 콘텐츠와의 간격 16px4.2 Table 컴포넌트 규칙테이블 하단 더보기: Table 바로 아래 또는 TextButton Group / TextButton Group 다음에 더보기 Button Area를 배치할 때 간격은 16px (spacing/xl)입니다. 더보기는 중앙 정렬의 BoxButton secondary/small, 폭120·높이40, 선행 line-plus 아이콘을 사용합니다. 상세는 6장 P17을 따릅니다.Title / Section + Table 조합: 제목과 Table 사이 gap은 20px (spacing/2xl)입니다. 데이터 없음은 Feedback small과 바깥 래퍼 상하 padding 32px, Feedback 아이콘·문구 간격 16px를 적용하며 상세 상태 구성은 6장 P08을 따릅니다.Table 제작 기본: Table이라는 Auto Layout 프레임을 생성하고 Grid로 설정합니다. 열별로 고정 폭과 Fill을 조합하며 실제 Grid의 row/column gap을 사용합니다. 트랙 HUG/FLEX와 자식 셀 FIXED/FILL을 구별하고, 상세 실측과 제작 기준은 6장 P06을 따릅니다.반응형 높이 맞춤 (Fill):Table / Header 또는 Table / Cell이 수평으로 배치될 때, 한쪽 셀의 콘텐츠 증가로 높이가 커지면 상대적으로 작은 쪽의 높이 값을 fill로 설정합니다.Title / Headline + Table 조합:Title / Headline과 Table 사이 간격: gap: 20px동일한 [Title / Headline + Table] 그룹이 하단에 반복될 경우 그룹 간 간격: 48px테이블 하단 설명 텍스트 (TextList / Unordered):테이블 하단에 단일 또는 복수의 TextList / Unordered가 조합될 경우 간격: gap: 16px이때 사용되는 TextList / Unordered의 폰트 사이즈: size: 144.3 콘텐츠 박스 3종 (Card / Surface, Data Block, Text Box) 분류 및 제작 기준구분Card / SurfaceData BlockText Box주된 목적정보와 사용자 동작의 결합사실 데이터 조회·대조설명·안내·주의·상태 전달사용 예시계좌·상품 선택, 상세 이동, 이체이름, 전화번호, 계좌정보, 금액유의사항, 상담센터 안내, 상태 설명사용자 동작박스 전체 또는 내부 요소에 동작 있음박스 자체에는 동작 없음정보 전달이 주목적 (동작 없음)제작 방식실제 디자인 시스템 컴포넌트 인스턴스Auto Layout 프레임으로 직접 구성Auto Layout 프레임으로 직접 구성주요 콘텐츠원형 Slot·Card 하위 컴포넌트Title, DataListTitle, Text, TextList, Divider1) Card / Surface최신 디자인 시스템의 실제 Card / Surface 인스턴스를 유지하며 절대 Detach하지 않습니다.기본 내부 패딩: 32px (사방). 단, 6장 P11의 Body/Footer 분리형 조회 카드는 Card / Surface 자체 padding을 0으로 설정하고 Slot 내부 Body에 위32·좌우32·아래16, Footer에 상하16·좌우20을 적용합니다. 바깥 기본 padding 32와 중복하지 않습니다.제목/설명 구성: 제목은 Card / Body / Group-A, 설명·목록은 Card / Body / Group-C의 해당 variant 사용간격: Groups 간격 16px, 설명 목록용 Group 내부 간격 12px라디오 선택형 Card:Card / Header / Affix — variant=radio (24×24px) 사용Body: 가로 Auto Layout, 가로 Fill, 세로 Hug, gap: 12pxGroups: 가로 Fill카드당 Affix는 1개만 노출하며 카드와 라디오의 선택/비활성 상태를 일치시킵니다.2) Data Block사실 데이터 조회 목적의 Auto Layout 프레임입니다.PlaintextData Block
 ├─ Title — 필요한 경우
 └─ DataList Group — gap: 12px
