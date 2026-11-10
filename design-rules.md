@@ -1304,3 +1304,121 @@ ConsentGroup                         실제 인스턴스
 | ConsentFinal | muted | `d711b66277395b32eb043de1549c940dfa195b0d` |
 
 위 기록은 원본 확인과 사용자 확정값에 따른다. Figma 원본은 수정하지 않았으며 화면 링크는 기록하지 않는다.
+
+
+### P16. 표 상·하단 도구, 별도 일괄 변경 행과 Pagination을 갖는 목록
+
+#### 적용 범위
+
+- 확인일: 2026-11-10. 전달된 영역은 목록을 구성하는 Container이며, P01의 총 건수·상단 도구 패턴에 **양쪽 하단 TextButton Group, 별도 일괄 변경 행, Pagination**을 결합한 경우다.
+- 실제 컴포넌트·Auto Layout·토큰·가시성을 조회하고 화면 스크린샷과 대조했다. 화면 링크는 저장하지 않으며 Figma 원본은 수정하지 않았다.
+- 일반 BODY의 제목·안내 영역과 목록 영역은 기존 규칙을 따른다. 이번 기록의 주요 범위는 아래 목록 구성이다.
+
+#### 구조와 배치
+
+```text
+Container [N]                        V / Fill W·Hug H / gap 20
+├─ Tab                               1depth, extendable=true / 높이 60
+└─ 목록 콘텐츠 래퍼                    V / gap 20
+   ├─ Amount / Contents              H / gap 20 / 아래 정렬
+   │  ├─ Amount                      Fill W / Hug H
+   │  │  ├─ Left                     총 건수
+   │  │  └─ Right                    현재 수치 / 전체 수치 + 건
+   │  └─ BoxButton Group / InputField H / gap 8 / Hug W·H
+   │     ├─ BoxButton Group          H / gap 8
+   │     │  ├─ BoxButton             계좌순서변경
+   │     │  └─ BoxButton             계좌그룹관리
+   │     └─ InputField               그룹 전체
+   └─ Table / Contents               V / Fill W·Hug H / gap 16
+      ├─ Table                       실제 Grid
+      ├─ TextButton Group / TextButton Group
+      │  ├─ TextButton Group         필터 / 검색 / 편집
+      │  └─ TextButton Group         txt. 저장 / 엑셀 저장 / 인쇄
+      ├─ Text / Contents             H / 오른쪽 정렬 / gap 8
+      │  ├─ Text                     다중선택 그룹변경
+      │  │  └─ Content
+      │  ├─ InputField               전체
+      │  └─ BoxButton                이동
+      └─ Pagination / Basic          가운데 정렬
+```
+
+- 위 목록 콘텐츠 래퍼는 기획 역할에 맞게 명명한다. 원본은 상·하위에 `Amount / Contents`가 중복되어 있으므로 동일 조합 명칭을 중첩 복제하지 않는다.
+- 실제 Grid 프레임은 신규 생성 시 P06 규칙에 따라 `Table`로 명명한다. Grid와 그 아래 도구·페이지를 묶는 외부 세로 래퍼 `Table / Contents`를 구별한다.
+- 각 관련 요소는 실제 Auto Layout으로 묶고, 인스턴스를 Detach하거나 자식 좌표만으로 표·도구를 배열하지 않는다.
+
+#### 간격·크기·정렬
+
+| 관계/영역 | 적용값 | 토큰·정렬 |
+|---|---|---|
+| Tab ↔ 목록 요약·도구 | 20 | `spacing/2xl` |
+| Amount / Contents ↔ 표 | 20 | `spacing/2xl` |
+| Amount ↔ 오른쪽 버튼·필드 묶음 | 20 | Amount가 Fill로 남는 폭을 차지 |
+| 상단 BoxButton 상호 | 8 | `spacing/md` |
+| 상단 버튼 그룹 ↔ 선택 필드 | 8 | `spacing/md` |
+| 표 ↔ 양쪽 TextButton 도구 행 | **16** | `spacing/xl` |
+| TextButton 도구 행 ↔ 일괄 변경 행 | **16** | `spacing/xl` |
+| 일괄 변경 행 ↔ Pagination | **16** | `spacing/xl` |
+| 각 TextButton Group의 버튼 상호 | 16 | `spacing/xl` |
+| 일괄 변경 Text ↔ InputField ↔ BoxButton | 8 | `spacing/md` |
+
+- 전체 콘텐츠 폭은 1360 실측이다. Tab60 + gap20 + [상단 행40 + gap20 + 표·도구·페이지 묶음684] = 목록 영역824다. 높이는 현재 콘텐츠의 결과이며 고정하지 않고 Hug로 계산한다.
+- 상단 Amount / Contents는 H, primary MIN / counter MAX다. Amount는 Fill W·Hug H(952×24), 오른쪽 도구는 Hug W·H(388×40)라 하단을 맞춘다. 우측 배치를 위해 절대 x/y를 주지 않는다.
+- 상단 버튼은 BoxButton secondary/small, 높이40이다. 계좌순서변경은 폭120 고정, 계좌그룹관리는 폭100 Hug, 상단 선택형 InputField는 폭152 고정이다. 필드와 버튼의 실제 컴포넌트/슬롯을 유지한다.
+- 양쪽 TextButton 도구 행은 H, **SPACE_BETWEEN/MIN**, Fill W·Hug H, 높이20이다. 좌측 그룹161×20, 우측 그룹216×20 실측이며 각 그룹은 Hug다. 원본 itemSpacing20이 있어도 양끝 사이 실제 빈 폭을 고정20으로 만들지 않는다.
+- TextButton은 모두 **primary/small**, 높이20이며 아이콘·문구 gap2다. 왼쪽은 필터/검색/편집, 오른쪽은 txt. 저장/엑셀 저장/인쇄다. 기능·문구·노출 여부는 기획에 따른다.
+- **일괄 변경 행은 위 TextButton 행과 분리된 전체 폭의 H 행이며 primary MAX / counter CENTER로 오른쪽 정렬한다.** P01처럼 왼쪽 도구와 오른쪽 변경 영역을 같은 행에 놓는 구성과 구분한다.
+- 일괄 변경은 Text103×20 + gap8 + InputField120×40 + gap8 + 이동 BoxButton50×40 = 실제 콘텐츠289×40이다. 바깥 행은1360×40 Fill이며 남는 왼쪽 공간은 정렬로 확보한다.
+- Table / Contents 높이는 현재 `표540 +16 +도구20 +16 +변경40 +16 +Pagination36 =684`다. 요소가 비노출되면 빈 래퍼와 불필요한 gap도 남기지 않고 재계산한다.
+
+#### Amount의 복합 수치 표시
+
+- 원본은 `총 건수 1/10건` 형태로 표시한다. 이는 **같은 표 요약 안에서 현재 수치와 전체 수치를 함께 보여줄 수 있는 별도 패턴**이며, 해당 수치의 업무 의미·선택 상태 연동은 기획으로 확정한다.
+- Amount 내부 Left↔Right gap4, Right의 숫자 묶음↔단위 gap2다. 숫자 묶음은 첫 수치와 `/전체 수치`를 gap2로 결합한다.
+- 수치1과10은 Pretendard SemiBold17/24, 슬래시와 일반 문구는 KBFG Text로 확인했다. 밑줄 노드는 숨김 상태이므로 기본 표시로 켜지 않는다.
+- 이 Amount 구조를 P09의 탭 카운트에 적용하지 않는다. **Tab 건수는 기존 확정 규칙대로 `입출금 5`처럼 공백 한 칸으로 같은 라벨에 기재한다.**
+
+#### Grid Table과 열 너비
+
+- 실제 Grid는 8열/11행(헤더1+데이터10), row gap0/column gap0, padding0, 가로 Fill·세로 Hug다.
+- 열 순서: 선택 / 기관명 / 그룹명 / 금융기관명 / 계좌번호 / 출금등록·해제 / 휴대폰 번호 / 작성한 내용 노출.
+- 첫 열80, 둘째 열120을 기준으로 확보하고 나머지6열은 동등한 Fill이다. 전체1360에서 남은1160을 나누어 각 약193.333이 되며, 이 소수 폭을 고정하지 않는다.
+- 트랙은 `[HUG, HUG, FLEX, FLEX, FLEX, FLEX, FLEX, FLEX]`다. 자식 Header/Cell의 Fixed·Fill과 트랙 sizing을 구별한다. 표준 열 정책은 P06, 퍼블리싱 col width 적용 원칙은 P14를 따른다.
+
+#### Pagination / Basic
+
+```text
+Pagination / Basic                  H / CENTER·CENTER / gap 32
+├─ hStack                           H / gap 8
+│  ├─ IconButton                    처음 / 24
+│  └─ IconButton                    이전 / 24
+├─ SlotArea                         H / gap 0 / 현재 폭360
+│  └─ Item / Pagination × N          각36×36
+└─ hStack                           H / gap 8
+   ├─ IconButton                    다음 / 24
+   └─ IconButton                    마지막 / 24
+```
+
+- 실제 Pagination / Basic은 `variant=default`, 폭 Fill·높이 Hug36, padding0, 가로·세로 CENTER다.
+- 좌우 이동 버튼 묶음과 페이지 번호 묶음 사이 gap은 **32 (`spacing/5xl`)**. 각 이동 버튼 묶음은 24+8+24=56, 페이지 번호10개 묶음은360이므로 내부 전체 폭은 `56+32+360+32+56=536`이다. 이를 전체1360 행 가운데 배치한다.
+- 각 Item / Pagination은 Fixed36×36, padding 상하8/좌우2, 항목 사이 gap0이다.
+- 원본은 페이지1=active, 페이지2=hover, 나머지 enabled이고 처음·이전 버튼은 disabled=true다. 회색 hover 배경을 현재 페이지 표시로 오인하지 않으며 실제 페이지 상태와 hover/disabled를 구분한다. 예시10페이지·현재1을 전역 고정하지 않는다.
+- 직전 콘텐츠와 Pagination 사이16은 바깥 Table / Contents의 gap이며, Pagination 내부32와 중복하거나 교환하지 않는다.
+
+#### 상위 BODY 문맥
+
+- 원본 BODY 폭1440, 상하 padding48/좌우40, Container 상호 gap48이다. Container1은 Title / Page, Container2는 Infobox / FullWidth, Container3은 위 목록 구성이다.
+- 상위 StepIndicator / Horizontal은 visible=false다. 이를 필수 노출 요소로 추가하지 않는다. 이번 지정 목록 안에는 별도 최하단 CTA가 없다.
+- Infobox / FullWidth는 실제 인스턴스, padding 상하20/좌우24다. 내부 복수 TextList의 반복 간격은 기존 사용자 확정 gap4 규칙을 따른다.
+
+| 실제 컴포넌트 | variant | component key |
+|---|---|---|
+| Tab | 1depth/extendable=true | `53915edb5ada4215a859be5fca8d36a7e113c881` |
+| BoxButton | secondary/small | `b20b82eee273f930c668788109e73de668023c03` |
+| InputField | 기본 상태 | `6a180f941f7bc12168489ec44f9203d0f3a4e7cc` |
+| TextButton | primary/small | `95687195c8b0873f0e13393cf059964ecfde2604` |
+| Pagination / Basic | default | `13fdebbc05101067ac4c6cad5d74f38fd6c3af7f` |
+| Item / Pagination | active | `2cd1237baa5132e02aa1fcd57156a97b9f1c7114` |
+| Item / Pagination | hover | `56da6187ca9837d43304a4f1e259396d2ac4cdb7` |
+| Item / Pagination | enabled | `8e136e3edc6db2a3ed136fa6d8334971dd866ae5` |
+
+기존 라이브러리 인스턴스·토큰을 재사용하고 최신 발행 상태를 확인한다.
