@@ -59,6 +59,52 @@
 - LNB 없이 `Main + 우측 단계 패널`로 구성된 집중형 화면은 `Main=Fill`, 우측 패널316px 고정, 두 영역 간격32px을 적용한다. BODY1440·좌우 padding40에서는 Main의 계산 폭은1012px이다. 1012를 고정 폭으로 입력하지 않는다.
 - 우측 패널이 숨겨지거나 제거되면 Main은 남은 전체 콘텐츠 폭으로 확장한다. LNB가 없는 이 구성의 계산 폭은1360px이며, 비노출 패널을 위한 빈 열이나 추가 gap을 남기지 않는다. 실제로 노출되는 우측 단계 패널은 기획에 따라 유지한다.
 
+### 3.0.1 HEADER의 Breadcrumbs Area 구조·padding·정렬 (2026-11-10 사용자 확정)
+
+Breadcrumbs는 아래의 **화면 전체 폭 배경 영역 → 중앙 고정 폭 래퍼 → 실제 Breadcrumbs 인스턴스** 구조로 사용한다.
+
+```text
+## HEADER                              V / Fill W·Hug H
+├─ GNB / Channel
+└─ Breadcrumbs Area                    H / Fill W·Hug H
+   │                                   primary CENTER / counter CENTER
+   │                                   padding 상하16·좌우40 / gap0
+   └─ Breadcrumbs                      사용자 정의 래퍼 FRAME
+      │                                V / Fixed W1440·Hug H
+      │                                primary MIN / counter MIN
+      │                                padding 상하0·좌우40 / gap0
+      └─ Breadcrumbs                   실제 컴포넌트 INSTANCE
+                                       H / Hug W·Hug H
+                                       primary MAX / counter CENTER
+                                       padding0 / gap4
+```
+
+| 요소 | Width / Height | Padding (상·우·하·좌) | Align |
+|---|---|---|---|
+| Breadcrumbs Area | Fill / Hug | 16 / 40 / 16 / 40 | H: primary CENTER, counter CENTER |
+| Breadcrumbs 래퍼 FRAME | Fixed1440 / Hug | 0 / 40 / 0 / 40 | V: primary MIN, counter MIN |
+| 실제 Breadcrumbs INSTANCE | Hug / Hug | 0 / 0 / 0 / 0 | H: primary MAX, counter CENTER |
+
+- 화면1920 기준 Area는1920, 래퍼는1440으로 중앙에 놓인다. 래퍼의 x=240은 중앙 정렬의 결과이며 좌표로 고정하지 않는다. 실제 Breadcrumbs는 래퍼 왼쪽 padding40에서 시작하므로 화면 기준 시작점은280으로 BODY 내부 콘텐츠의 왼쪽 기준선과 일치한다.
+- **Area의 좌우 padding40과 중앙 래퍼의 좌우 padding40을 모두 유지한다.** Area는 남은 폭 안에서1440 래퍼를 중앙 정렬하므로, 두 padding을 단순히 더해 실제 시작점이 화면 왼쪽80이라고 해석하지 않는다.
+- 실제 Breadcrumbs 인스턴스는 가로 Hug를 유지한다. 내부 primary MAX는 인스턴스 내부 정렬 속성이며, 경로 전체를 화면 오른쪽으로 보내는 배치 규칙이 아니다. 바깥 래퍼의 MIN 정렬로 왼쪽에 배치한다.
+- Area는 높이를48로 고정하지 않는다. 현재 경로 높이17 + 상하 padding16×2로 **높이49**이며, 래퍼와 Area 모두 Hug로 계산한다. 실제 인스턴스 폭258은 현재 경로 문구의 결과로, 고정하지 않는다.
+- Area 배경은 `surface/neutral/tertiary-muted`를 사용한다. 안쪽 래퍼는 fills=[]로 배경을 중복하지 않는다.
+- 실제 Breadcrumbs는 기존 라이브러리 인스턴스와 내부 `IconButton + slot-depth`를 유지한다. 인스턴스 내부 gap4와 슬롯 gap4를 보존하며 Detach하지 않는다. 경로 문구·단계 수는 각 화면 기획에 따른다.
+- 이 규칙은 HEADER의 경로 영역 규칙이다. BODY의 Main/Container 2 Fill 및 우측 단계 패널 정책과 구별한다.
+
+#### 확인한 변수·컴포넌트
+
+| 용도 | 현재 바인딩 이름 / 값 | key |
+|---|---|---|
+| Area 좌우 padding | `spacing/6xl` / 40 | `9f3a6e1ca84e9627129a8315526a0ebd5bc65412` |
+| Area 상하 padding | `spacing-xl` / 16 | `f6ed9bcb1199b98acebb4a8e1a34b9cec6379707` |
+| 래퍼 좌우 padding | `spacing-5xl` / 40 | `4566df02bcaf74d199c2b8870a36049bd036affa` |
+| Area 배경 | `surface/neutral/tertiary-muted` | `95125509c3b477bfe6aab61ecc3b3092bd863eec` |
+| Breadcrumbs | 실제 컴포넌트 | `e6d42619270a362ad38550ac016f3c7dc408fd83` |
+
+변수명이 서로 다른 토큰 체계에 속하므로 이름만 보고 값을 혼동하지 않는다. 위 값·실제 바인딩을 기준으로 적용하며 참조 화면 링크는 기록하지 않는다.
+
 ### 3.1 화면의 기본 3단 구조
 일반 화면은 최상위에서 다음 3개 기본 영역 프레임으로 분할합니다. (Popup 컴포넌트 내부 영역명은 대소문자를 구분하여 `Header`, `Body`, `Footer` 사용)
 
