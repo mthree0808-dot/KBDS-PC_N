@@ -19,6 +19,13 @@
 
 ---
 
+
+### 2.1 복수 TextList / Unordered의 그룹 간격 (2026-11-10 사용자 확정)
+
+- 복수 `TextList / Unordered`는 실제 세로 Auto Layout의 `TextList Group`으로 묶고 **gap: 4px (`spacing/xs`)**를 적용한다.
+- 이 규칙은 안내 박스·약관 안내·테이블 하단 설명 등 복수 TextList 묶음에 공통 적용하며, 참조 화면의 항목 간격이 8 또는 12여도 4를 우선한다.
+- **테이블과 하단 TextList Group 사이 간격 16px (`spacing/xl`)은 유지한다.** 항목 간격 4와 묶음 바깥 간격 16을 혼동하지 않는다. 일반 Text Group이나 다른 컴포넌트 내부 고유 gap에 일괄 적용하지 않는다.
+
 ## 3. 화면 레이아웃 및 영역 규격
 
 ### 3.1 화면의 기본 3단 구조
@@ -65,7 +72,7 @@
 ├─ InputField
 ├─ InputField
 └─ InputField
-그룹 명칭 예시:Text GroupTextList GroupInputField GroupDataList Group (기본 gap: 12px)Card Group (기본 gap: 12px)Data Block Group (기본 gap: 12px)Text Box Group (기본 gap: 12px)Accordion GroupRadio GroupCheckbox Group12.5 단일 항목의 래퍼단일 항목을 배치 목적으로 감싸는 경우 Group을 붙이지 않고 해당 컴포넌트 명칭을 그대로 사용합니다.PlaintextInputField (Auto Layout 래퍼)
+그룹 명칭 예시:Text GroupTextList Group (기본 gap: 4px / spacing/xs)InputField GroupDataList Group (기본 gap: 12px)Card Group (기본 gap: 12px)Data Block Group (기본 gap: 12px)Text Box Group (기본 gap: 12px)Accordion GroupRadio GroupCheckbox Group12.5 단일 항목의 래퍼단일 항목을 배치 목적으로 감싸는 경우 Group을 붙이지 않고 해당 컴포넌트 명칭을 그대로 사용합니다.PlaintextInputField (Auto Layout 래퍼)
 └─ InputField (컴포넌트 인스턴스)
 12.6 서로 다른 두 요소의 결합 ([요소 1] / [요소 2])실제 구성 요소의 대표 명칭을 /로 연결합니다. 세부 유형(Title / Page, Title / Section)은 대표 명칭인 Title로 정리하며, Group이나 Button Area와 같은 역할 명칭은 보존합니다.자식 구성부모 레이어 이름Title / Page + InputFieldTitle / InputFieldTitle / Section + InputField GroupTitle / InputField GroupTitle / Section + List GroupTitle / List GroupTitle / Element + TextTitle / TextInputField Group + Button AreaInputField Group / Button AreaCard Group + Button AreaCard Group / Button AreaText + TextList GroupText / TextList Group12.7 여러 종류의 콘텐츠 결합 ([첫 요소] / Contents)서로 다른 3개 이상의 덩어리 또는 제목과 복합 본문을 묶을 때는 [첫 요소의 대표 명칭] / Contents로 명명합니다.PlaintextTitle / Contents
 ├─ Title / Page
@@ -81,7 +88,7 @@ PlaintextTitle / Contents
 │  └─ Content
 └─ Text
    └─ Content
-복수 TextList:PlaintextTextList Group
+복수 TextList:PlaintextTextList Group (gap: 4px / spacing/xs)
 ├─ TextList / Unordered
 └─ TextList / Unordered
 혼합 본문:PlaintextTitle / Contents
@@ -284,3 +291,183 @@ Case_관리_2
 | InputField | hover/focused/disabled/entered/error=false | `6a180f941f7bc12168489ec44f9203d0f3a4e7cc` |
 
 BoxButton/TextButton의 hover/disabled/pressed는 모두 false인 기본 상태였다. CTA는 중앙 320×56, 슬롯 gap 12, 각 버튼 154×56 실측이며 문구는 삭제/수정이다. CTA의 좌측 tertiary·우측 primary 사용은 기본 디자인 규칙에 따른다.
+
+
+### P02. 테이블 안 비밀번호·OTP·보안 입력 + 확인 버튼
+
+#### 출처와 적용 범위
+
+- 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
+- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24159
+- 화면 `Case_비밀번호발급/변경` / `88:24078`, 본문 `88:24083`, 지정 셀 `Table / Cell` / `88:24159`.
+- **비밀번호, OTP 및 보안 관련 입력에서 개별 확인 버튼이 필요하면 이 패턴을 사용한다.** 확인은 해당 입력 바로 오른쪽에 둔다. 확인 버튼이 없는 입력까지 일괄 추가하지 않는다.
+- 이 절은 UI 구성 기록이며 보안 정책·OTP 실패 횟수 등 업무 규칙을 새로 정하지 않는다. 문구와 검증 조건은 해당 원본 기획안에 따른다.
+
+#### 셀 내부 구조 및 규격
+
+```text
+Table / Cell (실제 인스턴스)
+└─ Slot-Content                      V / Hug W·H / gap 4
+   └─ Input / Button                 H / Hug W·H / gap 8
+      ├─ InputField                  400×40 / Fixed W·Hug H
+      │  └─ Item / Input
+      │     └─ Item / FilledStyle     variant=basic
+      │        ├─ text / Label       비밀번호 입력
+      │        └─ Item / Affix        variant=icon
+      │           └─ line-device-mouse  20×20
+      └─ BoxButton                   secondary / small / 확인
+```
+
+| 요소/관계 | 원본 실측·정렬 | 토큰/적용 |
+|---|---|---|
+| Table / Cell | 1020×65, 가로 Fill·세로 Hug, H, 세로 CENTER | 실제 Table / Cell 인스턴스 유지 |
+| 셀 padding | 상하 12 / 좌우 16 | `spacing/lg` / `spacing/xl` 바인딩 확인 |
+| Slot-Content | 458×40, V, 주축 CENTER·교차축 MIN, padding 0 | gap 4 = `spacing/xs` |
+| Input / Button | 458×40, H, 주축 MIN·교차축 MIN, padding 0 | gap 8 = `spacing/md` |
+| InputField | 400×40, 폭 고정·높이 Hug | 예시 폭이며 기획상 입력 폭이 다르면 규격에 맞게 조정 |
+| 확인 BoxButton | 50×40 실측, Hug W·H, 중앙 정렬 | `variant=secondary, size=small` |
+| 필드 / 버튼 높이 | 각 40 | 같은 행에서 높이를 맞춤 |
+| 필드 placeholder·확인 라벨 | KBFG Text Bold 14 / line-height 20 | 숫자 입력값과 안내 라벨을 구별 |
+| 보안 입력 affix | line-device-mouse, 20×20 | 실제 아이콘/하위 인스턴스 사용, 도형으로 재제작하지 않음 |
+
+- 셀 왼쪽의 Table / Header는 폭 340, 세로 Fill로 입력 셀 높이 65에 맞춰진다. 테이블 전체 폭은 1360이다. 65는 테두리가 포함된 원본 행 실측이며 내용 변화 시 고정하지 않는다.
+- `Input / Button`은 원본 사용자 정의 프레임 이름이다. 신규 생성 시 두 컴포넌트 대표 명칭을 반영하여 `InputField / BoxButton`으로 명명하고 실제 가로 Auto Layout으로 묶는다. 인스턴스 내부 고유 명칭은 유지한다.
+- 현재 비밀번호에는 확인 버튼이 있고, 변경 후 비밀번호/재확인 필드는 비활성으로 보인다. 이 상태를 모든 보안 입력에 고정하지 않으며, 확인 전후 활성화 조건은 기획안에 따른다.
+- 원본 InputField는 기본 상태 hover/focused/disabled/entered/error=false이며, 기본 입력 안에 basic FilledStyle과 보안 affix가 결합되어 있다. 상위 InputField key만 가져와 놓고 보안 affix 구성을 생략하지 않는다.
+
+#### OTP 및 표 하단 안내 결합
+
+```text
+Title / Table                       V / gap 20
+├─ Title / Headline
+└─ Table / TextList Group            V / gap 16
+   ├─ Table Grid
+   │  ├─ Table / Header             일회용 비밀번호(OTP)
+   │  └─ Table / Cell
+   │     └─ Slot-Content
+   │        └─ InputField / BoxButton  H / gap 8
+   └─ TextList Group                V / gap 4
+      ├─ TextList / Unordered
+      └─ TextList / Unordered
+```
+
+- 원본 OTP 셀 `88:24209`에도 동일한 458×40 입력·확인 조합이 있다. placeholder는 `숫자 6자리 입력`, 확인 버튼은 우측에 배치된다.
+- 제목 ↔ 표: 20 (`spacing/2xl`), 표 ↔ 하단 설명 묶음: 16 (`spacing/xl`), 설명 항목 상호: **4 (`spacing/xs`)**.
+- 원본 설명 래퍼 이름 `textlists`는 신규 생성 시 `TextList Group`으로 정리한다.
+- OTP 하단의 두 TextList는 `variant=bullet, size=14, depth=2`, 왼쪽 padding 24, 항목 높이 20 실측이다. 들여쓰기 depth는 기획 위계에 맞게 선택한다.
+- 표 섹션 상호 간격은 BODY 기준 48 (`spacing/7xl`), Title / Headline은 KBFG Text Bold 20/28이다.
+- `Table Grid`의 itemSpacing 속성 10을 셀 사이 가로·세로 간격으로 일반화하지 않는다. 실제 셀은 테이블 경계를 공유한다.
+
+#### 재연결용 component key
+
+| 컴포넌트 | 원본 variant | key |
+|---|---|---|
+| Table / Cell | variant=last, onlyNumber=false | `1b5a0ae0fefd157325271672a78224db2575f047` |
+| Table / Header | variant=default, onlyNumber=false | `ba105a8f29acb712e5c5aa6a3cb2015de330f392` |
+| InputField | 기본 상태 | `6a180f941f7bc12168489ec44f9203d0f3a4e7cc` |
+| Item / Input | variant=default, 기본 상태 | `1a21da059bc9d4f0221961b447fec3e41c87a5f9` |
+| Item / FilledStyle | variant=basic, 기본 상태 | `2e141cbc64f8475eac9ee37813adcb05d2b4fe32` |
+| Item / Affix | variant=icon | `90158ead1d86ecab993ccf6679ce8a99b885d955` |
+| line-device-mouse | 아이콘 | `d21898e990a7cf0e303ee14aae6919465f54bf4a` |
+| BoxButton | secondary/small | `b20b82eee273f930c668788109e73de668023c03` |
+| TextList / Unordered | bullet/14/depth=2 | `5a5dbb8e2363c9870344034ad126740094189999` |
+| Title / Headline | align=left | `bf50f457ca5583c356608499f2a479e58248073a` |
+
+### P03. 서비스 약관 동의 화면의 기본 본문 구성
+
+#### 출처와 적용 범위
+
+- 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
+- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24300
+- 화면 `Case_등록` / `88:24300`, 표시 제목 `전자금융거래제한계좌 등록`, 본문 `88:24305`.
+- **서비스 약관/유의사항 확인과 동의가 필요한 화면의 기본 본문 구성으로 사용한다.** 문구와 단계 수는 기획안으로 교체한다.
+- 헤더·푸터는 기록 범위에서 제외했다. 본문의 구조·컴포넌트·서체를 조회하고 본문 스크린샷으로 대조했다. Figma 원본은 수정하지 않았다.
+
+#### 기본 구조: 신규 화면 명명 기준
+
+```text
+## BODY
+├─ Container 1                         제목 / 단계 영역
+│  ├─ Title / Page
+│  └─ StepIndicator / Horizontal
+├─ Container 2                         V / gap 16
+│  ├─ Text Box                         약관·유의사항 안내
+│  │  └─ Text / TextList Group          V / gap 16
+│  │     ├─ Text Group                 V / gap 12
+│  │     │  ├─ Text > Content           핵심 안내
+│  │     │  └─ Text > Content           보조 안내
+│  │     └─ TextList Group              V / gap 4 (사용자 확정)
+│  │        └─ TextList / Unordered × N
+│  └─ Item / Consent                   variant=1d
+│     ├─ Prefix / Item / Prefix        check-large
+│     └─ Label                        동의 문구
+└─ Container 3                         CTA 중앙 배치
+   └─ ButtonGroup
+      └─ Slot-Button
+         └─ BoxButton                 primary / large
+```
+
+이 구조는 역할과 최신 명명 규칙을 적용한 재사용 구조다. 원본 이름 `Text + Text List Box`, `Text + List Group`, `List Group`, `Frame 2147246237`은 신규 화면에서 각각 `Text Box`, `Text / TextList Group`, `TextList Group`, `Container 3`로 정리한다. 일반 본문이 두 개이므로 `Text Group`으로 구분하며 일반 Text를 TextList로 분류하지 않는다.
+
+#### 간격 및 크기
+
+| 영역/관계 | 원본 확인값 | 신규 생성 적용 |
+|---|---|---|
+| BODY | 1440×730, V, Hug H, padding 48 40 | 상하 `spacing/7xl`=48 / 좌우 `spacing/6xl`=40 |
+| 본문 콘텐츠 폭 | 1360 | BODY 좌우 padding을 제외한 폭 |
+| 제목 영역 ↔ 안내·동의 영역 | 48 | `spacing/7xl` |
+| 안내·동의 영역 ↔ 하단 CTA | 48 | `spacing/7xl` |
+| 제목 영역 | H, SPACE_BETWEEN/CENTER, 1360×36 | Title / Page + StepIndicator / Horizontal |
+| Title / Page | Fill W·Hug H, 높이 36 | KBFG Text Bold 26/36 |
+| StepIndicator / Horizontal | Hug W·Hug H, 높이 32 | 우측 배치, 현재 단계 1 서비스동의 / 총 4단계 예시 |
+| 안내 박스 ↔ Item / Consent | 16 | `spacing/xl` 바인딩 확인 |
+| 안내 박스 padding | 사방 32 | `spacing/5xl` 바인딩 확인 |
+| 안내 박스 내부 Text / TextList Group | V, gap 16, Fill W·Hug H | `spacing/xl` |
+| 핵심 안내 ↔ 보조 안내 | 12 | `spacing/lg` 값 적용 (원본 직접 바인딩 없음) |
+| 일반 본문 묶음 ↔ 목록 묶음 | 16 | `spacing/xl` |
+| 복수 TextList 항목 간격 | 원본 8 | **사용자 최신 지시로 4 / `spacing/xs` 적용** |
+| Item / Consent | 1360×48, H, padding 상하 12/좌우 0 | 가로 Fill·세로 Hug |
+| Consent의 Prefix ↔ Label | 8 | `spacing/md` |
+| Consent 체크 Prefix | 24×24 | Item / Prefix `variant=check-large` |
+| Consent Label | Fill W·Hug H, 24 높이 | KBFG Text Bold 16/24 |
+| 하단 CTA | 가운데 154×56 실측, Hug W·Hug H | BoxButton `primary/large` 1개 |
+
+- 제목 영역의 itemSpacing 속성은 48이지만 실제 원본은 Title Fill + StepIndicator Hug 및 SPACE_BETWEEN 구성이다. 실측 Title 폭 1136.8과 Step 폭 223.2가 전체 1360을 채우므로 두 요소 사이에 별도 48 고정 여백이 보이지 않는다. 원본 수치만으로 필수 gap 48을 추가하지 않는다.
+- 원본 TextList는 9개이며 각 20 높이, 원본 목록 전체 높이 244(20×9+8×8)다. 최신 gap 4 적용 시 같은 한 줄 9개 목록의 높이는 212(20×9+4×8)로 줄어든다. 텍스트 줄바꿈·테두리를 고려하여 상위 높이는 Hug로 재계산하고 원본 382/446/730 높이를 고정하지 않는다.
+- 목록 항목 인스턴스는 `variant=bullet, size=14, depth=1`, KBFG Text Light 14/20, 왼쪽 padding 12다. 인스턴스 내부 마커↔본문 gap 4와 **항목끼리의 세로 gap 4**를 별개 속성으로 관리한다.
+- Item / Consent는 안내 박스 내부가 아닌 그 아래 형제 요소다. 체크 동의 영역과 최하단 진행 CTA를 분리한다.
+- 원본 CTA 래퍼 gap 10은 자식 하나여서 실제 간격에 영향을 주지 않는다. 버튼 문구 `버튼명`은 자리표시자이므로 화면 기획에 맞는 문구로 교체한다.
+- 원본 ButtonGroup의 variant 속성은 `count=multi, size=large`지만 슬롯에는 primary BoxButton 한 개만 있다. 슬롯의 실제 버튼 개수와 variant 이름을 혼동하여 버튼을 두 개로 늘리지 않는다. 신규 생성 시 라이브러리에서 단일 버튼을 지원하는 구성을 확인하되 실제 화면의 단일 CTA 패턴을 유지한다.
+
+#### 안내 박스 스타일과 필수 규칙의 우선순위
+
+- 원본 안내 박스는 Auto Layout FRAME이며 Card / Surface 인스턴스가 아니다. 역할은 설명·안내를 전달하는 **Text Box**다.
+- 원본 radius는 12 (`radius/md`), outline은 1px / `border/neutral/secondary-muted`, `strokesIncludedInLayout=true`다. padding 속성 32 외에 테두리 1px가 레이아웃에 포함되어 자식 위치가 33이고 내부 폭은 1294로 관찰된다.
+- 원본 fill은 `surface/neutral/tertiary-muted`에 바인딩되어 있으나 **paint.visible=false**라서 배경은 실제로 표시되지 않는다. 변수 연결만 보고 회색 배경을 켜지 않는다.
+- 신규 Text Box는 기존 필수 Text Box 규칙을 따른다: padding 32, gap 16, radius 14 (`radius/lg`), 아웃라인형은 `surface/neutral/quaternary-muted` + `stroke/md` + `border/neutral/secondary-muted`. 원본 radius 12나 비노출 fill을 새로운 전역 기본값으로 승격하지 않는다.
+- 원본 박스의 gap 20은 직접 자식이 하나라 시각적 자식 간격을 만들지 않는다. 실제 일반 본문↔목록 관계는 내부 래퍼의 gap 16이다.
+- 원본 BODY는 세로다. 기존 기본 BODY 가로 규칙과의 차이는 P01과 동일하며 신규 생성은 최신 필수 BODY 규칙을 따르면서 내부 Container에서 세로 흐름을 구성한다.
+
+#### 텍스트 위계와 재사용 시 상태
+
+- 핵심 안내: KBFG Text Medium 16/24, `text/neutral/primary`, 원본 내용은 비대면 업무 제한 안내.
+- 보조 안내: KBFG Text Medium 14/20, `text/neutral/secondary`, 원본 내용은 제한 예외 항목 소개.
+- 목록: KBFG Text Light 14/20, 실제 TextList / Unordered 인스턴스 유지.
+- 동의 문구: KBFG Text Bold 16/24, `text/neutral/primary`. 원본 문구는 `유의사항을 확인하고 계좌 등록에 동의하겠습니다.`
+- 단계 숫자: Pretendard 16/24, 현재 단계 SemiBold / 후속 단계 Light. 단계명은 KBFG Text Bold 14/20.
+- CTA 라벨: KBFG Text Bold 18/25. 원본 primary 버튼은 disabled=false다.
+- 동의 여부에 따른 CTA 활성화, 전문 열람 필요 여부, 필수·선택 항목 구분은 이 정적 화면에서 확정할 수 없다. 새 업무 조건을 만들지 말고 기획안을 따른다. 이 원본에 없는 전체 동의/개별 약관 아코디언·팝업 등을 기본 필수 요소로 추가하지 않는다.
+
+#### 재연결용 component key
+
+| 컴포넌트 | 원본 variant | key |
+|---|---|---|
+| Title / Page | align=left | `366007b354df25708d9dce4a7788c2b44e30dba3` |
+| StepIndicator / Horizontal | 단일 컴포넌트 | `d621c953803a7eaa545720572e195d3758d84e99` |
+| TextList / Unordered | bullet/14/depth=1 | `5e484496e22e7e84c91c23bddfe11d1b4a13f35b` |
+| Item / Consent | variant=1d | `ebac2930b3bb7662d3b37ef88d01213c7785aa81` |
+| Item / Prefix | variant=check-large | `9f1afa887c4bc676a1c8707957306f752f0ee949` |
+| ButtonGroup | count=multi, size=large（원본 슬롯 1개） | `f6fbbaad278bc5dc3e0568efdc16711894a01e47` |
+| BoxButton | primary/large, 기본 상태 | `d206f834d8d80e5bd6ab306b8033f3c0e5214bc5` |
+
+참조 화면이 삭제되면 화면 노드 ID는 재사용할 수 없다. component key는 당시 연결 기록이며 라이브러리 최신 이름·variant·토큰을 확인한 뒤 사용한다. Text Box와 사용자 정의 Auto Layout 래퍼는 실제 컴포넌트 인스턴스로 오인하지 않는다.
