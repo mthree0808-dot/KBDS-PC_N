@@ -4,9 +4,10 @@
 
 ## 1. 개요 및 디자인 시스템 환경
 
-- **디자인 시스템 경로**:  
+- **디자인 시스템 경로**:
   [MO 디자인 라이브러리 v0.97 배포준비](https://www.figma.com/design/09eGMNTNnkE0CTxPdr7lnk/MO-%EB%94%94%EC%9E%90%EC%9D%B8-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-v0.97-%EB%B0%B0%ED%8F%AC%EC%A4%80%EB%B9%84-?m=auto&node-id=0-1&t=hdIDoEVSSEiSca7d-1)
 - **적용 원칙**:
+  - **참조 화면 링크 기록 정책**: 사용자가 전달하는 예시·원본·참조 화면 URL은 조회에만 사용하고 이 MD에는 추가하지 않습니다. 화면 생성에 필요한 구조·간격·토큰·variant·컴포넌트 key와 사용자 확정 규칙을 텍스트로 기록합니다. 디자인 시스템 라이브러리 경로는 유지합니다.
   - 화면 생성 및 레이어 구성 시 **오로지 디자인 시스템에 정의된 변수(Variable/Token) 값**만 사용합니다 (색상, 서체, 간격, 라운드 등).
   - 임의의 하드코딩 수치 또는 분리(Detach) 인스턴스 사용을 엄격히 금지합니다.
 
@@ -134,7 +135,6 @@ PlaintextTitle / Contents
 - 페이지: `01. 고객정보조회/수정(기획 v0.81)` / `2:278`
 - 화면: `Case_관리_2` / `88:23627` / 표시 제목 `자주쓰는 계좌관리`
 - 사용자 지정 출발점: `Container 3` / `88:23650`
-- 원본 링크: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-23650
 - 원본 화면은 1440×1667, 본문은 1440×1158. 본문의 콘텐츠 폭은 1360이다.
 - 구조·서체를 Plugin API로 확인하고 화면 스크린샷과 대조했다. Figma 원본은 수정하거나 삭제하지 않았다.
 - 보존 범위는 그룹 관계, 간격, 상·하단 도구 패턴이다. 전체 표의 모든 데이터/셀, 헤더·푸터를 복원하는 명세는 아니다.
@@ -305,7 +305,6 @@ BoxButton/TextButton의 hover/disabled/pressed는 모두 false인 기본 상태�
 #### 출처와 적용 범위
 
 - 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
-- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24159
 - 화면 `Case_비밀번호발급/변경` / `88:24078`, 본문 `88:24083`, 지정 셀 `Table / Cell` / `88:24159`.
 - **비밀번호, OTP 및 보안 관련 입력에서 개별 확인 버튼이 필요하면 이 패턴을 사용한다.** 확인은 해당 입력 바로 오른쪽에 둔다. 확인 버튼이 없는 입력까지 일괄 추가하지 않는다.
 - 이 절은 UI 구성 기록이며 보안 정책·OTP 실패 횟수 등 업무 규칙을 새로 정하지 않는다. 문구와 검증 조건은 해당 원본 기획안에 따른다.
@@ -385,7 +384,6 @@ Title / Table                       V / gap 20
 #### 출처와 적용 범위
 
 - 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
-- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24300
 - 화면 `Case_등록` / `88:24300`, 표시 제목 `전자금융거래제한계좌 등록`, 본문 `88:24305`.
 - **서비스 약관/유의사항 확인과 동의가 필요한 화면의 기본 본문 구성으로 사용한다.** 문구와 단계 수는 기획안으로 교체한다.
 - 헤더·푸터는 기록 범위에서 제외했다. 본문의 구조·컴포넌트·서체를 조회하고 본문 스크린샷으로 대조했다. Figma 원본은 수정하지 않았다.
@@ -485,7 +483,6 @@ Title / Table                       V / gap 20
 #### 출처와 확정 적용 원칙
 
 - 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
-- 원본: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24576
 - 화면 `Case_가입_집중형` / `88:24429`, BODY `88:24434`, 지정 UI `Container 3` / `88:24576`.
 - **해당 UI를 사용하는 특정 입력 프로세스에서는 `StepIndicator / Vertical` 진행 단계 패널을 BODY 내부의 오른쪽 열에 배치한다.** 헤더의 가로 단계 표시와 구별한다.
 - 패널은 BODY의 자식으로 본문과 가로 Auto Layout에 참여한다. 원본은 `layoutPositioning=AUTO`이며 절대 좌표로 띄운 오버레이가 아니다. 스크롤 고정/sticky 여부는 확인되지 않았으므로 이 기록만으로 고정 동작을 추가하지 않는다.
@@ -590,8 +587,7 @@ Title / Table                       V / gap 20
 #### 출처와 범위
 
 - 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
-- 사용자 링크: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-24680
-- 링크 노드는 해당 완료 화면의 HEADER다. 부모 `Case_완료` / `88:24679`에서 실제 BODY `88:24684`를 찾아 **BODY 안 구성과 간격만** 기록했다. 헤더·푸터와 완료 이후 업무 동작은 기록 범위에서 제외한다.
+- 원본 지정 노드는 해당 완료 화면의 HEADER였다. 부모 `Case_완료` / `88:24679`에서 실제 BODY `88:24684`를 찾아 **BODY 안 구성과 간격만** 기록했다. 헤더·푸터와 완료 이후 업무 동작은 기록 범위에서 제외한다.
 - Figma 원본은 수정하지 않았다.
 
 #### 구조
@@ -651,7 +647,6 @@ Title / Table                       V / gap 20
 #### 확정 제작 원칙
 
 - **표는 `Table`이라는 Auto Layout 프레임을 만든 뒤 레이아웃을 Grid로 설정하고, 열 역할에 따라 고정 폭과 Fill을 조합한다.** 가로·세로 프레임을 반복하거나 셀의 x/y만 지정해 표 모양을 흉내 내지 않는다.
-- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-23672
 - 실제 노드 `88:23672`는 이름 `Table`, type `FRAME`, `layoutMode=GRID`다. 가이드용 Layout Grid 오버레이 또는 별도의 네이티브 TABLE 노드를 뜻하지 않는다.
 - 표 바깥에 설명/도구를 결합하는 세로 래퍼와 **실제 Grid Table**을 구별한다. 표 하단 도구/안내는 Grid 셀로 끼워 넣지 않고 바깥 Auto Layout에서 간격을 적용한다.
 
@@ -706,10 +701,10 @@ Title / Table                       V / gap 20
 #### 적용 원칙과 출처
 
 - 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
-- 일반 팝업 예시: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25060
+- 일반 팝업 예시:
   - 바깥 예시 화면 `Case_계좌그룹 관리_nodata` / `88:25060`는 1440×850.
   - 실제 Popup 인스턴스 `88:25119`는 **1200×557**, 표시 제목은 `계좌순서 변경`이다. 바깥 화면 프레임 폭을 팝업 폭으로 오인하지 않는다.
-- 소형 안내 예시: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25139
+- 소형 안내 예시:
   - 실제 Popup 인스턴스 `88:25139`는 **400×320**, 표시 제목은 `자동 로그아웃 예정`이다.
 - **일반적인 팝업은 너비 1200을 기본으로 사용한다. 짧은 안내·시간 알림 등은 이 예시처럼 400 소형 구성을 사용할 수 있다.** 모든 팝업을 무조건 1200으로 늘리거나, 모든 안내를 무조건 400으로 축소하지 않고 화면 목적과 기획에 맞게 선택한다.
 - 두 예시는 같은 실제 `Popup` 컴포넌트 인스턴스이며 참조 variant는 `type=layer, vatiant=default`다. 현재 연결된 main component의 자체 폭은 400으로 조회되었고 첫 인스턴스가 1200으로 확장되어 있다. **사용자가 정한 일반 제작 기본값 1200**과 **현재 main component의 원본 폭 400**을 구별한다.
@@ -842,9 +837,9 @@ Popup                             400×320 / Fixed W·H
 #### 출처 및 제목 스펙 예외
 
 - 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
-- 데이터 없음: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=99-47875
+- 데이터 없음:
   - 화면 `Case_금융거래한도계좌 해제_대상없음`, 지정 영역 `Container 3` / `99:47875`.
-- 데이터 있음: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25364
+- 데이터 있음:
   - 화면 `Case_금융거래한도계좌 해제_대상있음`, 지정 영역 `Container 3` / `88:25364`.
 - **두 참조의 현재 Title / Section은 잘못 적용되어 있으므로 현재 인스턴스의 서체·크기·높이·부가 설명 구성을 제목 원본 스펙으로 학습하지 않는다.** 원본 스펙은 사용자 확정값 **`Title/xl∙18∙Bold`**다. 신규 생성은 이 원본 스타일을 사용하고 기존 일반 UI 서체 규칙을 따른다.
 - 제목의 정확한 행높이·내부 간격은 위 원본 스타일/컴포넌트로 확인하며 현재 화면의 제목 높이를 근거로 추정하지 않는다. 다른 패턴에 적힌 Title / Section의 과거 관찰 높이 역시 이 원본 서체 스펙을 덮어쓰지 않는다.
@@ -934,7 +929,6 @@ Title / Table                        V / gap 20
 ### P09. 1depth 탭 우측 버튼 및 2depth 탭·SummaryBox 조합
 
 - 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`, 화면 `Case_조회`.
-- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25539
 - 지정 노드는 2depth Tab + SummaryBox를 묶은 원본 `Frame 2147246246`이다. 부모 `Tab` / `88:25530`에서 1depth 탭과 오른쪽 버튼까지 함께 확인했다.
 
 ```text
@@ -972,7 +966,6 @@ Tab / Contents                         V / gap 20 / Fill W·Hug H
 
 ### P10. 목적에 맞게 감싼 단일 InputField의 명명과 배치
 
-- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25528
 - 원본 래퍼 `InputField box` / `88:25528` 안에 실제 `InputField` 인스턴스 `88:25529` 하나가 들어 있다.
 - **신규 생성 시 래퍼는 `InputField`로 명명한다.** 단일 항목을 특정 배치·표면 목적으로 감싼 구조이므로 `InputField box`나 `InputField Group`으로 부르지 않는다. 기존 단일 항목 래퍼 규칙과 동일하다.
 
@@ -996,7 +989,6 @@ InputField                            사용자 정의 Auto Layout 래퍼
 
 #### 사용자 확정 제작 원칙
 
-- 참조: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25631
 - 현재 원본 `Container` / `88:25631`은 FRAME이나 **재사용·신규 생성에서는 실제 `Card / Surface` 인스턴스로 감싼다.** 이 조회 카드에는 내부 액션과 이동 요소가 있으므로 일반 데이터 박스로 대체하지 않는다.
 - **Card / Surface 자체 padding은 사방 0**이다. Slot 안의 **Body와 Footer에 각각 원본의 padding을 적용**하여 흰색 본문과 회색 하단 영역이 카드 경계까지 이어지게 한다.
 - 이 패턴은 기존 Card / Surface 기본 padding 32의 **명시적 예외**다. 기본 32를 바깥 카드에 유지한 채 내부 Body/Footer padding을 추가해 여백을 이중으로 만들지 않는다.
