@@ -1,5 +1,3 @@
-Markdown# Figma Design System & Layer Architecture Guide
-
 본 문서는 Figma 기반 UI/UX 디자인 시스템의 변수, 서체, 레이아웃 규격, 컴포넌트 간격 및 12장 레이어 명명·그룹핑 규칙을 정리한 가이드입니다.
 
 ---
