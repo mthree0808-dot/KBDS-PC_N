@@ -1062,6 +1062,20 @@ Card Group                            반복 시 V / gap 12
 - Body 원본의 별도 gap 12는 직접 자식 vStack 하나라 현재 시각 간격을 만들지 않는다. 실제 List와 보조 행 사이 간격은 vStack의 **8**이다.
 - Footer의 왼쪽은 계좌 연결/명칭/계좌번호, 오른쪽은 금액/채우기·꺼내기/더보기 조합이다. 숫자 전용 금액·계좌번호는 기존 Pretendard 규칙을 따른다. 문구·금액은 원본 기획으로 교체한다.
 
+#### 카드 내부 버튼 variant 조합
+
+- **카드 내부 BoxButton은 secondary로만 제한하지 않는다. `모으기`처럼 `variant=tertiary`인 버튼도 함께 배치할 수 있다.** 각 액션의 variant는 해당 기획·디자인 역할에 맞게 유지하며 모든 버튼을 같은 variant로 통일하지 않는다.
+- 확인된 조합: **모으기 = tertiary/small**, **이체·조회 = secondary/small**. 순서는 `모으기 → 이체 → 조회`다.
+- 이 예시에서 각 버튼은 **120×40**, 실제 가로 Auto Layout `BoxButton Group`의 버튼 간 gap은 **8 (`spacing/md`)**이다. 버튼 개수는 화면 기획에 따르며 모으기를 모든 카드에 필수로 추가하지 않는다.
+- tertiary 버튼도 실제 BoxButton 인스턴스와 해당 variant를 사용한다. secondary 인스턴스의 Fill만 임의로 바꿔 대신하지 않는다.
+
+```text
+BoxButton Group                     H / gap 8
+├─ BoxButton                        모으기 / tertiary·small / 120×40
+├─ BoxButton                        이체 / secondary·small / 120×40
+└─ BoxButton                        조회 / secondary·small / 120×40
+```
+
 #### List 내부 정보 구조
 
 - 실제 List는 `Slot-Middle` + `Slot-Suffix`를 H/gap **16**으로 배치한다. Suffix는 iconButton 타입이며 원본 24×24다.
@@ -1075,6 +1089,7 @@ Card Group                            반복 시 V / gap 12
 |---|---|---|
 | List | 단일 컴포넌트 | `efc578a125431c008569ed3affe51759bb11531b` |
 | Infobox / Basic | size=medium, status=info | `74e62192ed17356a3e353cc17754cce4d921c383` |
+| BoxButton | tertiary/small（모으기 예시） | `adc24d1239ed006ee1f91cb4a8ad99fff9651f22` |
 | BoxButton | secondary/small | `b20b82eee273f930c668788109e73de668023c03` |
 | BoxButton | secondary/xsmall | `9d292f00e41cb996e999ff0f9f25faa2994eedd6` |
 | Item / Suffix | variant=iconButton | `648fdb7c47d14666faa86ece4766fd639f8d4356` |
