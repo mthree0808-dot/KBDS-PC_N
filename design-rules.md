@@ -28,6 +28,9 @@
 
 ## 3. 화면 레이아웃 및 영역 규격
 
+- **팝업 너비:** 일반 Popup은 1200px을 기본으로 사용하며, 자동 로그아웃 안내처럼 짧은 안내형은 400px 소형 구성을 사용할 수 있습니다. 실제 Popup 인스턴스와 Header/Body/Footer 슬롯을 유지하고, 내부 간격·medium CTA 규격은 6장 P07을 따릅니다.
+
+
 - **집중형 입력 프로세스의 우측 단계 패널:** 해당 UI를 사용하는 화면에서는 `StepIndicator / Vertical` 패널을 `## BODY` 내부의 오른쪽 열에 둡니다. 참조 3열 구성은 LNB 316px / 본문 664px / 단계 패널 316px, 열 간격 32px (`spacing/5xl`), BODY padding 상하 48px·좌우 40px입니다. 상세 구조와 상태는 6장 P04를 따릅니다.
 
 
@@ -695,3 +698,139 @@ Title / Table                       V / gap 20
 - 실제 Table 프레임이 Grid인지, 고정 열 폭과 Fill 분배가 맞는지, 모든 행의 세로 열 경계가 일치하는지 확인한다.
 - row/column gap 0으로 셀 경계가 맞닿고, 내용 증가 시 같은 행 높이가 맞는지 확인한다.
 - Table 전체는 부모의 콘텐츠 폭을 채우고 세로는 Hug인지 확인한다. 상단선 두께가 포함된 높이를 콘텐츠 높이와 혼동하지 않는다.
+
+
+### P07. 팝업 기본 너비 1200 및 소형 안내 팝업 400
+
+#### 적용 원칙과 출처
+
+- 확인일: 2026-11-10. 파일 `2MavuzZhNpHpqer5fk3ML4`, 페이지 `2:278`.
+- 일반 팝업 예시: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25060
+  - 바깥 예시 화면 `Case_계좌그룹 관리_nodata` / `88:25060`는 1440×850.
+  - 실제 Popup 인스턴스 `88:25119`는 **1200×557**, 표시 제목은 `계좌순서 변경`이다. 바깥 화면 프레임 폭을 팝업 폭으로 오인하지 않는다.
+- 소형 안내 예시: https://www.figma.com/design/2MavuzZhNpHpqer5fk3ML4?node-id=88-25139
+  - 실제 Popup 인스턴스 `88:25139`는 **400×320**, 표시 제목은 `자동 로그아웃 예정`이다.
+- **일반적인 팝업은 너비 1200을 기본으로 사용한다. 짧은 안내·시간 알림 등은 이 예시처럼 400 소형 구성을 사용할 수 있다.** 모든 팝업을 무조건 1200으로 늘리거나, 모든 안내를 무조건 400으로 축소하지 않고 화면 목적과 기획에 맞게 선택한다.
+- 두 예시는 같은 실제 `Popup` 컴포넌트 인스턴스이며 참조 variant는 `type=layer, vatiant=default`다. 현재 연결된 main component의 자체 폭은 400으로 조회되었고 첫 인스턴스가 1200으로 확장되어 있다. **사용자가 정한 일반 제작 기본값 1200**과 **현재 main component의 원본 폭 400**을 구별한다.
+- 컴포넌트·본문 구조·간격·서체를 확인하고 각 팝업 스크린샷과 대조했다. 원본은 수정하지 않았다.
+
+#### 공통 구조와 규격
+
+```text
+Popup (실제 인스턴스 / V / gap 0 / 하단 padding 24)
+├─ Item / Header                   논리 영역 Header
+│  ├─ Title                        Fill W
+│  │  └─ 팝업 타이틀
+│  └─ Container
+│     └─ IconButton                닫기 / 24×24
+├─ Slot                            논리 영역 Body / 본문 슬롯
+│  └─ Container 또는 Container 1…N
+└─ Item / Footer                   논리 영역 Footer
+   └─ ButtonGroup                  count=multi, size=medium
+      └─ Slot-Button               H / gap 8
+         ├─ BoxButton              tertiary / medium
+         └─ BoxButton              primary / medium
+```
+
+- Header/Body/Footer는 Popup 내부의 대소문자 구분 영역 명명 기준이다. 실제 컴포넌트 내부 고유 이름 `Item / Header`, `Slot`, `Item / Footer`와 슬롯 구조는 유지하고, 정리를 위해 Detach하거나 임의로 바꾸지 않는다.
+- Popup은 Fixed W, V, primary MIN / counter CENTER, 바깥 gap 0, padding 상/좌/우 0·하 24이다.
+- Popup radius: **24 / `radius/3xl`**, Fill: `background/neutral/elevated`. 그림자 색상은 `opacity/gray/950/gray950-a10` 바인딩을 사용한다. 실제 컴포넌트 표면·효과를 재사용한다.
+
+| 영역/관계 | 공통 규격 | 토큰/주의 |
+|---|---|---|
+| Header | 높이 64, H, Fill W·Hug H | primary MAX / counter CENTER |
+| Header padding | 상하 16 / 좌우 24 | `spacing/xl` / `spacing/3xl` |
+| Header 제목 ↔ 닫기 래퍼 | gap 16 | `spacing/xl` |
+| 제목 래퍼 | Fill W·Hug H, 높이 32, 상하 padding 4 | `spacing/xs` |
+| 팝업 제목 | KBFG Text Bold 16/24 | `text/neutral/primary` |
+| 닫기 IconButton | 24×24 | primary, size=24 / 내부 line-xMark |
+| Body Slot padding | 위 12 / 좌우 24 / 아래 24 | `spacing/lg` / `spacing/3xl` |
+| Footer | 높이 48, H, 가로 Fill·높이 Hug, 중앙 정렬 | 좌우 padding 24 / 상하 0 |
+| Footer ButtonGroup | 280×48 실측, Hug W·H | `count=multi, size=medium` |
+| Footer 버튼 | 각 136×48 실측 | 좌 tertiary / 우 primary, 모두 medium |
+| Footer 버튼 사이 | 8 | **`spacing/md`**, 일반 화면 large CTA의 gap 12와 구별 |
+| Popup 최하단 여백 | 24 | Footer 내부 padding이 아닌 Popup 자신의 bottom padding |
+
+- 팝업 본문에 일반 페이지 BODY의 1440 폭·48/40 padding·Container gap 48을 그대로 적용하지 않는다. Popup의 Body 슬롯 규격을 따른다.
+- 슬롯 내부 Container 개수는 해당 슬롯만 기준으로 명명한다. 원본 소형 예시는 단일 래퍼가 `Container 1`이지만 신규 생성 시 단일 Container 명명 규칙을 따른다.
+- 원본 스크린샷은 그림자까지 포함해 1232/432 폭으로 반환될 수 있다. 실제 Popup 노드 폭은 1200/400이며 이미지 바깥 그림자 폭을 화면 width로 사용하지 않는다.
+
+#### A. 너비 1200: 목록 관리·빈 결과 팝업
+
+```text
+Popup                             1200 / Fixed W·Hug H
+├─ Item / Header                   계좌순서 변경
+├─ Slot                            V / gap 32 / Fill W·Hug H
+│  ├─ Container 1
+│  │  └─ Infobox / FullWidth
+│  └─ Container 2                  V / gap 20
+│     ├─ InputField / BoxButton Group  H / 양끝·아래 정렬
+│     │  ├─ InputField             거래처
+│     │  └─ BoxButton Group        H / gap 8
+│     │     ├─ BoxButton           맨위로
+│     │     ├─ BoxButton           위로
+│     │     ├─ BoxButton           아래로
+│     │     └─ BoxButton           맨아래로
+│     └─ Table / Contents          V / gap 0
+│        ├─ Table                  GRID / Header
+│        ├─ Feedback               바깥 래퍼 / padding 32 0
+│        │  └─ Feedback            small / 등록된 계좌가 없습니다
+│        └─ Divider / Horizontal   secondary / 1px
+└─ Item / Footer
+```
+
+- 위 `InputField / BoxButton Group`, `BoxButton Group`, `Table / Contents`, Grid `Table`은 신규 생성의 역할별 명명 예시다. 원본은 각각 `Select / Button`, `Frame 2147246240`, 외부 `Table`, 내부 `Table Grid`다. 미정리 이름을 그대로 복제하지 않는다.
+- 실제 본문 폭은 `1200−24−24=1152`다. Slot은 높이 421, padding 12/24/24/24, 자식 Container 사이 gap **32 (`spacing/5xl`)**.
+- Container 1 높이 90, Container 2 높이 263. Slot 높이는 `12+90+32+263+24=421`이다.
+- Infobox는 실제 인스턴스다. 원본 padding 상하 20/좌우 24, 내부 gap 12, radius 12. 복수 TextList가 들어가는 반복 묶음의 항목 간격은 사용자 최신 공통 규칙 **TextList Group gap 4**를 따른다. Infobox 원형의 다른 내부 간격과 혼동하지 않는다.
+- 도구 행 ↔ 표 영역은 **20 / spacing/2xl**. 도구 행 자체는 H, primary SPACE_BETWEEN / counter MAX, 폭 Fill·높이 Hug 40이다. itemSpacing 속성 20을 양쪽 그룹 사이의 실제 고정 여백으로 해석하지 않는다.
+- 좌측 InputField는 152×40, 선택형 표시 문구 `거래처`. 우측 버튼 그룹은 337×40, Hug W·H, 내부 gap 8. 버튼은 모두 secondary/small이며 현재 폭은 78/66/78/91이다.
+- 표 Header는 6열: 선택 80, 순위 80, 나머지 금융기관명·계좌번호·계좌명·휴대폰 번호는 각 248 Fill 실측. 일반 Grid 제작 규칙 P06을 적용한다.
+- Header 부분 전체 높이 50 = 행 49 + 상단선 1. 데이터가 없는 경우 그 아래 small Feedback 영역을 배치한다.
+- Feedback 바깥 래퍼는 상하 padding **32 / spacing/5xl**, 내부 Feedback은 높이 88·gap **16 / spacing/xl**. Feedback 영역 높이는 `32+88+32=152`다.
+- 이어지는 Divider는 secondary/thickness=1px, 높이 1. 외부 표 영역 높이는 `50+152+1=203`이다.
+- 전체 원본 높이는 `Header 64 + Body 421 + Footer 48 + Popup 하단 24 = 557`이다. 본문 내용·줄바꿈·데이터 유무에 따라 높이를 Hug로 계산하고 557을 전역 고정하지 않는다.
+- Footer의 `버튼명`은 예시이므로 기획 문구로 교체한다. 빈 결과와 데이터 존재 시 본문 분기는 원본 기획에 따르고, 위 빈 결과를 모든 팝업의 기본 내용으로 추가하지 않는다.
+
+#### B. 너비 400: 자동 로그아웃 안내
+
+```text
+Popup                             400×320 / Fixed W·H
+├─ Item / Header                   자동 로그아웃 예정
+├─ Slot                            Fill W·H / 양축 CENTER / gap 0
+│  └─ Container                    중앙 안내 묶음 / Hug W·H
+│     └─ Text / Contents           V / gap 12 / 중앙 정렬
+│        ├─ Text                   자동 로그아웃 남은시간
+│        ├─ Count                  0:23
+│        └─ Text                   자동 로그아웃·로그인 연장 안내
+└─ Item / Footer
+   └─ ButtonGroup                  medium / gap 8
+      ├─ BoxButton                 tertiary / 지금 로그아웃
+      └─ BoxButton                 primary / 로그인 연장
+```
+
+- 본문 원본 `inner` 래퍼는 역할에 맞게 명명한다. 실제 Count와 컴포넌트 고유 내부 계층은 유지한다.
+- 원본 Popup은 **400×320 Fixed W·H**, Body Slot은 **400×184 Fill W·H**이며 primary/counter 모두 CENTER다. 1200 목록형의 Body Hug와 구별한다.
+- Slot padding은 공통값 12/24/24/24이므로 가용 내부 폭은 352, 높이는 148이다. 실제 안내 묶음은 337×120 Hug이고 가운데 배치되어 Slot 상대 x=31.5/y=26으로 관찰된다. 이 위치를 절대좌표로 복제하지 않고 Slot의 CENTER와 Fill/Hug로 재현한다.
+- 내부 안내 묶음은 V/gap **12 (`spacing/lg`)**. 제목 28 + gap 12 + Count 28 + gap 12 + 안내 40 = 높이 120.
+- 안내 제목: KBFG Text Bold **20/28**, `text/neutral/secondary`.
+- Count: Pretendard SemiBold **20/28**, `text/accent/blue`, 예시값 `0:23`. 시간을 일반 한글 폰트로 합치지 않는다.
+- 설명: KBFG Text Light **14/20**, `text/neutral/tertiary`, 가운데 정렬이며 원본은 두 줄이다. 가용 폭·문구 변경으로 줄 수가 달라지면 잘림 없이 배치하고 임의로 설명을 축약하지 않는다.
+- 전체 높이는 `64+184+48+24=320`이다. 320은 이 예시의 고정 높이이며 모든 400 안내 팝업의 필수 높이로 일반화하지 않는다.
+- 카운트다운 시작 시간, 자동 로그아웃 시점, 로그인 연장의 동작은 이 정적 참조로 결정하지 않고 기획안을 따른다.
+
+#### 재연결용 component key
+
+| 컴포넌트 | 원본 variant | key |
+|---|---|---|
+| Popup | type=layer, vatiant=default | `58f575d37a8d4d83a30238c8f75b152d4e42db93` |
+| Item / Header | variant=default | `2cbf7cb8b3527095493ddec2903fcfe47ac00798` |
+| Item / Footer | variant=buttonGroup | `e20c54e3621cf093f53c6a565a37c5811b583839` |
+| IconButton | primary/24, 기본 상태 | `d0596490379106ea5d1492de1100c24be4be398a` |
+| ButtonGroup | multi/medium | `8923faa9126db7ef087595a2d123151588618ff6` |
+| BoxButton | tertiary/medium | `a03fad70eb160b79085f5496a27bc25f9685054b` |
+| BoxButton | primary/medium | `c4ab4c1ce45fb8f3c1975cf3a624c6f05b561767` |
+| Feedback | varient=small | `5043fce90aa14ec77b4a1ca9816dc0b3f746d0ea` |
+| Divider / Horizontal | secondary/thickness=1px | `b154a5e09047df6dcbf02775b74e664260c48b01` |
+
+원본 속성의 `vatiant`/`varient` 표기는 실제 관찰값이다. 최신 라이브러리 속성명을 확인해서 사용한다. 슬롯에 실제 인스턴스를 조합하며 Popup을 Detach해서 임의 프레임으로 재현하지 않는다.
