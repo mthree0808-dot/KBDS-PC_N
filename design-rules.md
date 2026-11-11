@@ -1,3 +1,9 @@
+> 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
+>
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P17에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+>
+> **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
+
 본 문서는 Figma 기반 UI/UX 디자인 시스템의 변수, 서체, 레이아웃 규격, 컴포넌트 간격 및 12장 레이어 명명·그룹핑 규칙을 정리한 가이드입니다.
 
 ---

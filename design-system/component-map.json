@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-11",
+  "scope": "KBDS PC v0.97",
+  "notes": [
+    "기존 Figma 제작·검수에서 확인한 자산만 기록한다. component key는 import용이며 라이브러리 변경이나 불일치가 있으면 해당 항목만 재확인한다.",
+    "일반 화면1920 / BODY1440, LNB316 / gap32 / 우측 패널이 없는 본문 Fill을 적용한다.",
+    "예시 화면 URL과 개인 데이터는 저장하지 않는다."
+  ],
+  "components": {
+    "Title / Section": {
+      "setKey": "5dbc3175019ff69b033a7aee8ce59461b4d27846",
+      "textStyleKey": "dc7937a908f83807e5440ccdc445a257a5cc3c64",
+      "typography": "KBFG Text Bold 18"
+    },
+    "Title / Page": {
+      "textStyleKey": "d15c6618112f25fafd120d9f66e7ccf3031da65d",
+      "typography": "KBFG Text Bold 26"
+    },
+    "Breadcrumbs": {
+      "key": "e6d42619270a362ad38550ac016f3c7dc408fd83",
+      "sizing": "Hug/Hug",
+      "gap": 4
+    },
+    "InputField": {
+      "setKey": "e777def881def733a8f3282d66679b9972fff334",
+      "variants": {
+        "default": "6a180f941f7bc12168489ec44f9203d0f3a4e7cc",
+        "entered": "f689ed1a91c3666eab721996119a0b3540668190",
+        "disabledEntered": "968fbf5fac3c58c4eda41005d26ac6a9b886add5"
+      },
+      "properties": {
+        "hasTitle#9060:7": false,
+        "hasFooter#6511:42": false
+      },
+      "nestedInputSetKey": "9cf763d7e4344e5031aa7355f74989c55f351f87",
+      "usedInputVariants": [
+        "default",
+        "select-default",
+        "search"
+      ]
+    },
+    "Radio": {
+      "setKey": "b63ca431328fbd85d1a08404e4e3bd66bfee6ca2",
+      "variants": {
+        "mediumUnchecked": "68b391ccaa9831d9da00db067160a4482484b1c5",
+        "mediumChecked": "66bb5a3ada46e42acc6d0d1f719ab2cf69a14640"
+      },
+      "properties": {
+        "hasSubLabel#633:166": false
+      }
+    },
+    "CheckBox": {
+      "properties": {
+        "hasSubLabel#633:125": false
+      },
+      "note": "checked/disabled는 기획의 상태를 유지한다."
+    },
+    "Card / Surface": {
+      "setKey": "133e56e4e7b4c1bd35a268c0645ab266aa8c3aeb",
+      "outlineKey": "5c0de8b23aeaceaf9eb3def0d2845b6a97447773",
+      "radioAffixSetKey": "aafca3d9df691c83ca4ab20576715a733e5660f3",
+      "radioAffixVariant": "radio",
+      "note": "표면 인스턴스와 Slot을 유지. 선택 컨트롤은 Header / Affix radio 1개만 노출."
+    },
+    "TextList / Unordered": {
+      "setKey": "5b6cbc593b9e6d85e3496fedfbccd3843558e4fd",
+      "bullet14Key": "5e484496e22e7e84c91c23bddfe11d1b4a13f35b",
+      "groupGap": 4,
+      "tableBelowGap": 16
+    },
+    "Accordion": {
+      "setKey": "c9e5c9c85b58ea24b0f37f460d726c8dff6a32e3",
+      "noticeKey": "d14342b496bd3aa5d2e707cf26a183daf5d401ce",
+      "noticeVariant": {
+        "variant": "standard",
+        "type": "basic",
+        "size": "medium",
+        "expanded": "true"
+      },
+      "accountKey": "15a36367e1935a1a4ace29356ec692971d820bdf"
+    },
+    "Infobox / FullWidth": {
+      "key": "5fb7ce75dbc07c0aeca6e8cd5bfb876c0d0f7892",
+      "slotName": "Slot-Contents"
+    },
+    "TextButton": {
+      "setKey": "552c105c37f24c2b38689fe1b35440c4dd36f91a",
+      "primarySmallKey": "95687195c8b0873f0e13393cf059964ecfde2604"
+    },
+    "line-info-circle": {
+      "key": "7cdca60c085dfdabf7fc5a6971916b2d70c10455"
+    },
+    "BoxButton": {
+      "secondarySmallKey": "b20b82eee273f930c668788109e73de668023c03"
+    },
+    "Table": {
+      "construction": "Native Auto Layout GRID",
+      "columnPolicy": "고정 라벨 열 + Fill 값 열, rows HUG, gap0",
+      "gotchas": [
+        "gridRowIndex/gridColumnIndex를 쓰지 않는다. 위치는 setGridChildPosition(row,col) 또는 appendChildAt을 사용한다.",
+        "Grid 복제 후 행·열 anchor가 유지되는지 확인한다. 셀의 Slot을 수정해도 Table / Cell 인스턴스는 유지한다."
+      ]
+    }
+  },
+  "tokens": {
+    "spacing4": "61f197a81b6706762c24e5fd56b51d0f60bf9d98",
+    "spacing8": "2277b8d1df86cdf8204cdac92209643941df242f",
+    "spacing12": "f1822d95f1b0043e2ee435fea6d4725d37db3ebb",
+    "spacing16": "2b90494af4b83af52e567824fc30afcec9447c32",
+    "spacing20": "f338af7d20bc6e0583d08efdf7e7e389a325b1d0",
+    "spacing24": "66fd0b70f3b70ba3c427cc46afb3ea70baf7680e",
+    "spacing32": "403b2e3136ffc6d8206f6e63e2f62f235a5d3ae8",
+    "spacing40": "9f3a6e1ca84e9627129a8315526a0ebd5bc65412",
+    "spacing48": "0828de47528b32f0cd679d06a75e61169b841246",
+    "surfaceWhite": "5effdc40006742fe1e1cb37ad682d58ea2e109a6",
+    "surfaceNeutralTertiaryMuted": "95125509c3b477bfe6aab61ecc3b3092bd863eec",
+    "tableBorder": "f2f4f171af291559772456eff22bca9e60d64f41"
+  }
+}
