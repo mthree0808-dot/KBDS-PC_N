@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P17에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P18에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -1578,3 +1578,107 @@ Table / Contents                     V / Fill W·Hug H / gap 16
 | line-plus | 아이콘 | `e865b061c0a706790e5089dd730538349600c3e7` |
 
 원본 구조와 버튼 스펙을 조회해 기록했다. 인스턴스를 Detach하지 않으며 화면 링크는 저장하지 않는다.
+
+
+### P18. 고객정보 수정 확인: 기획 박스의 표 변환과 추가 본인 인증
+
+#### 적용 범위와 기획 매칭
+
+- 두 영역으로 분할 제공된 고객정보 수정 확인 기획은 **한 화면의 연속 본문**으로 조립한다. 분할 표시용 GNB, “다음에 이어서/이전에 이어서”, 기획 설명·주석은 실제 화면 콘텐츠에 포함하지 않는다.
+- 확인한 완성 화면의 컴포넌트·계층·간격을 아래에 기록한다. 신규 제작 시 기획의 문구·마스킹·선택 상태·인증 조건을 유지하면서 이 패턴을 재사용한다. 화면 URL과 개인별 예시 데이터는 저장하지 않는다.
+
+| 와이어프레임의 역할 | 완성 화면의 매칭 | 적용 |
+|---|---|---|
+| 페이지 확인 질문 | Title / Page | 좌측 정렬, 일반 UI 서체 KBFG Text Bold 26 |
+| 전화번호 변경 관련 안내 2개 | Infobox / FullWidth → Contents → Slot-Contents → TextList Group | 제목 없이 안내만 노출, bullet/size14/depth1, 항목 gap4 |
+| 기본·자택·직장·안내수단을 함께 담은 큰 박스 | Title / Table × 4 | 바깥 그림자 박스를 복제하지 않고 각 제목과 실제 Grid 표로 분리 |
+| 라벨과 입력 완료 값 | Table / Header + Table / Cell | 라벨 좌측 열, 값 우측 열, 읽기 전용 표현 |
+| 전화 수신여부 3항목 | Table / Cell 내부 CheckBox 그룹 | medium, disabled=true로 결과 표시, 선택 상태는 기획 데이터로 설정 |
+| 추가 본인 인증 영역 | Title / Contents → Card Group / Button Area | 제목, 인증 선택 카드 2개, 인증 받기 버튼 |
+| ARS 인증·휴대폰 본인확인 선택 박스 | Card / Surface / outline·select variant | 카드 선택 상태와 실제 radio Affix 상태를 일치시킴 |
+| 인증서 관련 하단 설명 | Infobox / FullWidth | 제목·정보 아이콘·본문 TextList Group·제목행 우측 TextButton |
+| 이전·확인 | Button Area → BoxButton × 2 | 가운데 정렬, 동작 상태는 인증 진행 조건에 따라 적용 |
+
+#### 본문 계층과 간격
+
+```text
+## BODY                                1440 fixed / H / gap32 / padding48 40
+├─ Container 1                         LNB 316 fixed
+└─ Container 2                         Fill W(현재1012) / Hug H / V gap48
+   ├─ Title / Page
+   ├─ Infobox / Contents               V gap48
+   │  ├─ Infobox / FullWidth           전화번호 변경 안내
+   │  ├─ Title / Contents              V gap48
+   │  │  ├─ Title / Table              기본정보 / V gap20
+   │  │  ├─ Title / Table              자택정보 / V gap20
+   │  │  ├─ Title / Table              직장정보 / V gap20
+   │  │  └─ Title / Table              고객관리 안내수단 / V gap20
+   │  ├─ Title / Contents              추가 본인 인증 / V gap20
+   │  │  ├─ 제목
+   │  │  └─ Card Group / Button Area   V gap24
+   │  │     ├─ Card Group              H gap12 / 카드 각각 Fill W
+   │  │     └─ Button Area             H / 가운데 / 인증 받기
+   │  └─ Infobox / FullWidth           인증서 안내 + 제목행 우측 자세히보기
+   └─ Button Area                      H / gap12 / 가운데 / 이전·확인
+```
+
+- 위 트리의 각 Title / Table은 **제목 + Table**이다. 본문 내 큰 블록은 gap48, 같은 제목과 콘텐츠는 gap20, 인증 카드 그룹↔인증 받기는 gap24다. 부모별 gap을 자식 padding에 중복 적용하지 않는다.
+- 완성 화면의 섹션 제목은 실제 **Title / Headline, KBFG Text Bold20/28**로 확인됐다. 이 기록은 이 확인 화면의 컴포넌트 매칭이며, 기존 **Title / Section을 사용하는 경우의 18 Bold 규칙을 20으로 변경하지 않는다.**
+- 화면 root1920 fixed·높이 Hug, BODY1440, LNB316, 메인 Fill의 기존 공통 규칙을 따른다. 헤더·LNB·푸터는 같은 채널·업무의 검증된 화면을 재사용하고 해당 메뉴·경로·상태를 맞춘다.
+
+#### 읽기 전용 Grid 테이블
+
+- 4개 표 모두 Table이라는 실제 Grid Auto Layout, Fill W·Hug H, row/column gap0이다. **이 확인 화면의 열은 라벨180 fixed + 값 FLEX1**이며 전체1012에서 값은832다. 다른 패턴의 라벨200/240을 이 화면에 일괄 적용하지 않는다.
+- 행 구성: 기본정보(휴대폰번호·이메일주소) 2행, 자택정보(주소·전화번호) 2행, 직장정보(주소·직장명·부서명·전화번호) 4행, 고객관리 안내수단(SMS·이메일·우편물·전화 수신여부) 4행.
+- Header는 variant=default/onlyNumber=false, Cell은 variant=last/onlyNumber=false이며 네이티브 인스턴스를 유지한다. Header·Cell padding은 상하12/좌우16이다.
+- 일반 한 줄 행45, 주소 두 줄 행65, CheckBox 행49는 확인된 콘텐츠의 실측이다. 행 트랙은 HUG이며 실제 줄바꿈·서체·컨트롤 높이에 맞게 재계산한다.
+- 전화 수신여부는 자택·직장·휴대폰을 한 행에 배치하고 disabled 상태로 표시한다. 확인된 상태는 자택·직장 checked, 휴대폰 unchecked이며 신규 화면에서는 실제 데이터로 교체한다.
+- 숫자 위주 전화번호는 Pretendard, 일반 라벨·주소·이메일 등은 KBFG Text를 사용한다. 표시용 마스킹은 유지하고 확인 단계의 값을 입력 필드로 바꾸지 않는다.
+
+#### 인증 선택 카드: outline·select
+
+- **인증 수단 선택은 basic 카드에 임의 라디오를 추가하는 대신 실제 Card / Surface의 variant=select를 사용한다.** 확인된 상태는 type=outline, disabled=false, ARS select=true / 휴대폰 select=false다.
+- Card Group gap12, 각 카드 Fill W·Hug H, 카드 padding20이다. 현재 두 카드의 폭501/499와 높이112는 실측이며, 폭을 개별 고정하지 않는다.
+- 확인된 select variant의 슬롯 구성은 아래와 같다. basic variant의 Slot 구조와 구별하고, **선택한 variant의 원본 슬롯 계층을 보존하는 P11 규칙**을 적용한다.
+
+```text
+Card / Surface                         outline / variant=select
+└─ Slot                                V / gap16 / padding0
+   └─ Body                             H / gap12 / Fill W·Hug H
+      ├─ Groups                        V / gap8 / Fill W
+      │  ├─ Group                      V / gap0
+      │  │  └─ Card / Body / Group-A    인증 방식 제목
+      │  └─ Group                      V / gap0
+      │     └─ Card / Body / Group-C    인증 방식 설명
+      └─ Card / Header / Affix          radio / 24×24 / 우측
+```
+
+- 제목은 KBFG Text Bold16/24, 설명은 KBFG Text Light14/20이며 두 그룹 gap8이다. ARS와 휴대폰 설명은 각각 필요한 줄바꿈에 대응한다.
+- 위 select variant는 실제 우측 radio가 Body의 Groups 다음에 있는 구조다. **basic variant의 독립 Header / Affix를 강제로 추가하거나 원본에 없는 빈 Header/Footer를 추가하지 않는다.** 우측 배치와 원본 계층을 함께 유지한다.
+- 선택 상태는 테두리의 select와 radio checked를 함께 맞추며 비선택 카드를 선택 테두리로 복제하지 않는다.
+- 인증 받기: BoxButton secondary/medium, 현재154×48, 전체 Button Area 내 가운데. 카드 그룹 아래 gap24를 적용한다.
+
+#### 인증서 안내와 CTA
+
+- 인증서 안내 Infobox / FullWidth는 padding 상하20/좌우24, root gap12다. Title Area는 H/gap16/CENTER이며 **Title은 Fill, Button Area는 Hug/우측**이다.
+- 자세히보기는 **Title Area → Button Area → TextButton**에 배치한다. 본문 Slot의 마지막 항목으로 넣지 않는다. 확인된 TextButton은 primary/small, suffix=우측 chevron, 현재80×20이다.
+- Contents → Slot-Contents 안에는 TextList Group(V/gap4)과 bullet/size14/depth1 TextList 2개를 넣는다. Slot의 원본 gap8·padding1은 그룹 내부 gap4와 별개로 보존한다.
+- 최하단 Button Area gap12·가운데 정렬. 확인된 완성 화면은 이전=secondary/large, 확인=primary/large, 각각154×56이다. 이 조합은 본 확인 화면의 상태이며 다른 화면의 CTA variant를 일괄 변경하지 않는다.
+- **기획에서는 확인 버튼이 인증 전 disabled로 표시됐지만, 완성 화면은 enabled로 확인됐다.** 인증 전·후 동작 조건은 원본 기획을 우선하고, 완성 화면의 enabled 상태를 인증 전 기본값으로 복제하지 않는다.
+
+| 재사용 컴포넌트 | 확인한 key |
+|---|---|
+| Title / Page / align=left | `366007b354df25708d9dce4a7788c2b44e30dba3` |
+| Title / Headline / align=left | `bf50f457ca5583c356608499f2a479e58248073a` |
+| Table / Header / default | `ba105a8f29acb712e5c5aa6a3cb2015de330f392` |
+| Table / Cell / last | `1b5a0ae0fefd157325271672a78224db2575f047` |
+| Card / Surface / outline·select / selected | `a5f70cdf55449a4d162b3b75ab601d64d70d377f` |
+| Card / Surface / outline·select / unselected | `acb06b75e4ddf3e5eb5bc332e2b53992baaf638a` |
+| Card / Header / Affix / radio | `fd387ba8b08cad4c8101ac8b7d2e8a3742f89f23` |
+| Infobox / FullWidth | `5fb7ce75dbc07c0aeca6e8cd5bfb876c0d0f7892` |
+| TextButton / primary·small | `95687195c8b0873f0e13393cf059964ecfde2604` |
+| BoxButton / secondary·medium | `5886824ec2647b1ba57dbf06a4f86605080586fe` |
+| BoxButton / secondary·large | `09684c7d693d1049e961daf2bd7e53c3ef59319b` |
+| BoxButton / primary·large | `d206f834d8d80e5bd6ab306b8033f3c0e5214bc5` |
+
+같은 기획 역할·variant·상태의 검증된 영역은 기존 완성 화면에서 재사용할 수 있다. 복제 후 문구·값·선택 상태만 기획에 맞게 교체하고 컴포넌트 연결·서체·토큰·원본 Slot 구조를 유지한다.
