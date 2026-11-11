@@ -1091,6 +1091,24 @@ InputField                            사용자 정의 Auto Layout 래퍼
 
 #### 사용자 확정 제작 원칙
 
+#### 공통 Slot 구조 보존 규칙
+
+- **Card / Surface는 실제 인스턴스를 사용하고, 해당 variant가 제공하는 Slot의 기본 구조를 그대로 보존한다.** 콘텐츠를 넣기 위해 Slot을 임의의 단일 Body 래퍼로 축약하거나, Header·Footer·Affix를 삭제·다른 레벨로 이동하지 않는다.
+- 기본 구조가 Header / Body / Footer와 Header / Affix를 제공하는 경우의 적용 순서는 다음과 같다. 각 영역은 비어 있을 수 있으나, 기획상 비노출인 경우에도 구조를 임의 삭제하지 않고 컴포넌트의 표시 속성·slot 상태를 따른다.
+
+```text
+Card / Surface                         실제 인스턴스 / Detach 금지
+├─ Slot                                원본 Auto Layout·gap·padding 유지
+│  ├─ Header                           제목·보조 정보·액션
+│  ├─ Body                             주 콘텐츠
+│  └─ Footer                           하단 정보·보조 액션
+└─ Header / Affix                      컴포넌트가 제공하는 독립 Affix 영역
+```
+
+- 신규 화면에서는 동일 Card / Surface variant의 검증된 원본 인스턴스를 복제하거나, 최신 KBDS 인스턴스를 삽입한 뒤 **각 Slot 영역의 콘텐츠만 교체**한다. Slot 자체의 Auto Layout, 영역 순서, padding, gap, sizing과 Affix의 부모 레벨을 수작업 구조로 재작성하지 않는다.
+- 이 구조 보존 원칙은 카드의 기본 padding 및 표면 스타일보다 우선한다. P11의 Body·Footer 별도 padding 규칙은 조회 카드용 **콘텐츠 배치 예외**이며, 원본 Slot 계층을 변경해도 된다는 뜻이 아니다.
+- 카드마다 실제 variant가 제공하는 영역 수와 상태가 다를 수 있다. 따라서 다른 카드의 Header·Footer를 기계적으로 추가하지 않으며, **선택한 Card / Surface 인스턴스가 제공하는 Slot 구조를 기준**으로 사용한다.
+
 - 현재 원본 `Container` / `88:25631`은 FRAME이나 **재사용·신규 생성에서는 실제 `Card / Surface` 인스턴스로 감싼다.** 이 조회 카드에는 내부 액션과 이동 요소가 있으므로 일반 데이터 박스로 대체하지 않는다.
 - **Card / Surface 자체 padding은 사방 0**이다. Slot 안의 **Body와 Footer에 각각 원본의 padding을 적용**하여 흰색 본문과 회색 하단 영역이 카드 경계까지 이어지게 한다.
 - 이 패턴은 기존 Card / Surface 기본 padding 32의 **명시적 예외**다. 기본 32를 바깥 카드에 유지한 채 내부 Body/Footer padding을 추가해 여백을 이중으로 만들지 않는다.
