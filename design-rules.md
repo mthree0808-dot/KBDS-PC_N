@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P26에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P27에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -2356,3 +2356,129 @@ Item / Content                        실제 인스턴스 / Fill W
 | 인쇄용 line-print(정정) | `888e4c8f0187f5fdab8711f9717cd588c4d8b9e3` |
 
 원본 계층·컴포넌트·간격·서체와 화면 캡처를 대조했다. 참조 원본은 수정하지 않았으며 화면 링크는 저장하지 않는다.
+
+
+### P27. 중요사항 설명의 텍스트 위계와 필수 이해 확인 카드
+
+#### 텍스트 hierarchy
+
+| 역할 | 컴포넌트·텍스트 | 서체·크기·행간 |
+|---|---|---|
+| 화면 전체 제목 | Title / Page / left | KBFG Text Bold26/36 |
+| 독립 설명 섹션 제목 | Title / Headline / left | KBFG Text Bold20/28 |
+| 섹션 안 세부 주제 제목 | Title / Group 또는 원본 group 제목 구성 | KBFG Text Bold16/24 |
+| 일반 설명·bullet·dash 목록 | Item / Label description-14, TextList / Unordered | KBFG Text Light14/20 |
+| Solid 핵심 안내 | Infobox / Solid medium/info | KBFG Text Medium14/20 |
+| 필수 확인 카드 제목 | Title / Section / left | KBFG Text Bold18/25 |
+| 확인 카드 서문 | 일반 Text | KBFG Text Medium14/20 |
+| 각 확인 질문 | Title / Element | KBFG Text Medium14/20 |
+| 네/아니요 답변 | SelectButton word/single | KBFG Text Bold14/20 |
+
+- 역할에 맞는 실제 컴포넌트와 텍스트 스타일을 유지한다. 설명 섹션 Headline20을 Section18로 일괄 치환하거나, 소주제 Group16을 독립 섹션 제목과 같은 크기로 올리지 않는다.
+- 질문의 Title / Element14는 P23의 설문 카드 주질문 Title / Section18과 역할이 다르다. 본 패턴에서는 **카드 전체 제목이18, 내부 반복 질문이14**다.
+- 일반 설명은 일반 Text 또는 description-14, 항목 목록은 실제 TextList / Unordered로 구분한다. 단순 문단을 임의 bullet 항목으로 바꾸지 않는다.
+
+#### 설명 본문의 구조와 간격
+
+```text
+본문                                   V gap48 / Fill W·Hug H
+├─ 설명 영역                           V gap48
+│  ├─ Title / Page
+│  ├─ 설명 섹션                        V gap20
+│  │  ├─ Title / Headline
+│  │  └─ Infobox / TextList             V gap16
+│  │     ├─ Infobox / Solid             medium/info
+│  │     └─ TextList Group              bullet14 / V gap4
+│  ├─ 설명 섹션                        V gap20
+│  │  ├─ Title / Headline
+│  │  └─ TextList Group                 bullet14 / V gap4
+│  └─ 설명 섹션                        V gap20
+│     ├─ Title / Headline
+│     └─ Text Group                     V gap16
+│        ├─ 소주제 제목 / 일반 설명 묶음 V gap8
+│        └─ Title / TextList            V gap12
+│           ├─ Title / Group            필요 시 description-14 포함
+│           └─ TextList / Unordered     dash14
+└─ 확인 / CTA 영역                      V gap48
+   ├─ Card / Surface                    필수 이해 확인
+   └─ Button Area                       중앙 / ButtonGroup large
+```
+
+- 화면 제목과 독립 섹션, 설명 영역과 확인 영역은 gap**48**, 섹션 제목↔본문은**20**이다.
+- Solid 안내↔그 아래 목록은**16**, 세부 설명 주제 묶음끼리는**16**, 소주제 제목↔일반 설명은**8**, Title / Group 묶음↔그 아래 dash는**12**다. 서로 다른 부모의 간격을 하나로 평탄화하지 않는다.
+- 원본 복수 bullet의 부모 gap8은 관찰값이다. 신규 제작은 공통 TextList Group gap**4**를 우선한다. 한 항목 자체의 두 줄 본문 높이40을 별도 항목 간격으로 해석하지 않는다.
+- Infobox / Solid는 medium/info, padding 상하12·좌우16, radius12다. 제목·목록 전체를 동일한 회색 박스로 감싸지 않고 강조 안내만 해당 Infobox로 표현한다.
+- 문구 강조 색상은 의미에 맞는 원본 토큰을 유지한다. 모든 수치·법률명에 임의로 링크 동작을 추가하지 않는다.
+- 제목 “타이틀입니다” 등은 실제 기획 제목으로 교체한다. 법률·상품 조건·권리 설명은 예시 문구를 새로운 업무 기본값으로 복사하지 않는다.
+
+#### ‘꼭 확인해주세요’ 필수 이해 확인 패턴
+
+- 제목은 **가변 문구**다. “꼭 확인해주세요”를 모든 화면의 고정 문자열로 쓰지 않고 해당 업무의 실제 안내 제목으로 교체한다.
+- 내부에 답변 선택 동작이 있으므로 P22/P23에 따라 **실제 Card / Surface 인스턴스**로 감싼다. 원본은 FRAME이지만 신규 제작은 적절한 outline Card와 원본 Slot 계층을 유지한다. padding20 기본값은 사방**32**로 보정한다.
+- 답변 버튼이 선택되는 구조이며 카드 자체가 단일 선택지는 아니다. 불필요한 card select 상태·추가 radio Affix·전체 클릭 동작을 만들지 않는다.
+
+```text
+Card / Surface                         Fill W·Hug H / padding32
+└─ 원본 Slot 계층
+   └─ 확인 콘텐츠                       V gap20
+      ├─ 제목 / 서문 묶음                V gap20
+      │  ├─ 아이콘 / 제목 행             H gap6 / MIN·CENTER
+      │  │  ├─ IconContainer             size24
+      │  │  │  └─ status-circleAlertGray
+      │  │  └─ Title / Section           가변 제목 / 18 Bold
+      │  └─ Text                         가변 서문 / 14 Medium
+      ├─ Divider / Horizontal            secondary / thickness=1px
+      └─ Question Group                  V gap20
+         └─ 질문 / 답변 묶음 × N          V gap12
+            ├─ Title / Element           질문 / 14 Medium
+            └─ SelectButton              type=word / variant=single / Hug
+               └─ slot                   H gap6
+                  └─ Item / Word / Single × N
+```
+
+| 관계/영역 | 값 |
+|---|---|
+| 카드 padding | 사방32 |
+| 경고 아이콘 | 24×24 / 실제 status-circleAlertGray |
+| 아이콘 ↔ Title / Section | **6** |
+| 아이콘·제목 행 ↔ 서문 | **20** |
+| 제목·서문 묶음 ↔ Divider ↔ 질문 묶음 | 각각 **20** |
+| 질문 묶음 상호 | **20** |
+| 각 질문 ↔ 답변 SelectButton | **12** |
+| SelectButton 내부 선택지 상호 | **6** |
+| 답변 컨트롤 높이 | 40 |
+| 카드 ↔ 하단 CTA | **48** |
+| 최하단 CTA 버튼 상호 | **12** |
+
+- 원본 아이콘/제목 행 폭177은 fixed로 설정돼 있으나, **가변 제목에서는 Hug 또는 가용 폭 내 Fill + 줄바꿈/Hug로 대응**한다. 긴 제목을177폭에 고정해 자르지 않는다. 아이콘24와 gap6은 유지한다.
+- 원본 박스 폭1012, padding32·레이아웃 포함 테두리1로 내부946이다. 실제 Card의 테두리 포함 방식을 기준으로 계산하고946을 고정하지 않는다.
+- 원본은 radius12, fill 없음, outline1px이다. 신규 제작은 실제 outline Card variant의 표면·라운드·테두리 토큰을 재사용하고 임의 FRAME 사각형으로 재현하지 않는다.
+- SelectButton은 실제 word/single, 각 Item / Word / Single의 selected variant를 사용한다. 선택된 항목의 체크 아이콘은 네이티브 구조를 유지한다. 원본은 문항별 네/아니요 선택이 서로 다르므로 답변을 일괄 기본 선택하지 않는다.
+- 한 줄 문항의 묶음72 = 질문20 + gap12 + 답변40, 3문항256 =72×3 +20×2다. 제목·서문65 = 제목행25 +20 +서문20, 내부362 =65 +20 +Divider1 +20 +질문256, 원본 외곽428 =362 +padding64 +포함 테두리2다.
+- 위 높이428·질문 수3은 현재 내용의 결과다. 가변 제목·서문·질문·답변 수와 줄바꿈에 따라 Hug로 재계산한다. 긴 질문을 한 줄 높이20으로 고정하지 않는다.
+- 다음 단계 허용·답변 검증·필수 문항 여부는 기획을 따른다. 법적 보호와 관련된 서문이나 대출 조건은 해당 업무의 확정 문구를 사용한다.
+
+#### CTA와 다른 안내 컴포넌트 구별
+
+- 하단 ButtonGroup은 count=multi/size=large, 좌측 tertiary·우측 primary, 각 현재154×56, gap12, 가운데 배치다. 라벨 placeholder는 실제 동작 문구로 교체한다.
+- 이 패턴은 펼침·접힘이 없는 **확인 카드**다. “알려드립니다” Accordion이나 ConsentGroup으로 자동 치환하지 않는다. Accordion의 hasDivider=false 규칙은 이 카드 내부의 질문 구분 Divider를 제거하라는 의미가 아니다.
+
+#### 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| Title / Page / left | `366007b354df25708d9dce4a7788c2b44e30dba3` |
+| Title / Headline / left | `bf50f457ca5583c356608499f2a479e58248073a` |
+| Title / Group / left | `99d19cfa876f2805be637934f717ffd2763720ca` |
+| Title / Section / left | `3f4d2d1fdde69c122f754927d46b0b2aacb2948e` |
+| Title / Element | `e4916a803defee8f227f104ea4dce8d6b4f28d74` |
+| Item / Label / description-14 | `a7351a40309e2e4e9f616ca8c86867e9a7e0eebe` |
+| Infobox / Solid / medium·info | `18356a16cb958afdf54f8fe4da07401b6412640d` |
+| IconContainer / 24 | `0e7e37a41288aa4a8b3d714c968640ed93076152` |
+| status-circleAlertGray | `6103f2735acff9e9b8542d7da313e72ae562cc33` |
+| Divider / Horizontal / secondary·1px | `b154a5e09047df6dcbf02775b74e664260c48b01` |
+| SelectButton / word·single | `7b6e4a769ba3ff3401fbc04068873ddcf5128dbd` |
+| Item / Word / Single / selected | `403764ddf4f1684762dfba5f7ff303f6c811f3dc` |
+| Item / Word / Single / unselected | `0aa745072fcb556409dd4d354a11afd582006a62` |
+
+원본 계층·컴포넌트·서체·간격과 화면 캡처를 대조했다. 원본은 변경하지 않았으며 참조 화면 링크는 저장하지 않는다.
