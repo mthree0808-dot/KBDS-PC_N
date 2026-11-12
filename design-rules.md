@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P19에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P20에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -810,6 +810,8 @@ Title / Table                       V / gap 20
 - **일반적인 팝업은 너비 1200을 기본으로 사용한다. 짧은 안내·시간 알림 등은 이 예시처럼 400 소형 구성을 사용할 수 있다.** 모든 팝업을 무조건 1200으로 늘리거나, 모든 안내를 무조건 400으로 축소하지 않고 화면 목적과 기획에 맞게 선택한다.
 - 두 예시는 같은 실제 `Popup` 컴포넌트 인스턴스이며 참조 variant는 `type=layer, vatiant=default`다. 현재 연결된 main component의 자체 폭은 400으로 조회되었고 첫 인스턴스가 1200으로 확장되어 있다. **사용자가 정한 일반 제작 기본값 1200**과 **현재 main component의 원본 폭 400**을 구별한다.
 - 컴포넌트·본문 구조·간격·서체를 확인하고 각 팝업 스크린샷과 대조했다. 원본은 수정하지 않았다.
+
+- **파일 업로드 팝업은 폭640의 업무별 예외**이며, Body 아래 padding32와 전·후 파일 행 구성은 P20을 따른다.
 
 #### 공통 구조와 규격
 
@@ -1746,3 +1748,104 @@ Card / Surface                         outline / variant=select
 - 좌측에는 필터·검색·편집, 우측에는 다운로드·인쇄를 배치할 수 있다. 양쪽 묶음은 H / SPACE_BETWEEN, 각 버튼 묶음 내부 gap16을 사용한다. 한쪽만 존재하면 해당 기능에 맞는 좌측·우측 정렬을 적용한다.
 - **단일 TextButton만 담은 사용자 정의 배치 래퍼는 TextButton으로 명명한다.** 복수 버튼을 실제로 묶을 때 TextButton Group을 사용하며, 전체 폭 래퍼의 Fill은 정렬용이고 실제 버튼은 Hug를 유지한다.
 - 위 규칙은 P01/P16의 표 하단 도구 패턴에 공통 적용한다. 사용자 참조 화면 링크는 기록하지 않는다.
+
+
+### P20. 파일 업로드 전·후 팝업
+
+#### 범위와 공통 구조
+
+- 파일 선택 전과 파일명이 표시되는 후 상태는 같은 Popup의 상태 변화다. 후 예시는 파일 선택·첨부 표시 상태이며 서버 전송 성공·등록 완료를 뜻하지 않는다.
+- **파일 업로드 팝업은 폭640 fixed·높이 Hug**를 사용한다. P07의 일반1200/짧은 안내400과 구별되는 업무별 예외다. 바깥 프레임1440×850이나 그림자를 포함한 캡처 크기는 팝업 규격이 아니다.
+- 실제 Popup 인스턴스와 Item / Header → Slot → Item / Footer 계층·토큰 연결을 유지하고 Detach하지 않는다.
+
+```text
+Popup                                 640 fixed / Hug H / V gap0
+│                                     padding 위0·우0·아래24·좌0 / radius24
+├─ Item / Header                      H gap16 / padding16 24 / 높이64
+│  ├─ Title                           Fill / 상하 padding4 / 제목
+│  └─ Container                       Hug / 상하 padding4
+│     └─ IconButton                   primary / 24 / line-xMark
+├─ Slot                               V gap32 / padding 위12·우24·아래32·좌24
+│  ├─ Container 1                     Fill W·Hug H
+│  │  └─ Infobox / FullWidth           제목 없음 / padding20 24
+│  │     └─ Contents
+│  │        └─ Slot-Contents
+│  │           └─ TextList Group       V gap4 / bullet14 × N
+│  └─ 파일 행                          H gap8 / MIN·CENTER / Fill W·Hug H
+│     ├─ InputField                   Fill W / 높이40 / Title·Footer 숨김
+│     └─ BoxButton                    파일첨부 / secondary·small / line-link
+└─ Item / Footer                      H CENTER·CENTER / 좌우 padding24
+   └─ ButtonGroup                     count=multi / size=medium / Hug
+      └─ Slot-Button                  H gap8
+         ├─ BoxButton                 tertiary·medium
+         └─ BoxButton                 primary·medium
+```
+
+- 원본 전 상태의 파일 행에는 Container 2 래퍼가 있고 후 상태는 Slot 아래 직접 배치되어 있다. 중간 래퍼 유무를 상태별 필수 차이로 만들지 않고 실제 관계와 간격을 유지한다.
+- Container 1 gap10, 전 상태 Container 2 gap20은 자식 하나라 시각 간격을 만들지 않는다. 안내↔파일 행은 Slot의 gap32다.
+
+#### 크기·간격과 안내 구성
+
+| 영역/관계 | 값 |
+|---|---|
+| Popup | 폭640 / 현재 높이370 / radius24 |
+| Header | 높이64 / 상하16·좌우24 / 제목↔닫기 gap16 |
+| Body Slot | 위12·우24·아래32·좌24 / gap32 |
+| 본문 가용 폭 | 592 |
+| Infobox / FullWidth | 상하20·좌우24 / root gap12 |
+| Contents / Slot-Contents | gap8 / Slot padding1 |
+| TextList 반복 | **gap4**, 원본8보다 기존 사용자 공통 규칙 우선 |
+| 안내 ↔ 파일 행 | **32** |
+| 입력 ↔ 파일첨부 | **8** |
+| InputField | 현재493 Fill × 높이40 |
+| 파일첨부 | 현재91 Hug × 높이40 |
+| Footer | 높이48 / 좌우24 / 중앙 |
+| Footer 버튼 | 각각136×48 실측 / 사이8 / 그룹280×48 |
+| Popup 하단 padding | 24 |
+
+- 안내는 실제 Infobox / FullWidth의 제목·보조 액션을 숨기고 본문만 사용한다. TextList / Unordered는 bullet/size14/depth1, KBFG Text Light14/20이다. 단일 안내만 있는 업무는 2.2의 일반 Text 규칙을 따른다.
+- 안내 역할은 허용 파일 형식, 1회 등록 최대 건수, 재첨부 시 파일 교체다. 예시의 엑셀·최대500건은 해당 입금계좌 업무 조건이며 다른 업로드 업무의 전역 제한값으로 사용하지 않는다.
+- 원본 안내118 = 상20 + Slot78 + 하20, Slot78 = padding2 + 항목20×3 + gap8×2다. 신규 gap4를 적용하면 안내110, 같은 내용의 Popup362로 계산될 수 있다. **현재 높이370/안내118을 고정하지 않고 줄바꿈·항목 수에 따라 Hug로 재계산한다.**
+- 원본 Popup370 = Header64 + Slot234 + Footer48 + 하단24다. Slot234 = 위12 + 안내118 + gap32 + 파일행40 + 아래32다. Body 아래32와 Popup 아래24를 중복·혼동하지 않는다.
+- 표면·그림자는 P07 원본 Popup의 radius24 및 토큰 바인딩을 재사용한다.
+
+#### 파일 선택 전·후 조합
+
+| 구분 | 선택 전 | 선택 후 |
+|---|---|---|
+| InputField entered | false | true |
+| hasTitle / hasFooter | 모두 false | 모두 false |
+| 표시 | 파일을 선택해주세요 | 파일명과 확장자 |
+| 하위 Item / Input 관찰값 | default / _entered=false | giro / _entered=true |
+| 내부 삭제 | 없음 | Item / FilledStyle → Item / Affix → 삭제 BoxButton |
+| 파일첨부 | secondary/small + line-link prefix16 | 동일, 재첨부 가능 |
+
+- 파일명 문자열만 교체하지 않고 외부 InputField와 하위 입력의 entered 상태를 함께 맞춘다.
+- 선택 후 원본은 giro variant를 파일명+인라인 삭제 조합으로 사용했다. 검증된 구성을 재사용하되, 이름을 근거로 지로 업무 필드를 추가하거나 모든 업로드를 이 variant로 일반화하지 않는다.
+- 선택 후 Item / FilledStyle은 H/gap8, padding 위4·우6·아래4·좌12다. 파일명은 남는 폭을 채우고 우측 Affix 안에 삭제 버튼을 둔다.
+- **삭제는 tertiary/xsmall, 현재38×28**이다. 별도 외부 버튼이나 임의 X 아이콘으로 대체하지 않는다. 파일첨부는 secondary/small, 선행 line-link16, 라벨 “파일첨부”다.
+- 팝업 제목은 KBFG Text Bold16/24, placeholder는 Bold14/20, 파일명은 네이티브 입력의 Pretendard SemiBold15/20, 삭제는 KBFG Text Bold12/17, 파일첨부는 Bold14/20이다. 파일명 관찰값을 일반 본문 서체 규칙으로 확대하지 않는다.
+- 하단 CTA 원본 라벨은 모두 “버튼명”이다. 실제 문구는 기획으로 교체한다. 두 상태 모두 disabled=false로 관찰됐으므로 선택 전 비활성화·삭제 후 상태·전송 성공·오류·파일 용량 제한 등은 별도 기획을 따른다.
+
+#### 재사용 component key
+
+| 자산 | key |
+|---|---|
+| Popup / type=layer, vatiant=default | `58f575d37a8d4d83a30238c8f75b152d4e42db93` |
+| Item / Header / default | `2cbf7cb8b3527095493ddec2903fcfe47ac00798` |
+| Infobox / FullWidth | `5fb7ce75dbc07c0aeca6e8cd5bfb876c0d0f7892` |
+| TextList / Unordered / bullet14 | `5e484496e22e7e84c91c23bddfe11d1b4a13f35b` |
+| InputField / entered=false | `6a180f941f7bc12168489ec44f9203d0f3a4e7cc` |
+| InputField / entered=true | `f689ed1a91c3666eab721996119a0b3540668190` |
+| Item / Input / giro·entered | `f12e65f0af902e8112c603b42960953cd4454688` |
+| Item / FilledStyle / 선택 후 | `75034d4dac6795e71c13629bf812908d00f04e0d` |
+| Item / Affix / 인라인 버튼 | `4504dc1a167fb36cf14715944889020172fae77b` |
+| 삭제 BoxButton / tertiary·xsmall | `7c76cd19c1f5948110684820f9fdecaf97eab59c` |
+| 파일첨부 BoxButton / secondary·small | `b20b82eee273f930c668788109e73de668023c03` |
+| line-link | `e9470956c21f03edbb3c874f3f1abb1d4da82c60` |
+| Item / Footer / buttonGroup | `e20c54e3621cf093f53c6a565a37c5811b583839` |
+| ButtonGroup / multi·medium | `8923faa9126db7ef087595a2d123151588618ff6` |
+| Footer tertiary·medium | `a03fad70eb160b79085f5496a27bc25f9685054b` |
+| Footer primary·medium | `c4ab4c1ce45fb8f3c1975cf3a624c6f05b561767` |
+
+원본 계층·서체와 전·후 화면 캡처를 대조했다. 원본 팝업은 변경하지 않았으며 참조 링크는 기록하지 않는다.
