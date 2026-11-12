@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P24에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P25에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -130,6 +130,8 @@ Breadcrumbs는 아래의 **화면 전체 폭 배경 영역 → 중앙 고정 폭
 - 적합한 검증 기준 화면이 없거나 필수 규칙과 충돌하면 기존 디자인 시스템 컴포넌트로 구성하고 필요한 검수를 수행한다. 재사용 기준으로 삼는 화면의 링크는 이 MD에 추가하지 않는다.
 
 ### 3.0.3 와이어프레임의 입력·데이터 영역을 테이블로 변환 (2026-11-11 사용자 확정)
+
+- **테이블 기본 규칙의 명시적 예외:** 개별 입력에 대응하는 행 라벨·항목 제목이 기획에 명확하지 않아 라벨/값 열 구성이 부자연스러운 경우, 억지로 Table Header를 만들지 않고 P25의 `섹션 제목·설명 + Card / Surface 내부 입력 조합`을 사용한다. 상위 섹션 제목이 있다는 이유만으로 입력별 라벨도 있는 것으로 간주하지 않는다. 행 라벨이 명확한 일반 입력·데이터는 기존 Table 원칙을 유지한다.
 
 - **와이어프레임에서 박스·카드 형태로 표현되더라도 입력 폼과 입력된 데이터가 노출되는 영역은 기본적으로 `Title / Section + Table` 형식으로 제작한다.** 기획상의 필드·값·편집 가능 여부·선택 상태·액션은 보존하고 박스 외형을 그대로 복제하지 않는다.
 - 실제 `Table` Auto Layout을 Grid로 구성하고 라벨 열은 해당 표의 기준 고정 폭, 값·입력 영역은 Fill을 적용한다. 입력 컨트롤은 실제 디자인 시스템 인스턴스로 셀 내부에 배치한다. 여러 입력값·버튼은 셀 안에서 Auto Layout으로 조합한다.
@@ -2210,3 +2212,78 @@ Table / Cell
 | line-chevron-right | `c583635d46aec2de5f463e4e4551034b4da5a7c5` |
 
 원본의 구조·상태·간격과 네 영역의 실제 캡처를 대조했다. 원본은 변경하지 않았으며 화면 링크는 기록하지 않는다.
+
+
+### P25. 명확한 행 라벨이 없는 입력: 제목·설명 + Card / Surface
+
+#### 적용 조건과 판단
+
+- 데이터 조회·입력은 기본적으로 Table을 사용한다. 다만 **입력별 라벨·항목명이 기획에 명확하게 제시되지 않아 라벨/값 2열을 구성하기 어려운 입력 묶음**은 이 패턴으로 구성한다.
+- 상위 섹션의 제목이나 안내 설명은 있어도 입력 자체에 대응하는 행 제목이 없을 수 있다. 테이블을 만들기 위해 임의의 Header 라벨을 발명하거나 섹션 제목을 중복해 넣지 않는다.
+- **Title / Headline과 설명을 바깥에 두고, 입력·관련 빠른 선택 버튼을 실제 Card / Surface로 감싼다.** Card / Surface는 단순 FRAME 아웃라인이나 Data Block·Text Box로 대체하지 않는다.
+- Card 기본 padding20은 사용자 확정값 **사방32**로 변경하고 토큰을 바인딩한다. P11의 원본 Slot·Body 등 계층 보존 원칙을 함께 적용한다.
+- 원본 입력 박스는 FRAME이다. 향후 제작은 실제 적절한 outline Card / Surface 인스턴스로 전환하며 Detach하지 않는다. 확인되지 않은 Card key를 원본 자산인 것처럼 기록하지 않는다.
+
+#### 구조와 컴포넌트 조합
+
+```text
+Title / InputField Group                V gap20 / Fill W·Hug H / padding0
+├─ Title / Headline                     실제 인스턴스 / align=left
+│  └─ Slot                              V gap12
+│     ├─ 제목                           Item / Label / headline
+│     └─ 설명                           Item / Label / description-16
+└─ Card / Surface                       실제 인스턴스 / padding32 / Fill W·Hug H
+   └─ 원본 Slot 구조
+      └─ InputField Group               V gap12 / Hug W·Hug H
+         └─ InputField / BoxButton Group  H gap8 / MIN·MAX(아래 정렬)
+            ├─ InputField               400 fixed / 높이40
+            │  └─ Item / Input          amount
+            │     └─ Item / FilledStyle  basic-unittext
+            │        ├─ 입력값 / placeholder
+            │        └─ unittext        개월
+            └─ BoxButton Group          H gap4 / Hug W·Hug H
+               └─ BoxButton × N         secondary/small / 높이40
+```
+
+- Title / Headline은 카드 안에 중복하지 않고 카드의 앞 형제로 둔다. **제목·설명 전체와 Card 사이 gap20**을 적용한다.
+- 제목은 KBFG Text Bold20/28, 설명은 실제 description-16의 KBFG Text Light16/24, 제목↔설명은 Slot gap**12**다. Title / Section의18 Bold 규칙과 혼동하지 않는다.
+- 입력은 InputField와 네이티브 amount → basic-unittext 조합을 사용한다. Title·Footer는 숨김(hasTitle=false, hasFooter=false) 상태이며 단위 “개월”은 입력 내부 우측의 unittext를 유지한다.
+- 입력폭400은 이 패턴의 기준 고정 폭이며 카드 전체 Fill과 구별한다. 직접 입력과 빠른 선택은 같은 가로 행에 두고 사이 gap**8**, 아래쪽 정렬(counter MAX)한다. Title을 노출하는 다른 변형에서도 컨트롤 하단을 맞춘다.
+- 빠른 선택은 실제 BoxButton secondary/small, H gap**4**, 높이40, 각 버튼 폭Hug다. 원본6/12/24/36개월과 버튼58/67/67/67폭은 현재 문구의 결과이며 기간 옵션·허용 범위는 기획을 따른다.
+- 원본 입력 행은400 +8 +271 =679폭, 높이40이다. 전체 InputField Group은 Hug이며 카드의 남는 오른쪽 공간을 채우도록 임의로 버튼을 확대하지 않는다.
+- InputField Group의 V gap12는 여러 입력 행을 넣을 때의 관계다. 원본은 자식 가로행 하나여서 추가 시각 간격이 없다. 단일 필드만 구성하는 다른 화면은 기존 단일 항목 래퍼 명명 규칙도 함께 따른다.
+
+#### 간격·크기와 적응
+
+| 관계/영역 | 값 |
+|---|---|
+| 섹션 제목 ↔ 설명 | 12 |
+| 제목·설명 묶음 ↔ Card | **20** |
+| Card padding | **32 사방** |
+| InputField Group | V gap12 / Hug |
+| 입력 ↔ 버튼 그룹 | **8** / 아래 정렬 |
+| 빠른 선택 버튼 상호 | **4** |
+| InputField | 400 fixed ×40 |
+| 가로 입력 행 | 현재679×40 |
+| 전체 섹션 | 원본1012×190 / Fill W·Hug H |
+
+- 원본 제목·설명64 = 제목28 +12 +설명24다. 입력 박스106 = padding64 +컨트롤40 +포함 테두리2, 전체190 =64 +20 +106이다.
+- 원본 박스는 radius12, outline1, strokesIncludedInLayout=true, fills=[]다. 신규 Card는 실제 outline variant의 표면·라운드·테두리를 유지하면서 padding32를 적용한다. 원본 테두리1을 별도 외부 padding으로 중복 추가하지 않는다.
+- 전체 폭·높이와 카드 내부 폭을 실측값으로 고정하지 않는다. 긴 제목·설명은 가용 폭에서 줄바꿈하고 Hug로 증가시킨다. 카드 폭이 좁아질 때 컨트롤을 잘라내지 않고 가용 폭·기획에 맞게 입력 행을 재배치한다.
+- 원본 InputField/Item / Input은 entered=true지만 내부 FilledStyle은 entered=false로 placeholder가 보인다. 이 불일치를 고정 템플릿으로 복제하지 않고 실제 입력값 유무에 맞게 상태를 일치시킨다.
+- “타이틀입니다”는 실제 제목으로 교체한다. “가입기간은 가입 후 변경할 수 없어요” 등의 업무 조건은 해당 기획에 있을 때만 사용한다. placeholder는 “가입기간 직접 입력”, 단위는 “개월”이지만 다른 입력 목적에서는 해당 값·단위로 교체한다.
+- P24의 기간 패턴은 Table 셀 안에서 **버튼 위→gap16→입력 아래**다. 본 패턴은 Card 안에서 **입력 왼쪽→gap8→버튼 오른쪽**이다. 입력 목적이 비슷해도 부모 구성·순서·간격을 혼합하지 않는다.
+
+#### 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| Title / Headline / left | `bf50f457ca5583c356608499f2a479e58248073a` |
+| Item / Label / headline | `d714fa9e895348b8cb64dcab46b9befe839db8eb` |
+| Item / Label / description-16 | `c93bdeedab40b0fdb123608f9c8d1e2d68aeaed4` |
+| InputField / entered | `f689ed1a91c3666eab721996119a0b3540668190` |
+| Item / Input / amount·entered | `37f87b24570c9f551aabdd03fafd56df1fac43ad` |
+| Item / FilledStyle / basic-unittext·empty | `8078fce8f5b08945848f5693638edc3955cf4ca0` |
+| BoxButton / secondary·small | `b20b82eee273f930c668788109e73de668023c03` |
+
+원본 계층·컴포넌트·서체·간격과 화면 캡처를 대조했다. 원본은 변경하지 않았으며 참조 화면 링크는 저장하지 않는다.
