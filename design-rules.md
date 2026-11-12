@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P22에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P23에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -2018,3 +2018,83 @@ Card Group                            2열 Grid / 열 간격24 / Fill W·Hug H
 | TextList / Unordered / star·12·depth1 | `e437d68fb6da9daedafa27c4814efc94866b67e0` |
 
 원본 구조·서체·실제 화면을 대조했다. 이 기록은 향후 제작 규칙이며 참조 원본은 수정하지 않고 화면 링크도 저장하지 않는다.
+
+
+### P23. 설문 질문과 확인·동의 문항의 선택형 카드 패턴
+
+#### 사용자 확정 제작 원칙
+
+- 설문 형식의 문항은 질문·보조 설명·답변을 하나의 독립 박스로 묶고 세로 반복한다. **선택 컨트롤을 포함하므로 각 박스는 실제 Card / Surface 인스턴스**로 구성한다. Question/Consent FRAME만으로 외형을 복제하거나 Data Block·Text Box로 분류하지 않는다.
+- **카드 사방 padding32**를 적용한다. 라이브러리 초기 padding20은 P22 사용자 확정 규칙대로32로 변경한다. 원본 일부 동의 박스의 bottom20은 관찰값이며 신규 Card의 기본32를20으로 줄이지 않는다.
+- 실제 Card의 원본 Slot·Body·Groups 등 계층을 유지하고 해당 역할에 질문/설명/컨트롤을 배치한다. Detach하지 않으며 원본 슬롯을 임의 단일 래퍼로 교체하지 않는다.
+- 답변 버튼이나 동의 체크가 선택되는 구조다. 기획에 카드 전체 선택이 없는 한 별도 card select 상태·radio Affix·전체 클릭 동작을 추가하지 않는다. **답변용 SelectButton과 Card / Surface의 select variant는 서로 다른 개념**이다.
+- 확인한 원본 Question과 Consent는 FRAME이며 Card / Surface로 이미 구현된 상태가 아니다. 신규 제작 때 실제 KBDS outline Card를 선택한다. 미확인 Card key를 원본에서 확인한 것처럼 기록하지 않는다.
+
+#### 전체 반복과 문항 종류
+
+```text
+Question Group                       V gap12 / Fill W·Hug H / padding0
+├─ Card / Surface                    설문 문항 / padding32
+│  └─ 원본 Slot 구조
+│     └─ 질문 / 답변 콘텐츠            V gap20 / Fill W·Hug H
+│        ├─ Title / Section           align=left
+│        │  └─ Slot                   V gap8
+│        │     ├─ 질문 제목
+│        │     └─ Item / Label        description-14 / 선택적 설명
+│        └─ SelectButton              type=word / variant=single
+│           └─ slot                   H gap6
+│              └─ Item / Word / Single × N
+└─ Card / Surface                    확인·동의 문항 / padding32
+   └─ 원본 Slot 구조
+      └─ 확인 / 동의 콘텐츠            V gap16 / Fill W·Hug H
+         ├─ Title / Section           제목 + 선택적 description-14
+         ├─ Divider / Horizontal      secondary / 1px
+         └─ ConsentFinal              variant=plain / 1개
+            또는 ConsentFinal Group  V gap0 / 복수
+```
+
+- 원본 반복 폭1012, 문항 외부 gap**12**다. Card / Surface는 가로 Fill·세로 Hug이며 현재 화면에서는 padding32×2를 제외한 내용 폭948이다. 1012/948을 모든 화면에 고정하지 않는다.
+- 원본은 설문3개·동의4개가 섞인7개 문항이다. 개수와 순서는 예시이며 기획에 따라 조합한다.
+- **Question Group gap12는 P15의 ConsentGroup 상호 gap20과 별개**다. 본 설문·확인 카드 반복에 적용하고 다른 약관 그룹 간격을12로 일괄 변경하지 않는다.
+- 제목은 실제 Title / Section, 사용자 공통 스펙 Title/xl∙18∙Bold(KBFG Text Bold18/25)를 사용한다. 질문↔보조 설명은 Slot gap**8**, 설명은 Item / Label description-14, KBFG Text Light14/20이다.
+- 원본 제목 Slot이 Hug인 경우에도 긴 질문·설명은 카드 가용 폭 안에서 줄바꿈하고 세로 Hug로 계산한다. 제목/보조 설명의 원본 높이25/20이나 Slot53을 고정하지 않는다.
+- 설문 답변·확인 동의 패턴은 입력/데이터를 표로 만드는 일반 규칙의 역할별 예외다. 예/아니요 문항을 임의 Table 행으로 변환하지 않는다.
+
+#### 설문 답변 SelectButton
+
+- 질문·설명 전체 Title / Section 다음 **gap20**으로 실제 SelectButton을 배치한다. SelectButton은 type=word, variant=single, Fill W·Hug H이며 내부 slot은 H/gap**6**, MIN/CENTER다.
+- 각 선택지는 실제 Item / Word / Single, Hug W·Hug H, 높이40, padding 위2·우12·아래2·좌16, radius6을 유지한다. 라벨은 KBFG Text Bold14/20이다.
+- 원본은 “네” 비선택45폭, “아니요” 선택90폭이다. 폭 차이는 라벨과 선택 체크 아이콘을 포함한 Hug 결과이므로 버튼 폭을45/90으로 고정하거나 양쪽을 강제 Fill로 늘리지 않는다.
+- selected=true 항목은 실제 선택 variant와 line-checkMark-bold20을 사용한다. 색·테두리만 변경하거나 별도 체크 아이콘을 수동으로 덧붙이지 않는다.
+- 선택지는 단일선택 의미를 유지한다. 원본에서 “아니요”가 선택돼 있어도 실제 초기 답변·선택 상태·활성 조건은 기획 데이터로 적용한다. 원본 문구를 근거로 답변의 업무 효과를 새로 만들지 않는다.
+- 원본 설문 카드177 = padding64 + Title53 + gap20 + SelectButton40이다. 실제 Card의 테두리 계산·텍스트 줄바꿈에 따라 높이를 Hug로 다시 계산한다.
+
+#### 확인·동의 카드
+
+- **Title / Section → Divider → ConsentFinal** 순서이며 각 형제 gap은**16**이다. Divider는 실제 secondary/1px 인스턴스로 카드 안 내용 폭을 채운다.
+- 설명이 없는 문항은 제목만 유지하고 빈 설명 Slot 높이를 남기지 않는다. 제목과 본문에 다른 업무의 예시 문구가 섞여 있으면 기획의 실제 문구로 교체한다.
+- 동의는 실제 **ConsentFinal variant=plain**을 사용한다. P15 최종 동의용 muted variant를 이 흰색 카드 내부에 중복 적용하지 않는다.
+- ConsentFinal 내부 Container는 상하 padding4·좌우0, Item / Consent 1d는 상하12·좌우0, Prefix24 + gap8 + Label Fill이다. 라벨은 KBFG Text Bold16/24이며 한 줄 현재56높이, 두 줄80높이 등 콘텐츠에 따라 Hug로 늘어난다.
+- 복수 동의는 ConsentFinal Group(V/gap**0**) 안에 실제 ConsentFinal들을 반복한다. 각 컴포넌트 자체 padding으로 간격을 확보하므로 임의 gap12/20을 추가하지 않는다.
+- 동의 아래 상세 설명이 필요하면 같은 항목의 세로 묶음 안에 TextList 래퍼를 두고 **왼쪽 padding32**로 동의 라벨 시작선(체크24 + gap8)에 맞춘다. ConsentFinal↔바로 아래 설명 래퍼의 gap은0이다.
+- 상세 설명은 실제 TextList / Unordered의 **dash/size14/depth1**, KBFG Text Light14/20을 사용한다. 복수 dash는 TextList Group으로 묶고 공통 gap**4**를 적용한다. 원본 복수 설명 gap8보다 사용자 공통값4를 우선한다.
+- 원본 동의 카드 일부 padding 위32·우32·아래20·좌32, 다른 카드는 사방32로 관찰됐다. 신규 Card 제작은 사용자 확정 사방32를 적용하므로 원본194/214/246/330 높이를 고정하지 않는다.
+- 체크 상태, 필수·선택 여부, 동의가 진행에 미치는 영향은 기획을 따른다. 예시의 법률·한도·상품 조건·문구를 다른 업무의 기본값으로 재사용하지 않는다.
+
+#### 확인한 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| Title / Section / left | `3f4d2d1fdde69c122f754927d46b0b2aacb2948e` |
+| Item / Label / section | `aa47c7184504e3f335ceb35219e8165762ea682c` |
+| Item / Label / description-14 | `a7351a40309e2e4e9f616ca8c86867e9a7e0eebe` |
+| SelectButton / word·single | `7b6e4a769ba3ff3401fbc04068873ddcf5128dbd` |
+| Item / Word / Single / selected=false | `0aa745072fcb556409dd4d354a11afd582006a62` |
+| Item / Word / Single / selected=true | `403764ddf4f1684762dfba5f7ff303f6c811f3dc` |
+| line-checkMark-bold | `f3ed1e8d7e0286362be3334bf8a06c82aaa926ac` |
+| Divider / Horizontal / secondary·1px | `b154a5e09047df6dcbf02775b74e664260c48b01` |
+| ConsentFinal / plain | `ed8ff12cbe279b93e2e49c4dccce51472844bd1b` |
+| Item / Consent / 1d | `ebac2930b3bb7662d3b37ef88d01213c7785aa81` |
+| TextList / Unordered / dash·14·depth1 | `4cdd6bf4ad8ea8f9b7fecaf98d814f28214a1479` |
+
+원본의 계층·선택 상태·서체·간격과 실제 캡처를 대조했다. 원본은 수정하지 않았으며 참조 화면 링크는 저장하지 않는다.
