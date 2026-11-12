@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P27에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P28에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -2482,3 +2482,110 @@ Card / Surface                         Fill W·Hug H / padding32
 | Item / Word / Single / unselected | `0aa745072fcb556409dd4d354a11afd582006a62` |
 
 원본 계층·컴포넌트·서체·간격과 화면 캡처를 대조했다. 원본은 변경하지 않았으며 참조 화면 링크는 저장하지 않는다.
+
+
+### P28. 계좌 요약 액션 카드·거래 조회 조건·건수 우측 컨트롤
+
+#### 1. 계좌 정보와 잔액·액션을 결합한 카드
+
+- 계좌 선택·이체·조회·더보기 등 동작이 있으므로 **실제 Card / Surface 인스턴스**로 구성한다. 원본은 FRAME이며 신규 제작에서 적절한 outline Card로 전환한다.
+- Card의 원본 Slot 계층을 유지하고 내부에 실제 List와 잔액/버튼 조합을 배치한다. 기본20 또는 원본 위32·좌우32·아래24를 그대로 복사하지 않고 사용자 확정 **사방 padding32**를 적용한다.
+- P11의 회색 Footer 분리형 padding0 카드와 다른 패턴이다. 이 예시에는 별도 회색 Footer가 없으므로 P11 구조를 기계적으로 추가하지 않는다.
+
+```text
+Card / Surface                         Fill W·Hug H / padding32
+└─ 원본 Slot 계층
+   └─ 계좌 / 액션 콘텐츠               V gap8
+      ├─ List                          실제 인스턴스
+      │  └─ Body                       H gap16
+      │     ├─ Slot-Middle             Fill W
+      │     │  └─ Body                 H gap12
+      │     │     ├─ 은행 아이콘 영역    24
+      │     │     └─ 정보 영역          V gap2
+      │     │        ├─ 상품명·선택 chevron
+      │     │        └─ 상태 Label + 은행명·계좌번호
+      │     └─ Slot-Suffix             Item / Suffix / iconButton / 24
+      └─ 잔액 / 버튼 행                 H gap0 / 왼쪽 padding32 / CENTER
+         ├─ Account Balance           Fill W / 왼쪽 padding4
+         │  └─ 잔액 묶음               H gap8
+         │     ├─ 라벨·금액·단위        내부 gap4
+         │     ├─ Divider / Vertical   secondary / 1px / 높이12
+         │     └─ 라벨·금액·단위 …
+         └─ BoxButton Group           Fill W / H gap8 / MAX·CENTER
+            ├─ BoxButton              이체 / secondary·small / 120×40
+            └─ BoxButton              조회 / secondary·small / 120×40
+```
+
+- 상단 List↔하단 잔액/버튼 행은 **8**이다. List의 Middle↔Suffix는**16**, 은행 아이콘↔정보는**12**, 상품명 행↔계좌 정보 행은**2**다.
+- 상태 Label↔은행/계좌 묶음은8이다. 실제 Label·아이콘·List Slot을 사용하고 전체를 일반 Text 한 줄로 합치지 않는다.
+- 하단 잔액/버튼 행은 왼쪽 padding32, 잔액 영역 내부 왼쪽4로 정보 시작선을 맞춘다. 금액 묶음 사이 Divider 전후 gap8, 라벨·수치 조합 내부 gap4, 버튼 상호 gap8이다.
+- 원본 두 하단 영역은 각각 Fill로 같은 폭632를 나누고 버튼 영역은 MAX 정렬이다. 단순 고정 x/y나 빈 프레임으로 우측 정렬하지 않는다.
+- 상품명 KBFG Text Bold16/24, 상태 Label Bold12/17, 은행명 Medium12/17, 계좌번호 Pretendard Regular13/17, 잔액 라벨 KBFG Text Medium14/20, 금액 Pretendard Regular15/20으로 확인됐다. 원본 단위 “원”도 Pretendard였으나 신규 일반 UI 단위는 공통 KBFG Text 원칙과 해당 네이티브 스타일을 기준으로 적용한다.
+- 원본 List Body 높이48 안에 Slot-Middle60이 들어 있는 불일치가 있다. **48을 고정 복제해 내용을 겹치게 하지 말고** 실제 List/부모 높이를 콘텐츠에 맞춰 계산한다. 원본 외곽1360×152 및 하단 padding24도 신규 고정 높이·기본값으로 사용하지 않는다.
+- 특정 은행·계좌·금액과 이체/조회 버튼 개수는 기획을 따른다. 선택용 chevron과 더보기 suffix의 실제 역할을 유지한다.
+
+#### 2. 거래 조회 조건 Grid 표
+
+- 실제 Table Grid를 **Table**로 명명하고 2열 Grid로 구성한다. 원본 전체1360, 라벨**160 fixed** + 값**FLEX1(현재1200)**, row/column gap0, 행 HUG다. 다른 표의 라벨180/200을 전역 기본값으로 덮어쓰지 않는다.
+- Header/Cell은 실제 인스턴스, padding 상하12·좌우16이다. Header 콘텐츠는 최신 P19의 왼쪽 정렬을 적용한다. 원본 첫 Header가 위쪽 정렬인 것은 복합 조회 기간 행의 관찰값이며 신규 세로 정렬은 기획·콘텐츠와 맞춘다.
+
+```text
+Table                                  GRID / 160 fixed + FLEX1 / gap0
+├─ 조회 기간
+│  └─ Slot-Content → 기간 조건 묶음      V gap16 / Hug
+│     ├─ Radio Group                    H gap16 / 기간조회·월별조회
+│     ├─ InputField                     400 fixed ×40 / Item / Input period
+│     └─ BoxButton Group                H gap4 / secondary·small
+├─ 조회 내용
+│  └─ Radio Group                       H gap16 / 전체·입금·출금
+├─ 조회조건
+│  └─ InputField                        400 fixed ×40 / amount-start-end
+└─ 보낸 분/받는 분 내통장 표시
+   └─ InputField                        400 fixed ×40 / default
+```
+
+- Radio는 medium, 실제 네이티브 Radio/Item / Radio 상태를 사용한다. 그룹 상호 gap**16**, 각 Radio 내부 아이콘↔라벨 gap8, 높이24다. 원본 outer checked=false와 내부 checked=true가 혼재하므로 실제 선택 상태를 맞추고 이 불일치를 복사하지 않는다.
+- 조회 기간의 **Radio Group↔기간 입력↔빠른 선택 버튼은 각각16**이다. 빠른 선택 버튼 간격은**4**, 높이40, Hug 폭이다.
+- 기간 입력400 내부는 시작/종료 입력 묶음352 + gap8 + 달력 BoxButton40이다. 시작값↔물결↔종료값은 내부 gap4이며 두 입력은 각각166.5 Fill 실측이다. 달력은 실제 네이티브 period 구성의 단일 suffix 버튼으로 사용하고 입력마다 임의로 달력 두 개를 추가하지 않는다.
+- 빠른 선택 예시는 오늘/1주일/1개월/3개월/6개월/12개월/24개월이다. 옵션·허용 조회 범위는 기획을 따른다.
+- 기간 조건136 = Radio24 +16 +입력40 +16 +버튼40이며 셀161은 padding·선 포함 결과다. 조회 내용49, 금액범위65, 표시문구65, 전체341은 현재 내용의 결과로 높이는 Hug 재계산한다.
+- 금액 범위는 실제 **amount-start-end** 입력으로 최소금액·최대금액과 각 단위 “원”, 중간 “~”를 유지한다. 전체400, 내부 gap4이며 일반 날짜 범위나 독립 문자열로 대체하지 않는다.
+- 표시문구는 default 입력, 원본 placeholder는 최대20자 안내다. 입력 제한·조회 방식 전환·선택에 따른 노출은 해당 기획 조건을 따른다. InputField Title/Footer는 불필요한 중복을 숨긴다.
+
+#### 3. 건수 우측 정렬·표시 개수 컨트롤
+
+- 사용자가 전달한 우측 그룹의 실제 구성은 BoxButton이 아닌 **select-default InputField 2개**다. 기능에 맞게 InputField Group을 사용하고 버튼 모양으로 재작성하지 않는다. 별도 액션 버튼이 필요한 경우에는 기존 P01/P16의 실제 BoxButton Group을 적용한다.
+
+```text
+Amount / InputField Group              H gap20 / MIN·MAX / Fill W·Hug H
+├─ Amount                              Fill W / H gap4 / CENTER
+│  ├─ Left                             건수 라벨 / Hug
+│  └─ Right                            H gap2 / 숫자 + 단위
+└─ InputField Group                    Hug W·Hug H / H gap8 / CENTER
+   ├─ InputField                       select-default / 152 fixed ×40 / 정렬 방식
+   └─ InputField                       select-default / 152 fixed ×40 / 표시 개수
+```
+
+- **건수 영역↔우측 그룹은20**, 필드 상호**8**, 건수 라벨↔숫자/단위 묶음은**4**, 숫자↔단위는**2**다. 부모 counter MAX로 높이24의 건수와 높이40의 필드 하단을 맞춘다.
+- Amount는 남는 폭 Fill, 우측 그룹은 Hug312(152+8+152)이다. 전체1360에서 Amount1028, 그룹312, gap20이다.1028을 고정하지 않는다.
+- 건수 라벨은 KBFG Text Medium14/20, 숫자 Pretendard SemiBold17/24, 단위 “건”은 KBFG Text Bold14/20이다.
+- 원본 필드 문구는 “최근 거래내역 순”, “10개씩 보기”다. 정렬·페이지 크기 옵션은 기획에 맞춰 교체한다. 우측 필드의 외부 entered=false/내부 _entered=true 불일치는 고정 규칙이 아니며 실제 값과 상태를 일치시킨다.
+- 원본 이름 Amount / Button Group은 실제 역할과 다르므로 신규 조합은 **Amount / InputField Group** 등 실제 자산 구성이 드러나게 명명한다.
+- 이 행 아래 결과 Table과의 간격은 부모 목록 조합의 **20**을 유지한다. 총 건수·필드 중 일부가 비노출될 때 빈 그룹·불필요한 여백을 남기지 않는다.
+
+#### 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| List | `efc578a125431c008569ed3affe51759bb11531b` |
+| Item / Suffix / iconButton | `648fdb7c47d14666faa86ece4766fd639f8d4356` |
+| BoxButton / secondary·small | `b20b82eee273f930c668788109e73de668023c03` |
+| Radio / medium·bold·unchecked | `a74b3740e5e5e0c5f6a09bbb44fe88dee6248cdb` |
+| InputField / empty | `6a180f941f7bc12168489ec44f9203d0f3a4e7cc` |
+| Item / Input / period·empty | `a69bf9237990a9897dd7ab431a56ab62b592818f` |
+| Item / Input / amount-start-end·empty | `cf639656a56928b009a21426c05cde657401f755` |
+| Item / Input / select-default·entered | `f8bed42a8ed0d1e4e4f0634209a7babd6f3e5cf4` |
+| Item / Input / default·empty | `1a21da059bc9d4f0221961b447fec3e41c87a5f9` |
+| line-calendar | `84f0af579a4680dbe2c2dd3f3de7faf0f228a020` |
+
+원본 계층·상태·서체·간격과 세 영역의 실제 화면을 대조했다. 참조 원본은 변경하지 않았으며 화면 링크는 저장하지 않는다.
