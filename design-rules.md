@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P23에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P24에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -2098,3 +2098,115 @@ Question Group                       V gap12 / Fill W·Hug H / padding0
 | TextList / Unordered / dash·14·depth1 | `4cdd6bf4ad8ea8f9b7fecaf98d814f28214a1479` |
 
 원본의 계층·선택 상태·서체·간격과 실제 캡처를 대조했다. 원본은 수정하지 않았으며 참조 화면 링크는 저장하지 않는다.
+
+
+### P24. 출금계좌 Select·가입기간·SegmentedControl 입력과 표 하단 보조 링크
+
+#### 공통 적용
+
+- 아래 조합은 실제 Grid Table의 값 Cell → Slot-Content 안에 배치한다. Header는 라벨180 fixed, 값 열은 FLEX1, row HUG, row/column gap0인 원본을 확인했다. 전체1360에서 Cell1180은 실측이며 다른 화면에서는 가용 폭을 채운다.
+- Table / Header·Cell padding은 상하12·좌우16, Cell은 좌측·세로 중앙 정렬이다. 셀 높이65/121/113은 현재40/96/88 콘텐츠와 padding·선의 결과이며 고정하지 않는다.
+- InputField는 실제 인스턴스를 사용하고 hasTitle#9060:7=false, hasFooter#6511:42=false로 셀 라벨과 중복되는 제목·하단 안내를 숨긴다. 별도 안내가 필요한 업무는 기획에 따라 노출한다.
+- 원본의 외부 Table 래퍼와 내부 Table Grid 이름은 관찰값이다. 신규 제작에서는 실제 Grid 프레임을 Table로 명명하고 바깥 조합 래퍼와 구별한다.
+
+#### 1. 출금계좌 선택형 InputField
+
+```text
+Table / Cell                          Fill W·Hug H / padding12 16
+└─ Slot-Content                       Hug W·Hug H
+   └─ InputField                      폭400 fixed / 높이40 / entered=true
+      └─ Item / Input                 variant=select-default / _entered=true
+         └─ Item / FilledStyle        variant=account / entered=true
+            ├─ 계좌 정보 묶음          은행 아이콘·은행명·구분선·계좌번호
+            └─ Item / Affix           icon / line-chevron-down
+```
+
+- **출금계좌를 Select로 표시할 때 select-default 입력 안에 account FilledStyle을 사용한다.** 일반 텍스트 Select 하나에 은행명·계좌번호를 붙인 문자열로 단순화하지 않는다.
+- 계좌 입력 폭400 fixed·높이40이며 남는 셀 폭 전체로 무조건 늘리지 않는다. 계좌 정보와 우측 드롭다운 Affix를 실제 원본 계층으로 보존한다.
+- FilledStyle은 H/gap8, padding 위4·우12·아래4·좌12다. 은행 아이콘, 은행명, 세로 구분선, 계좌번호와 chevron을 유지한다.
+- 원본 은행명은 KBFG Text Medium14, 계좌번호 라벨은 KBFG Text Bold14로 관찰됐다. 신규 숫자 전용 계좌번호 표시는 기존 공통 Pretendard 규칙을 우선 적용하며 은행명은 KBFG Text를 유지한다.
+- 외부 InputField entered와 내부 _entered·account entered 상태를 실제 값에 맞춘다. 특정 은행·계좌번호를 기본 데이터로 고정하지 않는다.
+
+#### 2. 가입기간: 빠른 개월 선택 + 직접 입력
+
+```text
+Table / Cell
+└─ Slot-Content
+   └─ 기간 입력 묶음                  V gap16 / Hug W·Hug H
+      ├─ BoxButton Group              H gap4 / Hug
+      │  └─ BoxButton × N             secondary/small / 높이40
+      └─ InputField                   폭400 fixed / 높이40
+         └─ Item / Input              variant=amount
+            └─ Item / FilledStyle     variant=basic-unittext
+               ├─ 직접 입력 라벨/값
+               └─ unittext            개월
+```
+
+- 이 패턴은 달력 날짜 범위가 아닌 **기간 수치(개월) 입력**이다. CalendarPicker·시작일/종료일 입력으로 대체하지 않는다.
+- 원본 버튼은6개월/12개월/24개월/36개월, 각각 Hug 폭58/67/67/67, 높이40이며 버튼 사이 gap**4**다. 기간 목록과 허용 범위는 기획을 따르고 이 네 값을 전역 기본값으로 강제하지 않는다.
+- **빠른 선택 버튼 그룹↔직접 입력은16**이다. 그룹271폭, 아래 입력400폭이므로 전체 묶음 폭400·높이96(40+16+40)으로 확인됐다.
+- 직접 입력은 실제 amount 입력의 basic-unittext 구성으로 단위 “개월”을 우측에 표시한다. 원본 placeholder는 “가입기간 직접 입력”이며 내부 텍스트는 오른쪽 정렬 계열의 네이티브 구성을 유지한다.
+- 원본은 외부 InputField entered=true/Item / Input _entered=true지만 FilledStyle entered=false 및 placeholder가 표시된 상태다. 이 상태 불일치를 복제 규칙으로 삼지 않는다. 신규 제작은 실제 입력값 유무에 맞게 외부·내부 상태를 일치시킨다.
+- BoxButton 선택이 입력값을 갱신하는 방식, 입력 제한·검증·기본값은 기획에 따라 적용한다.
+
+#### 3. SegmentedControl + 연락처 입력
+
+```text
+Table / Cell
+└─ Slot-Content                       V gap8 / Hug W·Hug H
+   ├─ SegmentedControl               size=medium / disabled=false / 높이40
+   │  └─ Slot                        H gap0
+   │     ├─ Item / Medium            position=left / 이메일 / selected=true
+   │     └─ Item / Medium            position=right / SMS / selected=false
+   └─ InputField                     폭500 fixed / 높이40 / entered=false
+      └─ Item / Input                variant=email / H gap8
+         ├─ filed1                   폭300 / H gap4
+         │  ├─ Item / FilledStyle    이메일 로컬 부분
+         │  ├─ At                    @
+         │  └─ Item / FilledStyle    도메인 선택 / chevron-down
+         └─ Item / FilledStyle       남은192 Fill / 도메인 직접입력
+```
+
+- **이 셀 내부 조합의 SegmentedControl↔InputField 간격은8**이다. P13의 출금계좌 SegmentedControl / Contents gap16과 구별한다. 상위 조합의 역할이 같지 않으므로 P13의16을 일괄 덮어쓰지 않는다.
+- 원본 SegmentedControl은192×40, 항목은 각각96 Hug, 내부 gap0이다. selected·position·disabled는 실제 Item variant로 표현하고 수작업 테두리로 재현하지 않는다.
+- 이메일 입력 전체500 = 로컬/도메인 묶음300 + gap8 + 직접입력192다. filed1 내부 gap4, 외부 입력행 gap8을 서로 구별한다.
+- 원본에서 도메인 선택과 별도 직접입력 필드가 함께 노출된다. 특정 도메인 선택 시 직접입력 표시를 바꾸는 조건 및 SMS 선택 시 입력 구성은 정적 예시만으로 확정하지 않고 기획을 따른다.
+- 입력값 없이 보이는 “텍스트영역”, “직접입력”은 예시 placeholder다. 실제 placeholder·값으로 교체하고 모든 입력을 같은 텍스트로 고정하지 않는다.
+- 콘텐츠88 = SegmentedControl40 + gap8 + InputField40이며 셀113은 이 내용의 결과다. 숨김·줄바꿈·검증 안내 추가 시 Hug로 재계산한다.
+
+#### 4. 표 다음의 보조 이동 TextButton
+
+```text
+제목 / 표 / 보조 링크 묶음             V gap20 / Fill W·Hug H
+├─ Title / Headline                   실제 원본 제목 컴포넌트
+├─ Table                             실제 Grid
+└─ TextButton                        primary/small / 좌측 정렬
+   ├─ Label
+   └─ line-chevron-right             suffix16
+```
+
+- 제목↔Table 및 **Table↔보조 이동 TextButton은 각각20**이다. 텍스트·아이콘 gap2, 라벨 KBFG Text Medium14/20, 버튼 높이20이다.
+- 실제 TextButton primary/small을 사용하고 hasPrefix=false, hasSuffix=true, suffix=우측 chevron16, underline=false 구성을 유지한다. 원본은 버튼 인스턴스 자체 Fill W, primary MIN / counter CENTER로 좌측에 콘텐츠를 배치한다.
+- 원본 제목은 Title / Headline Bold20/28, 표 내부에는 SelectButton word/single이 들어 있다. 제목·표·버튼의 현재 높이28+20+65+20+20=153은 실측이며 문구·행 수에 따라 Hug로 계산한다.
+- **이 보조 이동 링크 gap20은 P19의 저장·인쇄 도구 행 gap16, P17의 더보기 gap16과 구별한다.** 아래로 향하는 다운로드 아이콘이나 BoxButton 더보기 유형을 보조 이동 링크에 적용하지 않는다.
+- 제목 “타이틀입니다”, 라벨 “레이블명”, 링크 “텍스트버튼”은 기획 문구로 교체한다. 단일 액션을 여러 버튼 그룹으로 늘리지 않는다.
+
+#### 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| InputField / entered=true | `f689ed1a91c3666eab721996119a0b3540668190` |
+| InputField / entered=false | `6a180f941f7bc12168489ec44f9203d0f3a4e7cc` |
+| Item / Input / select-default·entered | `f8bed42a8ed0d1e4e4f0634209a7babd6f3e5cf4` |
+| Item / FilledStyle / account·entered | `1e7694d804539d1e341c6c7bfb0aa4c2f040e266` |
+| BoxButton / secondary·small | `b20b82eee273f930c668788109e73de668023c03` |
+| Item / Input / amount·entered | `37f87b24570c9f551aabdd03fafd56df1fac43ad` |
+| Item / FilledStyle / basic-unittext·empty | `8078fce8f5b08945848f5693638edc3955cf4ca0` |
+| SegmentedControl / medium | `0913c191bc17e51c03c037c519dcc4149ac4ac23` |
+| Item / Medium / left·selected | `218a71973ac5b1d4b695e4788e1497ef069b1918` |
+| Item / Medium / right·unselected | `e30d31349bfb0fb6adbb2ef75b3105bd93fb8af1` |
+| Item / Input / email·empty | `c2325fc6a61d51fc09e3395d91a1f1db2a2845d5` |
+| TextButton / primary·small | `95687195c8b0873f0e13393cf059964ecfde2604` |
+| line-chevron-right | `c583635d46aec2de5f463e4e4551034b4da5a7c5` |
+
+원본의 구조·상태·간격과 네 영역의 실제 캡처를 대조했다. 원본은 변경하지 않았으며 화면 링크는 기록하지 않는다.
