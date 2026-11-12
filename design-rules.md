@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P20에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P21에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -1849,3 +1849,97 @@ Popup                                 640 fixed / Hug H / V gap0
 | Footer primary·medium | `c4ab4c1ce45fb8f3c1975cf3a624c6f05b561767` |
 
 원본 계층·서체와 전·후 화면 캡처를 대조했다. 원본 팝업은 변경하지 않았으며 참조 링크는 기록하지 않는다.
+
+
+### P21. 상단 가입 프로세스 안내와 선택적 준비물 체크 목록
+
+#### 용도와 컴포넌트 선택
+
+- 가입·등록 전에 전체 진행 순서를 상단에 설명할 때 실제 **ProgressStep + Item / Infomation** 조합을 사용한다. 단계 번호, 단계명, 필요한 설명과 보조 액션을 함께 보여주는 안내 패턴이다.
+- 제목 옆에서 현재 진행 단계를 간결하게 표시하는 P03의 StepIndicator / Horizontal, BODY 우측의 StepIndicator / Vertical과 구별한다. 서로 역할이 다른 컴포넌트를 일괄 치환하지 않는다.
+- 필요하면 아래에 Title / Group + status-circleCheck 아이콘 목록으로 준비물·사전 확인 안내를 추가한다. 이 하단 박스는 선택 사항이며, 프로세스 표시만 필요한 화면에 빈 준비물 박스를 남기지 않는다.
+- 실제 컴포넌트·슬롯과 디자인 토큰 연결을 보존하고 Detach하지 않는다. 업무별 단계 수·순서·문구를 기획에 맞게 교체하며 원본5단계를 필수로 고정하지 않는다.
+
+#### 조합 구조
+
+```text
+프로세스 안내 영역                    V / Fill W·Hug H / gap32 / padding12 0
+├─ ProgressStep                      사용자 정의 래퍼 / padding32 / Fill W·Hug H
+│  └─ ProgressStep                   실제 인스턴스 / align=center
+│     └─ Slot                        H gap0 / Fill W·Hug H
+│        ├─ Item / Infomation        align=left / position=start / variant=number
+│        ├─ Item / Infomation        동일 구성 × N
+│        └─ Item / Infomation        마지막 position=end
+└─ 준비물 안내 박스                   선택적 / padding32 / radius12 / 회색 표면
+   └─ 제목 / 체크 목록 묶음            V gap12 / Fill W·Hug H
+      ├─ Title / Group               align=left / 제목
+      └─ status-circleCheck / Contents  V gap8
+         └─ status-circleCheck / Text × N
+            ├─ status-circleCheck    실제 아이콘16×16
+            └─ Text                  일반 텍스트 래퍼 / Fill W·Hug H
+```
+
+- 전체 영역은 padding 상하12·좌우0, V/gap32, Fill W·Hug H다. 원본 폭1360·높이422는 현재 콘텐츠 실측이며 화면 가용 폭에 맞춘다.
+- 외부 영역의 회색 fill은 바인딩돼 있어도 visible=false로 확인됐다. 배경을 임의로 켜지 않는다. ProgressStep 래퍼도 fills=[]이며 padding32만 적용된다.
+- ProgressStep 래퍼의 gap20은 직접 자식 인스턴스 하나여서 현재 시각 간격을 만들지 않는다. 단계 간 실제 gap은 Slot의0이며 단계 폭은 Fill로 분배한다.
+- 원본 래퍼1360에서 padding32×2를 제외한 ProgressStep 폭은1296, 5개 항목은 각각259.2다. 이 소수 폭을 고정하지 않고 동일 Fill을 사용한다.
+- ProgressStep 인스턴스의 align=center와 내부 Item의 align=left가 함께 사용됐다. 상위 prop 이름만 보고 단계 설명까지 가운데 정렬하지 않는다.
+
+#### 각 단계 항목의 내부 구조
+
+```text
+Item / Infomation                    V gap16 / Fill W·Hug H
+├─ item+line                         H gap8 / 우측 padding16 / CENTER
+│  ├─ Item / ProgressStep            variant=number / 32×32
+│  └─ rightLine                      Fill W / 높이1
+│     └─ Divider / Horizontal        secondary / thickness=1px
+└─ vStack                            V gap6 / 우측 padding8
+   ├─ stepName                       단계명 / Fill W·Hug H
+   ├─ Slot-contents                  선택적 설명
+   │  └─ Item / Slot                 실제 설명 인스턴스
+   └─ Button Area                    선택적 / 위 padding4
+      └─ TextButton                  primary/xsmall / 우측 chevron
+```
+
+| 항목/관계 | 규격 |
+|---|---|
+| 번호 원형 | 32×32 |
+| 번호 ↔ 우측 연결선 | gap8 / 연결선은 남은 폭 Fill |
+| 번호·연결선 행 ↔ 설명 묶음 | 16 |
+| 단계명·설명·버튼 영역의 기본 간격 | vStack gap6 |
+| 버튼 영역 추가 상단 padding | 4 |
+| 단계명 | KBFG Text Bold18/25 |
+| 설명 | KBFG Text Medium14/20 |
+| 번호 | Pretendard SemiBold15/20 |
+| 보조 TextButton | primary/xsmall, 라벨 KBFG Text Medium12/17, 아이콘·문구 gap2 |
+
+- 마지막 단계는 position=end를 사용해 후행 연결선이 없는 실제 variant를 선택한다. 선을 임의 삭제하거나 마지막에도 start variant를 반복하지 않는다.
+- 원본 항목126 = 번호행32 + gap16 + vStack78이다. vStack78 = 제목25 + gap6 + 설명20 + gap6 + 버튼영역21이며, 버튼영역21 = 위4 + TextButton17이다. 설명·버튼이 숨겨지거나 줄바꿈되면 Hug로 다시 계산한다.
+- 항목의 실제 표시 속성을 사용한다: hasStepName#3346:4, hasSubText#4564:278, hasButton#3346:0. 불필요한 설명·버튼은 해당 prop으로 비노출하고 빈 높이·가짜 placeholder를 남기지 않는다.
+- 원본의 “프로세스 내용 필요 시 사용”, “버튼명”은 템플릿 문구다. 실제 안내·액션으로 교체하거나 불필요하면 숨긴다. 정적 예시의 번호 색상을 현재 단계·완료 상태의 의미로 임의 해석하지 않는다.
+
+#### 준비물·사전 안내 체크 목록
+
+- 프로세스 래퍼와 하단 준비물 박스 간격은 **32**다. 준비물 박스 padding32, radius12, fill은 surface/neutral/tertiary-muted, strokes=[]다. 이 사용 패턴의 실측 표면을 일반 Text Box 기본 스타일 변경으로 확대하지 않는다.
+- 제목은 실제 **Title / Group / align=left**, KBFG Text Bold16/24다. 제목↔체크 목록은 **12**이며 Title / Section으로 임의 교체하지 않는다.
+- 목록 전체는 V/gap**8**, 각 행은 H/gap**4**, primary MIN / counter CENTER다. 실제 status-circleCheck16×16 다음에 Fill W·Hug H의 Text 래퍼를 둔다. 일반 안내문은 KBFG Text Light14/20이다.
+- 체크 아이콘은 정보를 강조하는 정적 아이콘이며 CheckBox 동의 컨트롤이 아니다. TextList / Unordered의 bullet 마커로 바꾸거나 동의 체크 상태를 추가하지 않는다.
+- **이 아이콘+Text 행의 세로 gap8은 일반 TextList Group gap4와 별개**다. 원본3행은20×3 +8×2 =76이며 항목 수·줄바꿈에 따라 Hug로 계산한다.
+- 원본 박스176 = 위32 + [제목24 + gap12 + 목록76] + 아래32다. 전체422 = 위12 + 프로세스190 + gap32 + 박스176 + 아래12이며, 프로세스190 = 위32 + 항목126 + 아래32다. 이 전체 높이를 고정하지 않는다.
+- 준비물 문구와 개수는 실제 기획을 따른다. 예시에 남은 다른 업무 안내 문구를 가입 준비물의 기본 내용으로 복사하지 않는다.
+
+#### 확인한 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| ProgressStep / align=center | `5bc9c95cc0b4906f44ebdf25875a18daff8930c3` |
+| Item / Infomation / left·start·number | `5f02d9a1f43d6ef479cc5c6f36b3414e1b5f9a20` |
+| Item / Infomation / left·end·number | `c62727408533955d60d88e88526f3ec8f752161c` |
+| Item / ProgressStep / number | `72a7e48dd96459e737a0f31ba87bb3fa4e69d49e` |
+| Divider / Horizontal / secondary·1px | `b154a5e09047df6dcbf02775b74e664260c48b01` |
+| 설명 Item / Slot | `41fd06c2198774ea9632479c4e156bc392076f8f` |
+| TextButton / primary·xsmall | `41f394db9c0e71436d947931142d78add5404364` |
+| Title / Group / left | `99d19cfa876f2805be637934f717ffd2763720ca` |
+| status-circleCheck | `e9020e86e5b488d8d972d0b7a1f33acf22611daf` |
+
+레이어·문구·서체·간격과 실제 화면을 대조했다. 참조 원본은 수정하지 않았으며 화면 링크는 기록하지 않는다.
