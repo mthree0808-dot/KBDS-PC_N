@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P18에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P19에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -33,6 +33,13 @@
 - 복수 `TextList / Unordered`는 실제 세로 Auto Layout의 `TextList Group`으로 묶고 **gap: 4px (`spacing/xs`)**를 적용한다.
 - 이 규칙은 안내 박스·약관 안내·테이블 하단 설명 등 복수 TextList 묶음에 공통 적용하며, 참조 화면의 항목 간격이 8 또는 12여도 4를 우선한다.
 - **테이블과 하단 TextList Group 사이 간격 16px (`spacing/xl`)은 유지한다.** 항목 간격 4와 묶음 바깥 간격 16을 혼동하지 않는다. 일반 Text Group이나 다른 컴포넌트 내부 고유 gap에 일괄 적용하지 않는다.
+
+
+### 2.2 단일 안내 항목의 Text 구성
+
+- **안내 박스의 안내 항목이 하나이면 기획서의 bullet을 그대로 복제하지 않고 일반 Text로 구성한다.** Infobox / FullWidth의 Contents → Slot-Contents 안에 H / padding0 / gap0의 Text 래퍼를 넣고, 그 안에 안내문 TEXT를 Fill W·Hug H로 배치한다.
+- 이때 TextList / Unordered, 마커, 마커용 왼쪽 padding을 추가하지 않는다. 일반 안내문은 KBFG Text의 해당 본문 스타일과 LEFT 정렬을 유지하고 줄바꿈에 맞춰 Hug로 계산한다.
+- 이 규칙은 안내 박스에서 단일 안내 문장을 표현할 때 적용한다. 여러 항목인 경우 기존 TextList Group과 항목 gap4 규칙을 따른다. 약관의 필수 마커 등 의미가 있는 다른 컴포넌트 구조를 일괄 제거하지 않는다.
 
 ## 3. 화면 레이아웃 및 영역 규격
 
@@ -1218,6 +1225,8 @@ BoxButton Group                     H / gap 8
 
 #### 일반 안내 Accordion 스펙
 
+- **‘알려드립니다’ 안내 Accordion은 항상 컴포넌트 prop `hasDivider=false`로 사용한다.** 확인된 속성명은 `hasDivider#1302:31`이다. Divider 레이어만 수동으로 숨기거나 삭제하는 대신 실제 prop을 설정한다. 아래 원본 구조·높이 기록에 Divider가 포함되어 있어도 신규 제작에는 이 사용자 확정값을 우선하고 높이를 Hug로 다시 계산한다.
+
 ```text
 Accordion                            standard / basic / medium
 ├─ Title Area                        H / gap 8 / padding 16 0
@@ -1703,3 +1712,37 @@ Card / Surface                         outline / variant=select
 | BoxButton / primary·large | `d206f834d8d80e5bd6ab306b8033f3c0e5214bc5` |
 
 같은 기획 역할·variant·상태의 검증된 영역은 기존 완성 화면에서 재사용할 수 있다. 복제 후 문구·값·선택 상태만 기획에 맞게 교체하고 컴포넌트 연결·서체·토큰·원본 Slot 구조를 유지한다.
+
+
+### P19. 조회 조건·결과 분리, 헤더 정렬과 표 하단 도구 버튼
+
+#### 조회 조건과 결과 사이 간격
+
+- **조회 조건 묶음(입력 Table + 조회 버튼)과 결과 Table / Contents 묶음 사이 간격은 48 (`spacing/7xl`)**이다. 조회 버튼까지 포함한 조건 영역의 끝에서 결과 표 영역의 시작까지 적용한다.
+- 탭과 조회 조건 사이의 기존 gap20을 보존하면서, 조회 조건과 결과를 별도 V / gap48 부모로 묶는다. 탭·조건·결과가 같은 부모에 있다고 모든 간격을 48로 일괄 변경하지 않는다.
+- 표↔하단 TextButton 도구 행 및 도구 행↔Pagination의 기존 gap16은 유지한다. 48은 조회 조건과 결과 두 업무 영역의 경계다.
+
+#### Table / Header 왼쪽 정렬
+
+- **Table / Header의 콘텐츠 alignment는 align left**로 적용한다. Header 내부 가로 정렬 primary MIN, Slot의 가로 정렬도 MIN, 텍스트는 LEFT를 사용한다. 세로는 CENTER로 맞춘다.
+- 조회 조건의 라벨 Header와 목록의 열 Header에 적용하며 실제 네이티브 Header 인스턴스·Slot·padding을 유지한다. Cell의 숫자·본문 정렬까지 이 규칙으로 일괄 변경하지 않는다.
+
+#### 표 하단 도구의 기능별 아이콘과 유형
+
+- 표 하단의 필터·검색·편집·저장·인쇄는 실제 **TextButton primary/small**을 사용한다. prefix 아이콘16 + gap2 + 라벨로 구성하고, 버튼 고유 높이20과 native 구조를 유지한다.
+- 확인한 조합은 underline=false, hasPrefix=true, hasSuffix=false다. 링크 이동용 우측 chevron이나 기본 placeholder ICON으로 대체하지 않는다.
+- 필요한 기능만 노출한다. 기능과 문구를 유지하면서 아래 아이콘을 실제 INSTANCE_SWAP으로 설정한다.
+
+| 용도 | TextButton 문구 예시 | prefix 아이콘 | 확인한 component key |
+|---|---|---|---|
+| 필터 | 필터 | line-filter | `7360bb8bf02274021e611a0f6acc980f8f90d093` |
+| 목록 검색 | 검색 | line-magnify | `de5f3d1db0a102ef283f155a34eaf622fb63ef70` |
+| 목록 편집 | 편집 | line-edit | `5ac99b4e634e90bbb406233d2db202a2f79957cf` |
+| 텍스트 파일 다운로드 | txt. 저장 | line-arrowDown | `e5ae378155391e2649a13a1df7bc77650984cd08` |
+| 엑셀 다운로드 | 엑셀 저장 / 엑셀 파일 저장 | line-arrowDown | `e5ae378155391e2649a13a1df7bc77650984cd08` |
+| 인쇄 | 인쇄 | 확인된 인쇄 도형의 Icon 인스턴스 | `3ddb3b7489391d7a3c26ba67053b772f8bec68fd` |
+
+- TextButton primary/small key는 `95687195c8b0873f0e13393cf059964ecfde2604`다. 인쇄 아이콘은 참조의 실제 mainComponent 이름이 Icon으로 확인됐으므로 이름만 보고 다른 아이콘으로 추정하지 않고 위 key의 자산을 사용한다.
+- 좌측에는 필터·검색·편집, 우측에는 다운로드·인쇄를 배치할 수 있다. 양쪽 묶음은 H / SPACE_BETWEEN, 각 버튼 묶음 내부 gap16을 사용한다. 한쪽만 존재하면 해당 기능에 맞는 좌측·우측 정렬을 적용한다.
+- **단일 TextButton만 담은 사용자 정의 배치 래퍼는 TextButton으로 명명한다.** 복수 버튼을 실제로 묶을 때 TextButton Group을 사용하며, 전체 폭 래퍼의 Fill은 정렬용이고 실제 버튼은 Hug를 유지한다.
+- 위 규칙은 P01/P16의 표 하단 도구 패턴에 공통 적용한다. 사용자 참조 화면 링크는 기록하지 않는다.
