@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P21에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P22에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -1102,6 +1102,8 @@ InputField                            사용자 정의 Auto Layout 래퍼
 
 #### 공통 Slot 구조 보존 규칙
 
+- **사용자 확정 padding 보정:** Card / Surface의 원본 padding이20이어도 일반 콘텐츠 박스 제작 시 사방32로 변경한다. 이는 허용된 명시적 override이며 Slot 계층 보존을 이유로20을 유지하지 않는다. 링크 포함 Data Block·Text Box의 Card 전환 및 본문 구성은 P22를 따른다. P11의 Body/Footer 분리형 padding0 등 명시적 업무 예외는 별도로 유지한다.
+
 - **Card / Surface는 실제 인스턴스를 사용하고, 해당 variant가 제공하는 Slot의 기본 구조를 그대로 보존한다.** 콘텐츠를 넣기 위해 Slot을 임의의 단일 Body 래퍼로 축약하거나, Header·Footer·Affix를 삭제·다른 레벨로 이동하지 않는다.
 - 기본 구조가 Header / Body / Footer와 Header / Affix를 제공하는 경우의 적용 순서는 다음과 같다. 각 영역은 비어 있을 수 있으나, 기획상 비노출인 경우에도 구조를 임의 삭제하지 않고 컴포넌트의 표시 속성·slot 상태를 따른다.
 
@@ -1943,3 +1945,76 @@ Item / Infomation                    V gap16 / Fill W·Hug H
 | status-circleCheck | `e9020e86e5b488d8d972d0b7a1f33acf22611daf` |
 
 레이어·문구·서체·간격과 실제 화면을 대조했다. 참조 원본은 수정하지 않았으며 화면 링크는 기록하지 않는다.
+
+
+### P22. 링크 포함 콘텐츠 박스: Card / Surface 전환과 padding32
+
+#### 사용자 확정 적용 원칙
+
+- **박스 안에 상세 이동·가입하기 등 링크/버튼이 있으면 실제 Card / Surface 인스턴스로 구성한다.** Data Block이나 Text Box로 표현된 기획·예시도 내부에 동작이 있으면 Card / Surface로 전환한다.
+- **Card / Surface의 기본 padding이20으로 들어오더라도 사방32로 변경한다.** spacing/5xl(32) 토큰을 상하좌우에 바인딩한다. 이는 사용자가 허용한 원본값 override이며, 원본20을 그대로 유지하지 않는다.
+- **Data Block과 Text Box도 사방 padding32**를 적용한다. 동작이 없는 데이터·안내 박스는 기존 분류를 유지하되, 박스 내부에 링크를 추가하면 Card / Surface로 전환한다. 박스 외부 형제 Button Area만 존재하는 경우는 기존 분류 원칙을 따른다.
+- 이 규칙은 일반 콘텐츠 박스의 기준이다. P11 Body/Footer 별도 padding 카드의 외부0, P18 인증 선택 카드의20 등 명시적 업무 패턴을 일괄32로 바꾸지 않는다.
+- 실제 Card / Surface의 variant·Slot·Header/Body/Footer·Affix 계층은 P11에 따라 유지한다. **padding32 보정과 슬롯 계층 보존을 함께 적용**하며, Detach나 외곽 사각형 FRAME만으로 대체하지 않는다.
+- 확인한 원본은 Card 인스턴스가 아닌 Box FRAME이다. 신규 제작 때는 최신 KBDS의 적절한 outline Card / Surface를 선택해 원본 슬롯에 콘텐츠 역할을 매핑한다. 원본 Box가 Card였던 것처럼 key를 임의 부여하지 않는다.
+
+#### 링크·준비물·주의문을 담는 카드 조합
+
+```text
+Card Group                            2열 Grid / 열 간격24 / Fill W·Hug H
+└─ Card / Surface × N                  실제 인스턴스 / padding32 / Fill W
+   └─ 원본 Slot                       선택한 variant의 계층 보존
+      └─ 본문 콘텐츠 묶음              V gap32 / padding0 / Fill W·Hug H
+         ├─ 아이콘 / 링크 묶음          V gap12
+         │  ├─ 업무 아이콘 영역         56×56
+         │  └─ TextButton              primary/large + 우측 chevron24
+         └─ 준비물 / 주의문 묶음        V gap12 / padding 위32·우0·아래8·좌0
+            ├─ Title / Group           align=left / 준비물 제목
+            └─ 목록 / 주의문 묶음       V gap12
+               ├─ 체크 아이콘 목록     V gap8
+               │  └─ 아이콘 / Text 행  H gap4 / status-circleCheck16 + 본문
+               ├─ Divider / Horizontal  secondary / 1px
+               └─ TextList / Unordered  star / size12 / depth1
+```
+
+- 위 트리는 카드 콘텐츠의 역할별 배치다. 원본 카드 variant에 없는 Header·Footer·Affix를 강제로 추가하거나 원본 슬롯을 단일 임의 래퍼로 교체하지 않는다.
+- 바깥은 실제 Grid 2열, 각 열이 같은 가중치의 Fill을 사용한다. 원본 폭1360에서 gap24를 제외해 각668이다. 좌측 Hug·우측 Fill로 같은 행 높이를 맞춘 구조를 확인했으며, 콘텐츠가 긴 카드 기준으로 행 높이를 맞춘다.
+- **이 2열 가입 선택 패턴의 열 간격24는 일반 카드 반복 gap12의 명시적 패턴 예외**다. 668폭과 현재391높이를 다른 화면에 고정하지 않는다.
+- 원본은 흰색 fill, radius12, 1px outline, strokesIncludedInLayout=true다. 신규 Card는 대응하는 실제 outline variant의 표면·라운드·테두리 토큰을 유지하고 padding만 사용자 확정32로 보정한다. 테두리1을 별도 padding으로 중복 추가하지 않는다.
+- 원본 외곽668, padding32×2, 레이아웃 포함 테두리1×2로 내부602가 관찰됐다. 실제 Card의 테두리 포함 방식에 따라 내부 폭을 계산하고602를 강제 고정하지 않는다.
+
+#### 내부 간격과 위계
+
+| 관계/영역 | 값 |
+|---|---|
+| Card / Surface·Data Block·Text Box 기본 padding | **사방32**, Card 원본20은 override |
+| 이 패턴의 카드 열 간격 | **24** |
+| 상단 아이콘 | 56×56 영역 |
+| 아이콘 ↔ 링크 제목 | **12** |
+| 상단 아이콘/링크 묶음 ↔ 하단 콘텐츠 묶음 | 부모 V gap **32** |
+| 하단 준비물 묶음 padding | 위32 / 우0 / 아래8 / 좌0 |
+| 준비물 제목 ↔ 목록/주의문 묶음 | **12** |
+| 체크 목록 ↔ Divider ↔ star 주의문 | 각각 **12** |
+| 체크 목록의 행 사이 | **8** |
+| 체크 아이콘 ↔ 본문 | **4** / 아이콘16×16 |
+
+- 원본의 부모 gap32와 하단 묶음 top padding32는 **각기 다른 속성**으로 함께 존재한다. 따라서 링크 제목의 끝과 준비물 제목 사이 실제 빈 간격은64다. 동일해 보인다는 이유로 둘 중 하나를 제거하지 않는다.
+- 링크는 실제 TextButton primary/large, 라벨 KBFG Text Bold22/31, suffix=우측 line-chevron-right24, prefix=false, underline=false다. 라벨↔아이콘 gap2를 유지한다. 카드 전체 클릭 여부는 별도 기획을 따르며 내부 링크 존재만으로 전체 클릭 동작을 만들지 않는다.
+- 준비물 제목은 Title / Group, KBFG Text Bold16/24다. 체크 본문은 KBFG Text Light14/20이며 일반 Text를 실제 status-circleCheck16 인스턴스와 H/gap4로 조합한다.
+- 원본 체크 행은 TextList / Unordered라는 FRAME 이름을 쓰지만 실제 TextList 인스턴스가 아니다. 신규 제작은 P21의 status-circleCheck / Text, status-circleCheck / Contents 등 역할별 구조를 따른다. **이 아이콘 목록 gap8에 일반 TextList Group gap4를 덮어쓰지 않는다.**
+- 하단 주의문은 실제 TextList / Unordered의 star/size12/depth1, KBFG Text Light12/17을 사용한다. 일반 bullet14나 체크 아이콘으로 바꾸지 않는다. 원본 높이17 고정은 줄바꿈 시 잘릴 수 있으므로 새 문구의 높이는 Hug로 계산한다.
+- 원본 업무 아이콘에 있는 dummy 표기와 다른 업무의 준비물 문구는 템플릿 내용이다. 실제 기획에 맞는 검증된 아이콘·문구로 교체하고 dummy 텍스트를 완성 화면에 남기지 않는다.
+- 원본 상단99 = 아이콘56 + gap12 + 링크31, 하단194 = top32 + 제목24 + gap12 + [목록76 +12 +선1 +12 +주의17] + bottom8이다. 내부325 = 상단99 + gap32 + 하단194, 카드391 = 내부325 + padding64 + 포함 테두리2다. 이 높이는 내용에 따라 재계산한다.
+
+#### 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| TextButton / primary·large | `40636a4670dba28b4c3c126689c13c2ce7c3b80d` |
+| line-chevron-right | `c583635d46aec2de5f463e4e4551034b4da5a7c5` |
+| Title / Group / left | `99d19cfa876f2805be637934f717ffd2763720ca` |
+| status-circleCheck | `e9020e86e5b488d8d972d0b7a1f33acf22611daf` |
+| Divider / Horizontal / secondary·1px | `b154a5e09047df6dcbf02775b74e664260c48b01` |
+| TextList / Unordered / star·12·depth1 | `e437d68fb6da9daedafa27c4814efc94866b67e0` |
+
+원본 구조·서체·실제 화면을 대조했다. 이 기록은 향후 제작 규칙이며 참조 원본은 수정하지 않고 화면 링크도 저장하지 않는다.
