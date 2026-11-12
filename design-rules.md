@@ -1599,6 +1599,27 @@ Table / Contents                     V / Fill W·Hug H / gap 16
 | 인증서 관련 하단 설명 | Infobox / FullWidth | 제목·정보 아이콘·본문 TextList Group·제목행 우측 TextButton |
 | 이전·확인 | Button Area → BoxButton × 2 | 가운데 정렬, 동작 상태는 인증 진행 조건에 따라 적용 |
 
+#### 영역별 필수 변환 규칙
+
+아래 세 가지 매핑은 본 고객정보 확인 화면 및 같은 역할의 후속 화면을 제작할 때 적용하는 규칙이다. 와이어프레임의 바깥 박스 모양보다 정보의 역할을 기준으로 해당 조합을 선택한다.
+
+1. **데이터 노출 영역 → Title / Contents 안의 Title / Table 반복**
+   - 기본정보·자택정보·직장정보·고객관리 안내수단을 각각 독립적인 제목과 Grid Table로 구성한다. 데이터 영역 전체는 V/gap48이며, 각 제목↔표는 gap20이다.
+   - 라벨은 Table / Header, 값은 Table / Cell로 대응한다. 라벨180 fixed + 값 Fill의 2열 트랙과 row HUG를 사용하며, 마스킹·주소 줄바꿈·수신여부 결과를 보존한다.
+   - 결과 표시용 CheckBox도 Table / Cell 안에 배치한다. 입력 화면과 확인 화면의 역할을 구분하여 확인 값은 읽기 전용으로 제공한다.
+
+2. **추가 본인 인증 영역 → Title / Contents + Card Group / Button Area**
+   - 와이어프레임의 추가 인증 전체 card는 제목과 인증 선택 영역을 묶는 구성으로 변환한다. 이 전체 영역에 바깥 Card / Surface를 추가하지 않는다.
+   - 제목 아래 gap20으로 Card Group / Button Area를 배치한다. 내부는 Card Group(H/gap12) 다음 gap24로 가운데 인증 받기 BoxButton을 배치한다.
+   - 인증 방식별로 실제 Card / Surface의 outline·select variant를 사용한다. 카드 안은 원본 Slot → Body → Groups 및 우측 radio Affix를 유지하고, 제목은 Group-A, 설명은 Group-C의 역할에 맞춰 넣는다.
+   - 선택된 카드의 select=true와 radio checked=true를 일치시킨다. 두 카드는 가용 폭을 나누는 Fill, 높이는 Hug로 대응한다.
+
+3. **인증서 안내 영역 → Infobox / FullWidth**
+   - 안내 제목·정보 아이콘·자세히보기는 Title Area에, 안내 항목은 Contents → Slot-Contents → TextList Group에 배치한다.
+   - Title Area는 제목 Fill + Button Area Hug 구조이며 자세히보기 TextButton은 우측에 둔다. 와이어프레임에서 링크가 안내문 아래에 있더라도 이 패턴에서는 제목행 우측으로 매핑한다.
+   - 자세히보기는 실제 primary/small TextButton과 우측 chevron을 사용한다. 안내 항목은 bullet/size14/depth1 TextList이며 반복 항목 간 gap4다.
+   - 세부 간격·variant·열 너비는 아래 확인값을 따른다. 기존 화면에서 같은 역할의 조합을 재사용할 때도 이 필수 구조와 컴포넌트 연결을 유지한다.
+
 #### 본문 계층과 간격
 
 ```text
