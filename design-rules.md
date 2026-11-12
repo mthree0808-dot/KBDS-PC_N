@@ -1,6 +1,6 @@
 > 작업 방식·토큰 절약·검수 운영은 [AGENTS.md](AGENTS.md)를 따른다. 디자인 작업은 아래 읽기 지도의 공통 필수 절과 해당 패턴만 조회한다. 전체 문서를 매 화면마다 다시 읽지 않는다.
 >
-> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P25에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
+> **읽기 지도:** 공통은 1장·2장·3.0절, 헤더는 3.0.1·3.0.2, 입력/조회는 3.0.3 및 3.1의 공통 조합·명명 규칙, 상세 패턴은 P01~P26에서 선택한다. 로컬 작업은 `python3 scripts/read_design_rules.py --list`로 절 목록을 확인하고 `--section 3.0 --section P06`처럼 필요한 절만 읽는다.
 >
 > **재사용 자산:** [component-map.json](design-system/component-map.json), [화면 복제 스크립트](scripts/figma/clone-screen.js). 스크립트 실행법과 검수 범위는 [scripts/figma/README.md](scripts/figma/README.md)를 따른다.
 
@@ -1746,9 +1746,9 @@ Card / Surface                         outline / variant=select
 | 목록 편집 | 편집 | line-edit | `5ac99b4e634e90bbb406233d2db202a2f79957cf` |
 | 텍스트 파일 다운로드 | txt. 저장 | line-arrowDown | `e5ae378155391e2649a13a1df7bc77650984cd08` |
 | 엑셀 다운로드 | 엑셀 저장 / 엑셀 파일 저장 | line-arrowDown | `e5ae378155391e2649a13a1df7bc77650984cd08` |
-| 인쇄 | 인쇄 | 확인된 인쇄 도형의 Icon 인스턴스 | `3ddb3b7489391d7a3c26ba67053b772f8bec68fd` |
+| 인쇄 | 인쇄 | line-print | `888e4c8f0187f5fdab8711f9717cd588c4d8b9e3` |
 
-- TextButton primary/small key는 `95687195c8b0873f0e13393cf059964ecfde2604`다. 인쇄 아이콘은 참조의 실제 mainComponent 이름이 Icon으로 확인됐으므로 이름만 보고 다른 아이콘으로 추정하지 않고 위 key의 자산을 사용한다.
+- TextButton primary/small key는 `95687195c8b0873f0e13393cf059964ecfde2604`다. **인쇄 prefix는 실제 line-print(key `888e4c8f0187f5fdab8711f9717cd588c4d8b9e3`)16×16을 사용한다.** 이전 임시 Icon/placeholder 기록은 폐기하고 이 수정값을 우선한다. hasPrefix=true, hasSuffix=false, underline=false와 아이콘↔라벨 gap2를 유지한다.
 - 좌측에는 필터·검색·편집, 우측에는 다운로드·인쇄를 배치할 수 있다. 양쪽 묶음은 H / SPACE_BETWEEN, 각 버튼 묶음 내부 gap16을 사용한다. 한쪽만 존재하면 해당 기능에 맞는 좌측·우측 정렬을 적용한다.
 - **단일 TextButton만 담은 사용자 정의 배치 래퍼는 TextButton으로 명명한다.** 복수 버튼을 실제로 묶을 때 TextButton Group을 사용하며, 전체 폭 래퍼의 Fill은 정렬용이고 실제 버튼은 Hug를 유지한다.
 - 위 규칙은 P01/P16의 표 하단 도구 패턴에 공통 적용한다. 사용자 참조 화면 링크는 기록하지 않는다.
@@ -2287,3 +2287,72 @@ Title / InputField Group                V gap20 / Fill W·Hug H / padding0
 | BoxButton / secondary·small | `b20b82eee273f930c668788109e73de668023c03` |
 
 원본 계층·컴포넌트·서체·간격과 화면 캡처를 대조했다. 원본은 변경하지 않았으며 참조 화면 링크는 저장하지 않는다.
+
+
+### P26. 가로 요약형 Data Block: 라벨·데이터 값·단위 열거
+
+#### 적용 범위와 분류
+
+- 총 금액·계좌 수·수수료·성공/실패 건수 등 여러 요약 데이터를 한 박스 안에 가로 열거할 때 이 패턴을 사용한다. **사용자 정의 조합 명칭은 Data Block**이다.
+- 정보 조회가 주목적이고 내부 선택·링크 동작이 없는 패턴이므로 Card / Surface로 분류하지 않는다. 내부에 링크·선택 동작이 추가되는 경우는 P22의 Card 전환 기준을 따른다.
+- 원본은 SummaryBox → Slot → Item / Surface(solid) → Slot → Item / Content와 Divider의 네이티브 조합이다. 이 자산을 Data Block 래퍼 안에서 재사용할 수 있으며 컴포넌트·슬롯을 유지한다. 실제 SummaryBox 인스턴스 자체를 Detach해 Data Block FRAME으로 바꾸지 않는다.
+- 이 패턴은 일반 입력·조회 Table과 구별되는 **상단 요약 수치 영역**이다. 세부 내역 표까지 모두 이 요약 카드로 치환하지 않는다.
+
+#### 구조
+
+```text
+Data Block                            사용자 정의 Auto Layout / Fill W·Hug H
+└─ SummaryBox                         실제 인스턴스 / Fill W·Hug H
+   └─ Slot                            H gap8
+      └─ Item / Surface               variant=solid / 회색 표면·무테
+         └─ Slot                      H gap32 / Fill W
+            ├─ Item / Content         Fill W / 라벨 + 값·단위
+            ├─ Divider / Vertical     secondary / 1px / 세로 Fill
+            ├─ Item / Content         Fill W
+            ├─ Divider / Vertical
+            └─ Item / Content …       마지막 뒤 Divider 없음
+```
+
+- 원본 SummaryBox의 외부 gap16과 그 바깥 Container의 gap24는 각각 직접 자식 하나라 현재 시각 간격을 만들지 않는다. 실제 데이터↔구분선 간격은 Item / Surface의 Slot gap32다.
+- SummaryBox의 Slot gap8도 Surface 하나일 때 데이터 열 간격을 만들지 않는다. 내부 Slot의32와 혼동하지 않는다.
+- Item / Content와 Divider를 번갈아 배치한다. 각 데이터 열은 동등한 Fill이며 개별 폭을 실측 소수값으로 고정하지 않는다.
+- 원본 전체1360, 좌우 padding32를 제외한1296에서 Divider4×1과 자식 사이 gap8×32를 제외해 5개 데이터 열이 각각207.2로 계산된다. 열 개수·가용 폭에 따라 다시 분배한다.
+
+#### 표면·padding·높이
+
+- **신규 Data Block의 padding은 사용자 확정 사방32**를 적용한다. SummaryBox 조합 재사용 시 실제 표면인 Item / Surface의 padding을32로 보정하고 외부 래퍼에32를 추가해 중복하지 않는다.
+- 원본 Surface는 상하20·좌우32, radius12, fill=surface/neutral/tertiary-muted, strokes=[]다. **이 가로 요약형은 회색 무테·radius12의 명시적 패턴**으로 기록하며 일반 Data Block의 아웃라인형 스타일을 중복 적용하지 않는다.
+- 원본 전체 높이96 = 상20 + 내부56 + 하20이다. 같은 내부56을 유지하면서 사방32를 적용하면120으로 계산된다. 96이나120을 전역 고정 높이로 쓰지 않는다.
+- 원본 내부 Slot은 높이56 fixed, 각 데이터·Divider는 세로 Fill이다. 실제 텍스트가 늘어나는 신규 제작에서는 콘텐츠를 담는 높이를 확보하고 같은 행의 Divider를 Fill로 맞춰 줄바꿈·글꼴을 잘라내지 않는다.
+- 반복 수가 바뀌면 마지막 Divider를 제거한다. 항목 수5와 원본 예시 금액·건수는 고정하지 않는다.
+
+#### 항목 내부 위계
+
+```text
+Item / Content                        실제 인스턴스 / Fill W
+└─ Container                          V gap8 / padding0
+   ├─ Top                             라벨 행
+   │  └─ subLabel                     KBFG Text Medium14/20
+   └─ Bottom                          값·단위 행
+      └─ Container                    H gap1
+         ├─ mainLabel                 Pretendard SemiBold20/25
+         └─ unitLabel                 KBFG Text Medium16/24
+```
+
+- 라벨↔값·단위 행 간격은 **8**, 숫자↔단위는 **1**이다. 금액용 다른 Amount 패턴의 gap4를 이 조합에 일괄 적용하지 않는다.
+- 숫자는 Pretendard SemiBold20/25, 라벨은 KBFG Text Medium14/20, 단위는 KBFG Text Medium16/24를 사용한다. 숫자·단위를 한 텍스트로 합쳐 숫자 서체 규칙을 잃지 않는다.
+- 원본 항목 내부 텍스트 높이53 = 라벨20 + gap8 + 값행25이며 항목 영역56 안에 놓인다. 이 차이를 숨은 gap으로 추가하지 않는다.
+- 실패 건수 등 상태 강조 데이터는 해당 상태의 디자인 토큰을 값·단위에 적용한다. 모든 수치를 빨간색으로 통일하거나 성공/실패 의미를 문구만 보고 새로 만들지 않는다.
+- 텍스트가 아닌 데이터 분류·표시 단위·마스킹·정렬은 기획을 따른다. 색상·폰트·단위가 서로 다른 수치를 단일 문자열로 평탄화하지 않는다.
+
+#### 확인한 재사용 자산
+
+| 자산 | component key |
+|---|---|
+| SummaryBox | `ac8b7b22c4ce82ef89da0d169d5e1cb4bb62fe19` |
+| Item / Surface / solid | `f5a63d3d0715c038047d7617618f3a634029c74c` |
+| Item / Content | `b17cd25a149b8916e9ab99756d87923cc3707e90` |
+| Divider / Vertical / secondary·1px | `36f3dfe374b19393f111739f1c8e8f370b4029ab` |
+| 인쇄용 line-print(정정) | `888e4c8f0187f5fdab8711f9717cd588c4d8b9e3` |
+
+원본 계층·컴포넌트·간격·서체와 화면 캡처를 대조했다. 참조 원본은 수정하지 않았으며 화면 링크는 저장하지 않는다.
